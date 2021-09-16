@@ -8,33 +8,11 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"tgBot/mods"
 )
 
-type Update struct {
-	UpdateId int     `json:"update_id"`
-	Message  Message `json:"message"`
-}
-
-type Message struct {
-	Chat Chat   `json:"chat"`
-	Text string `json:"text"`
-}
-
-type Chat struct {
-	ChatId int `json:"id"`
-}
-
-type RestResponse struct {
-	Result []Update `json:"result"`
-}
-
-type BotMessage struct {
-	ChatId int    `json:"chat_id"`
-	Text   string `json:"text"`
-}
-
 func main() {
-	botToken := "токеееееееееееееееееееееееееен"
+	botToken := "как же я устал удалять токен, каждый коммит, блин >:^("
 	//https://api.telegram.org/bot<token>/METHOD_NAME
 	botApi := "https://api.telegram.org/bot"
 	botUrl := botApi + botToken
@@ -52,7 +30,7 @@ func main() {
 	}
 }
 
-func getUpdates(botUrl string, offset int) ([]Update, error) {
+func getUpdates(botUrl string, offset int) ([]mods.Update, error) {
 	resp, err := http.Get(botUrl + "/getUpdates" + "?offset=" + strconv.Itoa(offset))
 	if err != nil {
 		return nil, err
@@ -62,21 +40,36 @@ func getUpdates(botUrl string, offset int) ([]Update, error) {
 	if err != nil {
 		return nil, err
 	}
-	var restResponse RestResponse
+	var restResponse mods.RestResponse
 	err = json.Unmarshal(body, &restResponse)
 	if err != nil {
 		return nil, err
 	}
 	return restResponse.Result, nil
 }
-
-func respond(botUrl string, update Update) error {
-	var botMessage BotMessage
+func logic(msg string) string {
+	if len(msg) > 4 && msg[:4] == "math" {
+		return "input: " + strconv.Itoa(mods.MyAtoi(msg[4:]))
+	}
+	if len(msg) > 4 && msg[:4] == "coin" {
+		return mods.Coin(mods.MyAtoi(msg[4:]))
+	}
+	if len(msg) > 0 && msg[0] == 'q' {
+		return mods.Ball8()
+	}
+	if len(msg) >= 3 && msg[:3] == "OwO" {
+		return "UwU"
+	}
+	if msg == "coin" {
+		return mods.Coin(2)
+	}
+	return "OwO"
+}
+func respond(botUrl string, update mods.Update) error {
+	var botMessage mods.BotMessage
 	botMessage.ChatId = update.Message.Chat.ChatId
-	/*
-		Просто пишет UwU на любой мессадж
-	 */
-	botMessage.Text = "UwU"
+	botMessage.Text = logic(update.Message.Text)
+
 	buf, err := json.Marshal(botMessage)
 	if err != nil {
 		return err
