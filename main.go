@@ -12,7 +12,7 @@ import (
 )
 
 func main() {
-	botToken := "как же я устал удалять токен, каждый коммит, блин >:^("
+	botToken := "tokennnnnnnnnnnnnnnnnnnnn"
 	//https://api.telegram.org/bot<token>/METHOD_NAME
 	botApi := "https://api.telegram.org/bot"
 	botUrl := botApi + botToken
@@ -48,19 +48,19 @@ func getUpdates(botUrl string, offset int) ([]mods.Update, error) {
 	return restResponse.Result, nil
 }
 func logic(msg string) string {
-	if len(msg) > 4 && msg[:4] == "math" {
+	if len(msg) > 4 && (msg[:4] == "math" || msg[:4] == "Math") {
 		return "input: " + strconv.Itoa(mods.MyAtoi(msg[4:]))
 	}
-	if len(msg) > 4 && msg[:4] == "coin" {
+	if len(msg) > 4 && (msg[:4] == "coin" || msg[:4] == "Coin") {
 		return mods.Coin(mods.MyAtoi(msg[4:]))
 	}
-	if len(msg) > 0 && msg[0] == 'q' {
+	if len(msg) > 3 && (msg[0] == 'q' || msg[0] == 'Q') {
 		return mods.Ball8()
 	}
 	if len(msg) >= 3 && msg[:3] == "OwO" {
 		return "UwU"
 	}
-	if msg == "coin" {
+	if msg == "coin" || msg == "Coin" {
 		return mods.Coin(2)
 	}
 	return "OwO"
