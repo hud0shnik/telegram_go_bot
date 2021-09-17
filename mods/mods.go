@@ -53,7 +53,32 @@ func Ball8() string {
 
 	return answers[rand.Intn(len(answers))]
 }
-//А вот и алгоритм с Литкода понадобился :^)
+
+func IntToRoman(num int) string {
+	roman := []string{"M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"}
+	romanValues := []int{1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1}
+	result := "" // int: 1994 - 1000 -> 994 - 900 -> 94 -90 -> 4 - 4
+	// result: "" -> ""+"M" -> "M"+"CM" -> "MCM"+"XC" -> "MCMXC"+ "IV"
+	isNegative := num < 0
+	if isNegative {
+		num *= -1
+	}
+	if num == 0 {
+		return "0"
+	}
+	for i := 0; num > 0; {
+		for romanValues[i] > num {
+			i++
+		}
+		result += roman[i]
+		num -= romanValues[i]
+	}
+	if isNegative {
+		return "-" + result
+	}
+	return result
+}
+
 func MyAtoi(s string) int {
 	max := int64(2 << 30)
 	signFlag := true

@@ -13,7 +13,7 @@ import (
 )
 
 func main() {
-	botToken := "tok                                 en"
+	botToken := "UwU OwO owo uwu"
 	//https://api.telegram.org/bot<token>/METHOD_NAME
 	botApi := "https://api.telegram.org/bot"
 	botUrl := botApi + botToken
@@ -51,7 +51,10 @@ func getUpdates(botUrl string, offset int) ([]mods.Update, error) {
 func logic(msg string) string {
 	msg = strings.ToLower(msg)
 	if len(msg) > 4 && (msg[:4] == "math") {
-		return "input+1: " + strconv.Itoa(1+mods.MyAtoi(msg[4:]))
+		if len(msg) > 10 && msg[5:10] == "roman" {
+			return mods.IntToRoman(mods.MyAtoi(msg[10:]))
+		} //math roman4 --> IV
+		return "input: " + strconv.Itoa(mods.MyAtoi(msg[4:]))
 	}
 	if len(msg) > 4 && (msg[:4] == "coin") {
 		return mods.Coin(mods.MyAtoi(msg[4:]))
