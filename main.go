@@ -8,11 +8,12 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
 	"tgBot/mods"
 )
 
 func main() {
-	botToken := "tokennnnnnnnnnnnnnnnnnnnn"
+	botToken := "tok                                 en"
 	//https://api.telegram.org/bot<token>/METHOD_NAME
 	botApi := "https://api.telegram.org/bot"
 	botUrl := botApi + botToken
@@ -48,19 +49,20 @@ func getUpdates(botUrl string, offset int) ([]mods.Update, error) {
 	return restResponse.Result, nil
 }
 func logic(msg string) string {
-	if len(msg) > 4 && (msg[:4] == "math" || msg[:4] == "Math") {
-		return "input: " + strconv.Itoa(mods.MyAtoi(msg[4:]))
+	msg = strings.ToLower(msg)
+	if len(msg) > 4 && (msg[:4] == "math") {
+		return "input+1: " + strconv.Itoa(1+mods.MyAtoi(msg[4:]))
 	}
-	if len(msg) > 4 && (msg[:4] == "coin" || msg[:4] == "Coin") {
+	if len(msg) > 4 && (msg[:4] == "coin") {
 		return mods.Coin(mods.MyAtoi(msg[4:]))
 	}
-	if len(msg) > 3 && (msg[0] == 'q' || msg[0] == 'Q') {
+	if len(msg) > 3 && (msg[0] == 'q') {
 		return mods.Ball8()
 	}
-	if len(msg) >= 3 && msg[:3] == "OwO" {
+	if len(msg) >= 3 && msg[:3] == "owo" {
 		return "UwU"
 	}
-	if msg == "coin" || msg == "Coin" {
+	if msg == "coin" {
 		return mods.Coin(2)
 	}
 	return "OwO"
