@@ -10,10 +10,13 @@ import (
 	"strconv"
 	"strings"
 	"tgBot/mods"
+
+	"github.com/spf13/viper"
 )
 
 func main() {
-	botToken := "UwU OwO owo uwu"
+	initConfig()
+	botToken := viper.GetString("token")
 	//https://api.telegram.org/bot<token>/METHOD_NAME
 	botApi := "https://api.telegram.org/bot"
 	botUrl := botApi + botToken
@@ -84,4 +87,10 @@ func respond(botUrl string, update mods.Update) error {
 		return err
 	}
 	return nil
+}
+
+func initConfig() error {
+	viper.AddConfigPath("configs")
+	viper.SetConfigName("config")
+	return viper.ReadInConfig()
 }
