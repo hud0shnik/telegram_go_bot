@@ -53,14 +53,20 @@ func getUpdates(botUrl string, offset int) ([]mods.Update, error) {
 }
 func logic(msg string) string {
 	msg = strings.ToLower(msg)
+	if msg == "help" {
+		return "d20 - кинуть д20 (рандомное число от 1 до 20), вместо 20 можно поставить любое число\nq пойти ли сегодня в универ? - я отвечу на твой вопрос\ncoin - подброшу монетку (1-орел, 2-решка)"
+	}
 	if len(msg) > 4 && (msg[:4] == "math") {
-		if len(msg) > 10 && msg[5:10] == "roman" {
+		if (len(msg) < 17 && len(msg) > 10) && msg[5:10] == "roman" {
 			return mods.IntToRoman(mods.MyAtoi(msg[10:]))
-		} //math roman4 --> IV
+		} // math roman9 -> IX
 		return "input: " + strconv.Itoa(mods.MyAtoi(msg[4:]))
 	}
-	if len(msg) > 4 && (msg[:4] == "coin") {
-		return mods.Coin(mods.MyAtoi(msg[4:]))
+	if len(msg) > 1 && (msg[0] == 'd') {
+		if mods.MyAtoi(msg[1:]) <= 0 {
+			return "как я по твоему кину такой кубик? Через четвёртое пространство?"
+		}
+		return mods.Coin(1 + mods.MyAtoi(msg[1:]))
 	}
 	if len(msg) > 3 && (msg[0] == 'q') {
 		return mods.Ball8()
