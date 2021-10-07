@@ -2,7 +2,6 @@ package mods
 
 import (
 	"math/rand"
-	"strconv"
 	"time"
 )
 
@@ -141,7 +140,7 @@ func MyAtoi(s string) int {
 	return int(result * int64(sign))
 }
 
-func Coin(n int) string {
+func Coin(n int) int {
 	rand.Seed(time.Now().Unix())
-	return strconv.Itoa(rand.Intn(n))
+	return rand.Intn(n)
 }

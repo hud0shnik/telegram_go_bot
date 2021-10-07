@@ -15,7 +15,11 @@ import (
 )
 
 func main() {
-	initConfig()
+	err := initConfig()
+	if err != nil {
+		log.Println("Config error: ", err)
+		return
+	}
 	botToken := viper.GetString("token")
 	//https://api.telegram.org/bot<token>/METHOD_NAME
 	botApi := "https://api.telegram.org/bot"
@@ -51,34 +55,41 @@ func getUpdates(botUrl string, offset int) ([]mods.Update, error) {
 	}
 	return restResponse.Result, nil
 }
+
 func logic(msg string) string {
 	msg = strings.ToLower(msg)
+	lenMsg := len(msg)
 	if msg == "help" {
-		return "d20 - кинуть д20 (рандомное число от 1 до 20), вместо 20 можно поставить любое число\nq пойти ли сегодня в универ? - я отвечу на твой вопрос\ncoin - подброшу монетку (1-орел, 2-решка)"
+		return "d20 - кинуть д20 (рандомное число от 1 до 20), вместо 20 можно поставить любое число\nПойти ли сегодня в универ? - я отвечу на твой вопрос\ncoin - подброшу монетку (1-орел, 2-решка)"
 	}
-	if len(msg) > 4 && (msg[:4] == "math") {
-		if (len(msg) < 17 && len(msg) > 10) && msg[5:10] == "roman" {
+	if lenMsg > 4 && (msg[:4] == "math") {
+		if (lenMsg < 17 && lenMsg > 10) && msg[5:10] == "roman" {
 			return mods.IntToRoman(mods.MyAtoi(msg[10:]))
 		} // math roman9 -> IX
 		return "input: " + strconv.Itoa(mods.MyAtoi(msg[4:]))
 	}
-	if len(msg) > 1 && (msg[0] == 'd') {
-		if mods.MyAtoi(msg[1:]) <= 0 {
+	if lenMsg > 1 && (msg[0] == 'd') {
+		num := mods.MyAtoi(msg[1:])
+		if num <= 0 {
 			return "как я по твоему кину такой кубик? Через четвёртое пространство?"
 		}
-		return mods.Coin(1 + mods.MyAtoi(msg[1:]))
+		if num == 10 {
+			return strconv.Itoa(mods.Coin(10))
+		}
+		return strconv.Itoa(1 + mods.Coin(num))
 	}
-	if len(msg) > 3 && (msg[0] == 'q') {
+	if lenMsg > 3 && ((msg[lenMsg-1] == '?') || (msg[lenMsg-2] == '?')) {
 		return mods.Ball8()
 	}
-	if len(msg) >= 3 && msg[:3] == "owo" {
+	if lenMsg >= 3 && msg[:3] == "owo" {
 		return "UwU"
 	}
 	if msg == "coin" {
-		return mods.Coin(2)
+		return strconv.Itoa(mods.Coin(2))
 	}
 	return "OwO"
 }
+
 func respond(botUrl string, update mods.Update) error {
 	var botMessage mods.BotMessage
 	botMessage.ChatId = update.Message.Chat.ChatId
