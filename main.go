@@ -59,8 +59,32 @@ func getUpdates(botUrl string, offset int) ([]mods.Update, error) {
 func logic(msg string) string {
 	msg = strings.ToLower(msg)
 	lenMsg := len(msg)
+
+	/*if msg == "w" { // requ.Header.Set("X-Yandex-API-Key", "hrh67--dhjdjeyj-dhje")
+		respondWeather, err := http.Get("https://api.weather.yandex.ru/v2/forecast/?lat=55.5692101&lon=37.4588852")
+		if err != nil {
+			fmt.Println(err)
+			return "error1"
+		}
+		fmt.Println(respondWeather)
+		defer respondWeather.Body.Close()
+		bodyW, err := ioutil.ReadAll(respondWeather.Body)
+		if err != nil {
+			fmt.Println(err)
+			return "error2"
+		}
+		fmt.Println(string(bodyW))
+		var wrestResponse mods.WResponse
+		err = json.Unmarshal(bodyW, &wrestResponse)
+		if err != nil {
+			fmt.Println(err)
+			return "error3"
+		}
+		fmt.Println(wrestResponse)
+		return "workin"
+	}*/
 	if msg == "help" {
-		return "d20 - кинуть д20 (рандомное число от 1 до 20), вместо 20 можно поставить любое число\nПойти ли сегодня в универ? - я отвечу на твой вопрос\ncoin - подброшу монетку (1-орел, 2-решка)"
+		return "d20 - кинуть д20 (рандомное число от 1 до 20), вместо 20 можно поставить любое число\nПойти ли сегодня в универ? - я отвечу на твой вопрос\ncoin - подброшу монетку (0-орел, 1-решка)"
 	}
 	if lenMsg > 4 && (msg[:4] == "math") {
 		if (lenMsg < 17 && lenMsg > 10) && msg[5:10] == "roman" {
