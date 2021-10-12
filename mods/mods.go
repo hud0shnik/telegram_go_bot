@@ -5,6 +5,49 @@ import (
 	"time"
 )
 
+//																							WEATHER API
+
+/*
+   clear — ясно.
+   partly-cloudy — малооблачно.
+   cloudy — облачно с прояснениями.
+   overcast — пасмурно.
+   drizzle — морось.
+   light-rain — небольшой дождь.
+   rain — дождь.
+   moderate-rain — умеренно сильный дождь.
+   heavy-rain — сильный дождь.
+   continuous-heavy-rain — длительный сильный дождь.
+   showers — ливень.
+   wet-snow — дождь со снегом.
+   light-snow — небольшой снег.
+   snow — снег.
+   snow-showers — снегопад.
+   hail — град.
+   thunderstorm — гроза.
+   thunderstorm-with-rain — дождь с грозой.
+   thunderstorm-with-hail — гроза с градом.
+*/
+type Fact struct {
+	Temp       int    `json:"temp"`
+	Feels_like int    `json:"feels_like"`
+	Condition  string `json:"condition"`
+	Wind_speed int    `json:"wind_speed"`
+	Humidity   int    `json:"humidity"`
+	Season     string `json:"season"`
+}
+type Forecast struct {
+	Sunrise string `json:"sunrise"`
+	Sunset  string `json:"sunset"`
+}
+type WeatherResponse struct {
+	Now       int      `json:"now"`
+	Now_dt    int      `json:"now_dt"`
+	Facts     Fact     `json:"fact"`
+	Forecasts Forecast `json:"forecast"`
+}
+
+//
 type Update struct {
 	UpdateId int     `json:"update_id"`
 	Message  Message `json:"message"`

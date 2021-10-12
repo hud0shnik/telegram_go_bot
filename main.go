@@ -59,30 +59,26 @@ func getUpdates(botUrl string, offset int) ([]mods.Update, error) {
 func logic(msg string) string {
 	msg = strings.ToLower(msg)
 	lenMsg := len(msg)
-
-	/*if msg == "w" { // requ.Header.Set("X-Yandex-API-Key", "hrh67--dhjdjeyj-dhje")
-		respondWeather, err := http.Get("https://api.weather.yandex.ru/v2/forecast/?lat=55.5692101&lon=37.4588852")
+	if msg == "w" {
+		url := "https://api.weather.yandex.ru/v2/forecast/?lat=55.5692101&lon=37.4588852&lang=ru_RU"
+		req, _ := http.NewRequest("GET", url, nil)
+		req.Header.Add("X-Yandex-API-Key", "weather keeeeeeeeeeeeeey)
+		res, err := http.DefaultClient.Do(req)
 		if err != nil {
-			fmt.Println(err)
 			return "error1"
 		}
-		fmt.Println(respondWeather)
-		defer respondWeather.Body.Close()
-		bodyW, err := ioutil.ReadAll(respondWeather.Body)
-		if err != nil {
-			fmt.Println(err)
-			return "error2"
-		}
-		fmt.Println(string(bodyW))
-		var wrestResponse mods.WResponse
-		err = json.Unmarshal(bodyW, &wrestResponse)
-		if err != nil {
-			fmt.Println(err)
-			return "error3"
-		}
-		fmt.Println(wrestResponse)
-		return "workin"
-	}*/
+		defer res.Body.Close()
+		body, _ := ioutil.ReadAll(res.Body)
+		var rs = new(mods.WeatherResponse)
+		json.Unmarshal(body, &rs)
+		fmt.Println("--------------------------------------")
+		fmt.Println("temp:", rs.Facts.Temp)
+		fmt.Println("feels like:", rs.Facts.Feels_like)
+		fmt.Println("--------------------------------------")
+		//fmt.Println(string(body))
+
+		return "Погода на Ольховой сейчас\n \n" + "Температура: " + strconv.Itoa(rs.Facts.Temp) + "\nОщущается как: " + strconv.Itoa(rs.Facts.Feels_like)
+	}
 	if msg == "help" {
 		return "d20 - кинуть д20 (рандомное число от 1 до 20), вместо 20 можно поставить любое число\nПойти ли сегодня в универ? - я отвечу на твой вопрос\ncoin - подброшу монетку (0-орел, 1-решка)"
 	}
