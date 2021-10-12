@@ -46,6 +46,9 @@ type WeatherResponse struct {
 	Facts     Fact     `json:"fact"`
 	Forecasts Forecast `json:"forecast"`
 }
+type WeatherUpdate struct {
+	LastWeatherUpdate int `json:"lastWeatherUpdate"`
+}
 
 //
 type Update struct {
