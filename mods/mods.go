@@ -1,33 +1,17 @@
 package mods
 
 import (
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
 	"math/rand"
+	"net/http"
+	"os"
+	"strconv"
 	"time"
 )
 
 //																							WEATHER API
-
-/*
-   clear — ясно.
-   partly-cloudy — малооблачно.
-   cloudy — облачно с прояснениями.
-   overcast — пасмурно.
-   drizzle — морось.
-   light-rain — небольшой дождь.
-   rain — дождь.
-   moderate-rain — умеренно сильный дождь.
-   heavy-rain — сильный дождь.
-   continuous-heavy-rain — длительный сильный дождь.
-   showers — ливень.
-   wet-snow — дождь со снегом.
-   light-snow — небольшой снег.
-   snow — снег.
-   snow-showers — снегопад.
-   hail — град.
-   thunderstorm — гроза.
-   thunderstorm-with-rain — дождь с грозой.
-   thunderstorm-with-hail — гроза с градом.
-*/
 type Fact struct {
 	Temp       int    `json:"temp"`
 	Feels_like int    `json:"feels_like"`
@@ -36,21 +20,142 @@ type Fact struct {
 	Humidity   int    `json:"humidity"`
 	Season     string `json:"season"`
 }
-type Forecast struct {
+type Parts struct {
+	Day     Fact `json:"day"`
+	Night   Fact `json:"night"`
+	Morning Fact `json:"morning"`
+	Evening Fact `json:"evening"`
+}
+type Forecasts struct {
+	Week    int    `json:"week"`
 	Sunrise string `json:"sunrise"`
 	Sunset  string `json:"sunset"`
+	Parts   Parts  `json:"parts"`
 }
 type WeatherResponse struct {
-	Now       int      `json:"now"`
-	Now_dt    int      `json:"now_dt"`
-	Facts     Fact     `json:"fact"`
-	Forecasts Forecast `json:"forecast"`
+	Now       int       `json:"now"`
+	Now_dt    int       `json:"now_dt"`
+	Facts     Fact      `json:"fact"`
+	Forecasts Forecasts `json:"forecasts"`
 }
 type WeatherUpdate struct {
 	LastWeatherUpdate int `json:"lastWeatherUpdate"`
 }
 
-//
+func weatherConditionTranslate(eng string) string {
+	switch eng {
+	case "clear":
+		return "ясно"
+	case "partly-cloudy":
+		return "Малооблачно"
+	case "cloudy":
+		return "Облачно с прояснениями"
+	case "overcast":
+		return "Пасмурно"
+	case "drizzle":
+		return "Моросит"
+	case "light-rain":
+		return "Небольшой дождь"
+	case "rain":
+		return "Дождь"
+	case "moderate-rain":
+		return "Умеренно сильный дождь"
+	case "heavy-rain":
+		return "Сильный дождь"
+	case "continuous-heavy-rain":
+		return "Длительный сильный дождь"
+	case "showers":
+		return "Ливень"
+	case "wet-snow":
+		return "Дождь со снегом"
+	case "light-snow":
+		return "Небольшой снег"
+	case "snow":
+		return "Снег"
+	case "snow-showers":
+		return "Снегопад"
+	case "hail":
+		return "Град"
+	case "thunderstorm":
+		return "Гроза"
+	case "thunderstorm-with-rain":
+		return "Дождь с грозой"
+	case "thunderstorm-with-hail":
+		return "Гроза с градом"
+	default:
+		return "Темпоральный дождь"
+	}
+}
+
+func GetWeather() string {
+	curTime := time.Now().Unix()
+	fileU, err := os.Open("weather/lastWeatherUpdate.json")
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+	defer fileU.Close()
+
+	var last = new(WeatherUpdate)
+	bodyU, _ := ioutil.ReadAll(fileU)
+	json.Unmarshal(bodyU, &last)
+	var timeSinceLastUpdate int64 = (curTime - int64(last.LastWeatherUpdate))
+	fmt.Println("seconds since last update: " + strconv.Itoa(int(curTime-int64(last.LastWeatherUpdate))))
+	if timeSinceLastUpdate > 3600 { //3600 seconds = 1 hour
+		fileU, err := os.Create("weather/lastWeatherUpdate.json")
+		if err != nil {
+			fmt.Println("Unable to create file:", err)
+			os.Exit(1)
+		}
+		defer fileU.Close()
+		fileU.Write([]byte("{\"lastWeatherUpdate\": " + strconv.Itoa(int(curTime)) + "}"))
+		UpdateWeatherJson()
+	}
+	res, err := os.Open("weather/weather.json")
+	if err != nil {
+		return "error1"
+	}
+	defer res.Close()
+	weatherContent, _ := ioutil.ReadAll(res)
+	var rs = new(WeatherResponse)
+	json.Unmarshal(weatherContent, &rs)
+
+	condition := weatherConditionTranslate(rs.Facts.Condition)
+
+	result := "Погода на Ольховой сейчас:\n \n" + condition +
+		"\nТемпература: " + strconv.Itoa(rs.Facts.Temp) + "°" +
+		"\nОщущается как: " + strconv.Itoa(rs.Facts.Feels_like) + "°" +
+		"\nВетер: " + strconv.Itoa(rs.Facts.Wind_speed) + " м/с" +
+		"\nВлажность воздуха: " + strconv.Itoa(rs.Facts.Humidity) + " %"
+	fmt.Println(rs.Forecasts)
+	return result
+}
+
+func UpdateWeatherJson() {
+	fmt.Println("update weather")
+	file, err := os.Create("weather/weather.json")
+	if err != nil {
+		fmt.Println("Unable to create file:", err)
+		os.Exit(1)
+	}
+	defer file.Close()
+	url := "https://api.weather.yandex.ru/v2/forecast/?lat=55.5692101&lon=37.4588852&lang=ru_RU"
+	req, _ := http.NewRequest("GET", url, nil)
+
+	req.Header.Add("X-Yandex-API-Key", "token 777")
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		fmt.Println("weather API error")
+	}
+	defer res.Body.Close()
+	body, _ := ioutil.ReadAll(res.Body)
+	var rs = new(WeatherResponse)
+	json.Unmarshal(body, &rs)
+	file.WriteString(string(body))
+	fmt.Println("weather.json Updated!")
+}
+
+//																						------------------------------
 type Update struct {
 	UpdateId int     `json:"update_id"`
 	Message  Message `json:"message"`
@@ -77,7 +182,7 @@ type BotMessage struct {
 func Ball8() string {
 	rand.Seed(time.Now().Unix())
 	answers := []string{
-		"Да, кончно",
+		"Да, конечно",
 		"100%",
 		"Да",
 		"100000000%",
