@@ -62,7 +62,7 @@ func logic(msg string) string {
 	lenMsg := len(msg)
 
 	if lenMsg > 0 && ((runeMsg[0] == 'п') || msg[0] == 'w') {
-		return mods.GetWeather()
+		return mods.GetWeather() //"Пока не работает, яндекс не хочет присылать погоду :^("
 	}
 	if msg == "help" {
 		return "погода или weather - показать погоду на Ольховой\nd20 - кинуть д20 (рандомное число от 1 до 20), вместо 20 можно поставить любое число\nМожешь позадовать вопросы, я на них отвечу\ncoin - подброшу монетку (0-орел, 1-решка)"

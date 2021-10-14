@@ -139,10 +139,10 @@ func UpdateWeatherJson() {
 		os.Exit(1)
 	}
 	defer file.Close()
-	url := "https://api.weather.yandex.ru/v2/forecast/?lat=55.5692101&lon=37.4588852&lang=ru_RU"
+	url := "https://api.weather.yandex.ru/v2/informers?lat=55.5692101&lon=37.4588852&lang=ru_RU"
 	req, _ := http.NewRequest("GET", url, nil)
 
-	req.Header.Add("X-Yandex-API-Key", "token 777")
+	req.Header.Add("X-Yandex-API-Key", "77777777777777777777")
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
 		fmt.Println("weather API error")
