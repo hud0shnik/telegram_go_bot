@@ -13,81 +13,91 @@ import (
 
 //																							WEATHER API
 type Fact struct {
-	Temp       int    `json:"temp"`
-	Feels_like int    `json:"feels_like"`
-	Condition  string `json:"condition"`
-	Wind_speed int    `json:"wind_speed"`
-	Humidity   int    `json:"humidity"`
-	Season     string `json:"season"`
+	Temp       int     `json:"temp"`
+	Feels_like int     `json:"feels_like"`
+	Condition  string  `json:"condition"`
+	Wind_speed float32 `json:"wind_speed"`
+	Humidity   int     `json:"humidity"`
+	Season     string  `json:"season"`
 }
-type Parts struct {
-	Day     Fact `json:"day"`
-	Night   Fact `json:"night"`
-	Morning Fact `json:"morning"`
-	Evening Fact `json:"evening"`
+type ForecastsPart struct {
+	Part_name  string  `json:"part_name"`
+	Temp       int     `json:"temp_avg"`
+	Feels_like int     `json:"feels_like"`
+	Condition  string  `json:"condition"`
+	Humidity   int     `json:"humidity"`
+	Wind_speed float32 `json:"wind_speed"`
+	Wind_dir   string  `json:"wind_dir"`
 }
 type Forecasts struct {
-	Week    int    `json:"week"`
-	Sunrise string `json:"sunrise"`
-	Sunset  string `json:"sunset"`
-	Parts   Parts  `json:"parts"`
+	Week    int             `json:"week"`
+	Sunrise string          `json:"sunrise"`
+	Sunset  string          `json:"sunset"`
+	Parts   []ForecastsPart `json:"parts"`
 }
 type WeatherResponse struct {
 	Now       int       `json:"now"`
-	Now_dt    int       `json:"now_dt"`
+	Now_dt    string    `json:"now_dt"`
 	Facts     Fact      `json:"fact"`
-	Forecasts Forecasts `json:"forecasts"`
+	Forecasts Forecasts `json:"forecast"`
 }
+
 type WeatherUpdate struct {
 	LastWeatherUpdate int `json:"lastWeatherUpdate"`
 }
 
 func weatherConditionTranslate(eng string) string {
-	switch eng {
+	switch eng { //	"смайлики: ☀️ 🌤 ⛅️ 🌥 ☁️ 🌦 🌧 ⛈ 🌩 🌨"
 	case "clear":
-		return "ясно"
+		return "ясно☀️"
 	case "partly-cloudy":
-		return "Малооблачно"
+		return "Малооблачно🌤"
 	case "cloudy":
-		return "Облачно с прояснениями"
+		return "Облачно с прояснениями🌥"
 	case "overcast":
-		return "Пасмурно"
+		return "Пасмурно☁️"
 	case "drizzle":
-		return "Моросит"
+		return "Моросит☔️"
 	case "light-rain":
-		return "Небольшой дождь"
+		return "Небольшой дождь🌦"
 	case "rain":
-		return "Дождь"
+		return "Дождь🌦"
 	case "moderate-rain":
-		return "Умеренно сильный дождь"
+		return "Умеренно сильный дождь🌧"
 	case "heavy-rain":
-		return "Сильный дождь"
+		return "Сильный дождь🌧🌧"
 	case "continuous-heavy-rain":
-		return "Длительный сильный дождь"
+		return "Длительный сильный дождь🌧🌧"
 	case "showers":
-		return "Ливень"
+		return "Ливень🌧🌧🌧"
 	case "wet-snow":
-		return "Дождь со снегом"
+		return "Дождь со снегом🌧🌨"
 	case "light-snow":
-		return "Небольшой снег"
+		return "Небольшой снег🌨"
 	case "snow":
-		return "Снег"
+		return "Снег🌨"
 	case "snow-showers":
-		return "Снегопад"
+		return "Снегопад🌨"
 	case "hail":
-		return "Град"
+		return "Град🌧❄️"
 	case "thunderstorm":
-		return "Гроза"
+		return "Гроза🌩"
 	case "thunderstorm-with-rain":
-		return "Дождь с грозой"
+		return "Дождь с грозой⛈"
 	case "thunderstorm-with-hail":
-		return "Гроза с градом"
+		return "Гроза с градом⛈⛈"
 	default:
 		return "Темпоральный дождь"
 	}
 }
 
 func GetWeather() string {
+	/*
+		"night 0,1,2,3,4,5",
+		"morning 6,7,8,9,10,11",
+		"day 12,13,14,15,16,17",
+		"evening 18,19,20,21,22,23",
+	*/
 	curTime := time.Now().Unix()
 	fileU, err := os.Open("weather/lastWeatherUpdate.json")
 	if err != nil {
@@ -120,14 +130,14 @@ func GetWeather() string {
 	var rs = new(WeatherResponse)
 	json.Unmarshal(weatherContent, &rs)
 
-	condition := weatherConditionTranslate(rs.Facts.Condition)
+	result := "Погода на Ольховой:\n \n" +
+		"Сейчас - " + weatherConditionTranslate(rs.Facts.Condition) + ", \nпотом будет - " + weatherConditionTranslate(rs.Forecasts.Parts[0].Condition) + ", \nа через 9 часов - " + weatherConditionTranslate(rs.Forecasts.Parts[1].Condition) + ".\n" +
+		"\n🌡Температура: " + strconv.Itoa(rs.Facts.Temp) + "°" + " -> " + strconv.Itoa(rs.Forecasts.Parts[0].Temp) + "°" + " -> " + strconv.Itoa(rs.Forecasts.Parts[1].Temp) + "°" +
+		"\n🤔Ощущается как: " + strconv.Itoa(rs.Facts.Feels_like) + "°" + " -> " + strconv.Itoa(rs.Forecasts.Parts[0].Feels_like) + "°" + " -> " + strconv.Itoa(rs.Forecasts.Parts[1].Feels_like) + "°" +
+		"\n💨Ветер: " + fmt.Sprintf("%v", rs.Facts.Wind_speed) + " м/с" + " -> " + fmt.Sprintf("%v", rs.Forecasts.Parts[0].Wind_speed) + " м/с" + " -> " + fmt.Sprintf("%v", rs.Forecasts.Parts[1].Wind_speed) + " м/с" +
+		"\n💧Влажность воздуха: " + strconv.Itoa(rs.Facts.Humidity) + "%" + " -> " + strconv.Itoa(rs.Forecasts.Parts[0].Humidity) + "%" + " -> " + strconv.Itoa(rs.Forecasts.Parts[1].Humidity) + "%"
 
-	result := "Погода на Ольховой сейчас:\n \n" + condition +
-		"\nТемпература: " + strconv.Itoa(rs.Facts.Temp) + "°" +
-		"\nОщущается как: " + strconv.Itoa(rs.Facts.Feels_like) + "°" +
-		"\nВетер: " + strconv.Itoa(rs.Facts.Wind_speed) + " м/с" +
-		"\nВлажность воздуха: " + strconv.Itoa(rs.Facts.Humidity) + " %"
-	fmt.Println(rs.Forecasts)
+	fmt.Println("parts:\t", rs.Forecasts.Parts[0])
 	return result
 }
 
@@ -142,7 +152,7 @@ func UpdateWeatherJson() {
 	url := "https://api.weather.yandex.ru/v2/informers?lat=55.5692101&lon=37.4588852&lang=ru_RU"
 	req, _ := http.NewRequest("GET", url, nil)
 
-	req.Header.Add("X-Yandex-API-Key", "77777777777777777777")
+	req.Header.Add("X-Yandex-API-Key", "тут токен погоды")
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
 		fmt.Println("weather API error")

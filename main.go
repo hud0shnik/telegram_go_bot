@@ -61,11 +61,11 @@ func logic(msg string) string {
 	runeMsg := []rune(msg)
 	lenMsg := len(msg)
 
-	if lenMsg > 0 && ((runeMsg[0] == 'п') || msg[0] == 'w') {
-		return mods.GetWeather() //"Пока не работает, яндекс не хочет присылать погоду :^("
+	if lenMsg > 0 && ((msg == "погода") || msg == "weather" || msg == "/weather") {
+		return mods.GetWeather()
 	}
-	if msg == "help" {
-		return "погода или weather - показать погоду на Ольховой\nd20 - кинуть д20 (рандомное число от 1 до 20), вместо 20 можно поставить любое число\nМожешь позадовать вопросы, я на них отвечу\ncoin - подброшу монетку (0-орел, 1-решка)"
+	if msg == "help" || msg == "/help" || msg == "/start" || msg == "/start start" {
+		return "Привет👋🏻, вот список команд:\n\n/weather - показать погоду на Ольховой\n\n/d20 - кинуть д20, вместо 20 можно поставить любое число\n\n/coin - подброшу монетку\n\nМожешь позадовать вопросы, я на них отвечу"
 	}
 	if lenMsg > 4 && (msg[:4] == "math") {
 		if (lenMsg < 17 && lenMsg > 10) && msg[5:10] == "roman" {
@@ -73,10 +73,15 @@ func logic(msg string) string {
 		} // math roman9 -> IX
 		return "input: " + strconv.Itoa(mods.MyAtoi(msg[4:]))
 	}
-	if lenMsg > 1 && ((runeMsg[0] == 'д') || msg[0] == 'd') {
-		num := mods.MyAtoi(string(runeMsg[1:]))
+	if lenMsg > 1 && (msg[0] == 'd' || msg[:2] == "/d") {
+		var num int
+		if runeMsg[0] == '/' {
+			num = mods.MyAtoi(string(runeMsg[2:]))
+		} else {
+			num = mods.MyAtoi(string(runeMsg[1:]))
+		}
 		if num <= 0 {
-			return "как я по твоему кину такой кубик? Через четвёртое пространство?"
+			return "как я по твоему кину такой кубик? Через четвёртое пространство?🤨"
 		}
 		if num == 10 {
 			return strconv.Itoa(mods.Coin(10))
@@ -89,8 +94,12 @@ func logic(msg string) string {
 	if lenMsg >= 3 && msg[:3] == "owo" {
 		return "UwU"
 	}
-	if msg == "coin" || msg == "монетка" || msg == "монета" {
-		return strconv.Itoa(mods.Coin(2))
+	if msg == "coin" || msg == "/coin" || msg == "монетка" || msg == "монета" {
+		if mods.Coin(2) == 0 {
+			return "Орёл"
+		}
+		return "Решка"
+
 	}
 	if lenMsg >= 7 && (msg == "молодец" || msg == "спасибо") {
 		return "Стараюсь UwU"
