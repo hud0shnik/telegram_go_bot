@@ -20,10 +20,7 @@ func main() {
 		log.Println("Config error: ", err)
 		return
 	}
-	botToken := viper.GetString("token")
-	//https://api.telegram.org/bot<token>/METHOD_NAME
-	botApi := "https://api.telegram.org/bot"
-	botUrl := botApi + botToken
+	botUrl := "https://api.telegram.org/bot" + viper.GetString("token")
 	offSet := 0
 	for {
 		updates, err := getUpdates(botUrl, offSet)
@@ -56,22 +53,40 @@ func getUpdates(botUrl string, offset int) ([]mods.Update, error) {
 	return restResponse.Result, nil
 }
 
+func respond(botUrl string, update mods.Update) error {
+	//	https://core.telegram.org/bots/api#using-a-local-bot-api-server
+	var botMessage mods.BotMessage
+	botMessage.ChatId = update.Message.Chat.ChatId
+	botMessage.Text = logic(update.Message.Text)
+
+	buf, err := json.Marshal(botMessage)
+	if err != nil {
+		return err
+	}
+	_, err = http.Post(botUrl+"/sendMessage", "application/json", bytes.NewBuffer(buf))
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func initConfig() error {
+	viper.AddConfigPath("configs")
+	viper.SetConfigName("config")
+
+	return viper.ReadInConfig()
+}
+
 func logic(msg string) string {
 	msg = strings.ToLower(msg)
 	runeMsg := []rune(msg)
 	lenMsg := len(msg)
 
-	if lenMsg > 0 && ((msg == "погода") || msg == "weather" || msg == "/weather") {
+	if lenMsg > 0 && ((msg == "w") || msg == "/weather") {
 		return mods.GetWeather()
 	}
 	if msg == "help" || msg == "/help" || msg == "/start" || msg == "/start start" {
 		return "Привет👋🏻, вот список команд:\n\n/weather - показать погоду на Ольховой\n\n/d20 - кинуть д20, вместо 20 можно поставить любое число\n\n/coin - подброшу монетку\n\nМожешь позадовать вопросы, я на них отвечу"
-	}
-	if lenMsg > 4 && (msg[:4] == "math") {
-		if (lenMsg < 17 && lenMsg > 10) && msg[5:10] == "roman" {
-			return mods.IntToRoman(mods.MyAtoi(msg[10:]))
-		} // math roman9 -> IX
-		return "input: " + strconv.Itoa(mods.MyAtoi(msg[4:]))
 	}
 	if lenMsg > 1 && (msg[0] == 'd' || msg[:2] == "/d") {
 		var num int
@@ -94,12 +109,11 @@ func logic(msg string) string {
 	if lenMsg >= 3 && msg[:3] == "owo" {
 		return "UwU"
 	}
-	if msg == "coin" || msg == "/coin" || msg == "монетка" || msg == "монета" {
+	if msg == "coin" || msg == "/coin" {
 		if mods.Coin(2) == 0 {
 			return "Орёл"
 		}
 		return "Решка"
-
 	}
 	if lenMsg >= 7 && (msg == "молодец" || msg == "спасибо") {
 		return "Стараюсь UwU"
@@ -108,26 +122,4 @@ func logic(msg string) string {
 		return "Стараюсь UwU"
 	}
 	return "OwO"
-}
-
-func respond(botUrl string, update mods.Update) error {
-	var botMessage mods.BotMessage
-	botMessage.ChatId = update.Message.Chat.ChatId
-	botMessage.Text = logic(update.Message.Text)
-
-	buf, err := json.Marshal(botMessage)
-	if err != nil {
-		return err
-	}
-	_, err = http.Post(botUrl+"/sendMessage", "application/json", bytes.NewBuffer(buf))
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-func initConfig() error {
-	viper.AddConfigPath("configs")
-	viper.SetConfigName("config")
-	return viper.ReadInConfig()
 }
