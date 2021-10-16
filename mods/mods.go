@@ -10,9 +10,18 @@ type Update struct {
 	Message  Message `json:"message"`
 }
 
+type Sticker struct {
+	File_id        string `json:"file_id"`
+	File_unique_id string `json:"file_unique_id"`
+	Emoji          string `json:"emoji"`
+	Is_animated    bool   `json:"is_animated"`
+	Set_name       string `json:"set_name"`
+}
+
 type Message struct {
-	Chat Chat   `json:"chat"`
-	Text string `json:"text"`
+	Chat    Chat    `json:"chat"`
+	Text    string  `json:"text"`
+	Sticker Sticker `json:"sticker"`
 }
 
 type Chat struct {
@@ -23,9 +32,14 @@ type RestResponse struct {
 	Result []Update `json:"result"`
 }
 
-type BotMessage struct {
+type SendMessage struct {
 	ChatId int    `json:"chat_id"`
 	Text   string `json:"text"`
+}
+
+type SendSticker struct {
+	ChatId  int    `json:"chat_id"`
+	Sticker string `json:"sticker"`
 }
 
 func Ball8() string {

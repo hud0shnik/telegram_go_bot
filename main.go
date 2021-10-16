@@ -55,10 +55,28 @@ func getUpdates(botUrl string, offset int) ([]mods.Update, error) {
 
 func respond(botUrl string, update mods.Update) error {
 	//	https://core.telegram.org/bots/api#using-a-local-bot-api-server
-	var botMessage mods.BotMessage
+
+	if update.Message.Sticker.File_unique_id != "" {
+		//fmt.Println("\t\"" + update.Message.Sticker.File_id + "\",")
+		var botStickerMessage mods.SendSticker
+		botStickerMessage.ChatId = update.Message.Chat.ChatId
+		botStickerMessage.Sticker = mods.GenerateRandomSticker()
+
+		buf, err := json.Marshal(botStickerMessage)
+		if err != nil {
+			return err
+		}
+		_, err = http.Post(botUrl+"/sendSticker", "application/json", bytes.NewBuffer(buf))
+		if err != nil {
+			return err
+		}
+		return nil
+
+	}
+
+	var botMessage mods.SendMessage
 	botMessage.ChatId = update.Message.Chat.ChatId
 	botMessage.Text = logic(update.Message.Text)
-
 	buf, err := json.Marshal(botMessage)
 	if err != nil {
 		return err
@@ -68,6 +86,7 @@ func respond(botUrl string, update mods.Update) error {
 		return err
 	}
 	return nil
+
 }
 
 func initConfig() error {
