@@ -126,7 +126,7 @@ func GetWeather() string {
 	var timeSinceLastUpdate int64 = (curTime - int64(last.LastWeatherUpdate))
 	fmt.Println("seconds since last update: " + strconv.Itoa(int(curTime-int64(last.LastWeatherUpdate))))
 
-	if timeSinceLastUpdate > 60 { //3600 seconds = 1 hour
+	if timeSinceLastUpdate > 3600 { //3600 seconds = 1 hour
 		fileU, err := os.Create("weather/lastWeatherUpdate.json")
 		if err != nil {
 			fmt.Println("Unable to create file:", err)

@@ -44,12 +44,13 @@ type SendSticker struct {
 	Sticker string `json:"sticker"`
 }
 type SendPhoto struct {
-	ChatId int    `json:"chat_id"`
-	Photo  string `json:"photo"`
+	ChatId  int    `json:"chat_id"`
+	Photo   string `json:"photo"`
+	Caption string `json:"caption"`
 }
 type NasaResponse struct {
 	Explanation string `json:"explanation"`
-	Hdurl       string `json:"hdurl"`
+	Hdurl       string `json:"url"`
 }
 
 func Ball8() string {

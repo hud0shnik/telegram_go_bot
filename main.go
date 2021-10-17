@@ -57,12 +57,26 @@ func respond(botUrl string, update mods.Update) error {
 	mods.InitConfig()
 	//	https://core.telegram.org/bots/api#using-a-local-bot-api-server
 
-	if update.Message.Sticker.File_unique_id != "" {
-		//fmt.Println("\t\"" + update.Message.Sticker.File_id + "\",")
-		var botStickerMessage mods.SendSticker
-		botStickerMessage.ChatId = update.Message.Chat.ChatId
-		botStickerMessage.Sticker = mods.GenerateRandomSticker()
-
+	var sendMsg = func(msg string) error {
+		botMessage := mods.SendMessage{
+			ChatId: update.Message.Chat.ChatId,
+			Text:   msg,
+		}
+		buf, err := json.Marshal(botMessage)
+		if err != nil {
+			return err
+		}
+		_, err = http.Post(botUrl+"/sendMessage", "application/json", bytes.NewBuffer(buf))
+		if err != nil {
+			return err
+		}
+		return nil
+	}
+	var sendStck = func(url string) error {
+		botStickerMessage := mods.SendSticker{
+			ChatId:  update.Message.Chat.ChatId,
+			Sticker: url,
+		}
 		buf, err := json.Marshal(botStickerMessage)
 		if err != nil {
 			return err
@@ -72,7 +86,10 @@ func respond(botUrl string, update mods.Update) error {
 			return err
 		}
 		return nil
-
+	}
+	if update.Message.Sticker.File_unique_id != "" {
+		sendStck(mods.GenerateRandomSticker())
+		return nil
 	}
 
 	if update.Message.Text == "/nasa" {
@@ -90,8 +107,9 @@ func respond(botUrl string, update mods.Update) error {
 		json.Unmarshal(body, &rs)
 
 		botImageMessage := mods.SendPhoto{
-			ChatId: update.Message.Chat.ChatId,
-			Photo:  rs.Hdurl,
+			ChatId:  update.Message.Chat.ChatId,
+			Photo:   rs.Hdurl,
+			Caption: rs.Explanation,
 		}
 
 		buf, err := json.Marshal(botImageMessage)
@@ -107,19 +125,12 @@ func respond(botUrl string, update mods.Update) error {
 		return nil
 	}
 
-	var botMessage mods.SendMessage
-	botMessage.ChatId = update.Message.Chat.ChatId
-	botMessage.Text = logic(update.Message.Text)
-	buf, err := json.Marshal(botMessage)
-	if err != nil {
-		return err
+	if update.Message.Text == "" {
+		sendMsg("Пока я воспринимаю только текст и стикеры, извини 🤷🏻‍♂️")
+		return nil
 	}
-	_, err = http.Post(botUrl+"/sendMessage", "application/json", bytes.NewBuffer(buf))
-	if err != nil {
-		return err
-	}
+	sendMsg(logic(update.Message.Text))
 	return nil
-
 }
 
 func logic(msg string) string {
@@ -131,7 +142,7 @@ func logic(msg string) string {
 		return mods.GetWeather()
 	}
 	if msg == "help" || msg == "/help" || msg == "/start" || msg == "/start start" {
-		return "Привет👋🏻, вот список команд:\n\n/weather - показать погоду на Ольховой\n\n/d20 - кинуть д20, вместо 20 можно поставить любое число\n\n/coin - подброшу монетку\n\nМожешь позадовать вопросы, я на них отвечу"
+		return "Привет👋🏻, вот список команд:\n\n/weather - показать погоду на Ольховой\n\n/nasa - картинка дня от Nasa\n\n/d20 - кинуть д20, вместо 20 можно поставить любое число\n\n/coin - подброшу монетку\n\nМожешь позадовать вопросы, я на них отвечу"
 	}
 	if lenMsg > 1 && (msg[0] == 'd' || msg[:2] == "/d") {
 		var num int
