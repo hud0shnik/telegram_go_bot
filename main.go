@@ -15,7 +15,7 @@ import (
 )
 
 func main() {
-	err := initConfig()
+	err := mods.InitConfig()
 	if err != nil {
 		log.Println("Config error: ", err)
 		return
@@ -54,6 +54,7 @@ func getUpdates(botUrl string, offset int) ([]mods.Update, error) {
 }
 
 func respond(botUrl string, update mods.Update) error {
+	mods.InitConfig()
 	//	https://core.telegram.org/bots/api#using-a-local-bot-api-server
 
 	if update.Message.Sticker.File_unique_id != "" {
@@ -74,6 +75,38 @@ func respond(botUrl string, update mods.Update) error {
 
 	}
 
+	if update.Message.Text == "/nasa" {
+		url := "https://api.nasa.gov/planetary/apod?api_key=" + viper.GetString("nasaToken")
+		req, _ := http.NewRequest("GET", url, nil)
+		res, err := http.DefaultClient.Do(req)
+
+		if err != nil {
+			fmt.Println("Nasa API error: ", err)
+			return err
+		}
+		defer res.Body.Close()
+		body, _ := ioutil.ReadAll(res.Body)
+		var rs = new(mods.NasaResponse)
+		json.Unmarshal(body, &rs)
+
+		botImageMessage := mods.SendPhoto{
+			ChatId: update.Message.Chat.ChatId,
+			Photo:  rs.Hdurl,
+		}
+
+		buf, err := json.Marshal(botImageMessage)
+		if err != nil {
+			fmt.Println("Marshal json error: ", err)
+			return err
+		}
+		_, err = http.Post(botUrl+"/sendPhoto", "application/json", bytes.NewBuffer(buf))
+		if err != nil {
+			fmt.Println("SendPhoto method error: ", err)
+			return err
+		}
+		return nil
+	}
+
 	var botMessage mods.SendMessage
 	botMessage.ChatId = update.Message.Chat.ChatId
 	botMessage.Text = logic(update.Message.Text)
@@ -87,13 +120,6 @@ func respond(botUrl string, update mods.Update) error {
 	}
 	return nil
 
-}
-
-func initConfig() error {
-	viper.AddConfigPath("configs")
-	viper.SetConfigName("config")
-
-	return viper.ReadInConfig()
 }
 
 func logic(msg string) string {

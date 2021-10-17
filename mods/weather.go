@@ -8,6 +8,8 @@ import (
 	"os"
 	"strconv"
 	"time"
+
+	"github.com/spf13/viper"
 )
 
 type Fact struct {
@@ -124,7 +126,7 @@ func GetWeather() string {
 	var timeSinceLastUpdate int64 = (curTime - int64(last.LastWeatherUpdate))
 	fmt.Println("seconds since last update: " + strconv.Itoa(int(curTime-int64(last.LastWeatherUpdate))))
 
-	if timeSinceLastUpdate > 3600 { //3600 seconds = 1 hour
+	if timeSinceLastUpdate > 60 { //3600 seconds = 1 hour
 		fileU, err := os.Create("weather/lastWeatherUpdate.json")
 		if err != nil {
 			fmt.Println("Unable to create file:", err)
@@ -158,6 +160,7 @@ func createWeatherString(rs WeatherResponse) string {
 }
 
 func UpdateWeatherJson() {
+	InitConfig()
 	fmt.Println("update weather")
 	file, err := os.Create("weather/weather.json")
 	if err != nil {
@@ -168,7 +171,7 @@ func UpdateWeatherJson() {
 	url := "https://api.weather.yandex.ru/v2/informers?lat=55.5692101&lon=37.4588852&lang=ru_RU"
 	req, _ := http.NewRequest("GET", url, nil)
 
-	req.Header.Add("X-Yandex-API-Key", "yeK")
+	req.Header.Add("X-Yandex-API-Key", viper.GetString("weatherToken"))
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
 		fmt.Println("weather API error")

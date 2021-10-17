@@ -3,6 +3,8 @@ package mods
 import (
 	"math/rand"
 	"time"
+
+	"github.com/spf13/viper"
 )
 
 type Update struct {
@@ -40,6 +42,14 @@ type SendMessage struct {
 type SendSticker struct {
 	ChatId  int    `json:"chat_id"`
 	Sticker string `json:"sticker"`
+}
+type SendPhoto struct {
+	ChatId int    `json:"chat_id"`
+	Photo  string `json:"photo"`
+}
+type NasaResponse struct {
+	Explanation string `json:"explanation"`
+	Hdurl       string `json:"hdurl"`
 }
 
 func Ball8() string {
@@ -132,4 +142,10 @@ func MyAtoi(s string) int {
 func Coin(n int) int {
 	rand.Seed(time.Now().Unix())
 	return rand.Intn(n)
+}
+func InitConfig() error {
+	viper.AddConfigPath("configs")
+	viper.SetConfigName("config")
+
+	return viper.ReadInConfig()
 }
