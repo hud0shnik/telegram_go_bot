@@ -1,7 +1,12 @@
 package mods
 
 import (
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
 	"math/rand"
+	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/spf13/viper"
@@ -50,7 +55,29 @@ type SendPhoto struct {
 }
 type NasaResponse struct {
 	Explanation string `json:"explanation"`
-	Hdurl       string `json:"url"`
+	Url         string `json:"url"`
+}
+
+func Help() string {
+	return "Привет👋🏻, вот список команд:\n\n/weather - показать погоду на Ольховой\n\n/nasa - картинка дня от Nasa" +
+		"\n\n/d20 - кинуть д20, вместо 20 можно поставить любое число\n\n/coin - подброшу монетку" +
+		"\n\nМожешь позадовать вопросы, я на них отвечу"
+}
+
+func Dice(runeMsg []rune) string {
+	var num int
+	if runeMsg[0] == '/' {
+		num = MyAtoi(string(runeMsg[2:]))
+	} else {
+		num = MyAtoi(string(runeMsg[1:]))
+	}
+	if num <= 0 {
+		return "как я по твоему кину такой кубик? Через четвёртое пространство?🤨"
+	}
+	if num == 10 {
+		return strconv.Itoa(Random(10))
+	}
+	return strconv.Itoa(1 + Random(num))
 }
 
 func Ball8() string {
@@ -140,10 +167,41 @@ func MyAtoi(s string) int {
 	return int(result * int64(sign))
 }
 
-func Coin(n int) int {
+func Random(n int) int {
 	rand.Seed(time.Now().Unix())
 	return rand.Intn(n)
 }
+
+func Coin() string {
+	if Random(2) == 0 {
+		return "Орёл"
+	}
+	return "Решка"
+}
+
+func GetAstronomyPictureoftheDay(chatId int) SendPhoto {
+	InitConfig()
+	url := "https://api.nasa.gov/planetary/apod?api_key=" + viper.GetString("nasaToken")
+	req, _ := http.NewRequest("GET", url, nil)
+	res, err := http.DefaultClient.Do(req)
+
+	if err != nil {
+		fmt.Println("Nasa API error: ", err)
+		fmt.Println(err)
+	}
+	defer res.Body.Close()
+	body, _ := ioutil.ReadAll(res.Body)
+	var rs = new(NasaResponse)
+	json.Unmarshal(body, &rs)
+
+	botImageMessage := SendPhoto{
+		ChatId:  chatId,
+		Photo:   rs.Url,
+		Caption: rs.Explanation,
+	}
+	return botImageMessage
+}
+
 func InitConfig() error {
 	viper.AddConfigPath("configs")
 	viper.SetConfigName("config")

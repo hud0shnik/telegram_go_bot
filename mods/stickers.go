@@ -360,5 +360,5 @@ func GenerateRandomSticker() string {
 		"CAACAgIAAxkBAAIIKWFq5O--Gjn4pydW7DIuNzAF7P6BAAKkDwAClDVpSS6wuQZe7aKjIQQ",
 	}
 
-	return stickers[Coin(len(stickers))]
+	return stickers[Random(len(stickers))]
 }
