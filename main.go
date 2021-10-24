@@ -152,6 +152,7 @@ func respond(botUrl string, update mods.Update) error {
 			sendMsg(mods.Ball8())
 			return nil
 		}
+
 		sendMsg("OwO")
 		return nil
 	}

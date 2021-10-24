@@ -60,11 +60,8 @@ type NasaResponse struct {
 }
 
 type MemeResponse struct {
-	PostLink string `json:"postLink"`
-	Title    string `json:"title"`
-	Url      string `json:"url"`
-	Spoiler  bool   `json:"spoiler"`
-	Nsfw     bool   `json:"nsfw"`
+	Title string `json:"title"`
+	Url   string `json:"url"`
 }
 
 func Help() string {
@@ -81,7 +78,7 @@ func Dice(runeMsg []rune) string {
 	} else {
 		num = MyAtoi(string(runeMsg[1:]))
 	}
-	if num <= 0 {
+	if num < 1 {
 		return "как я по твоему кину такой кубик? Через четвёртое пространство?🤨"
 	}
 	if num == 10 {
@@ -204,7 +201,6 @@ func GetFromReddit(chatId int, subj string) SendPhoto {
 
 	if err != nil {
 		fmt.Println("Meme API error: ", err)
-		fmt.Println(err)
 	}
 
 	defer res.Body.Close()
@@ -228,7 +224,6 @@ func GetAstronomyPictureoftheDay(chatId int) SendPhoto {
 
 	if err != nil {
 		fmt.Println("Nasa API error: ", err)
-		fmt.Println(err)
 	}
 	defer res.Body.Close()
 	body, _ := ioutil.ReadAll(res.Body)
