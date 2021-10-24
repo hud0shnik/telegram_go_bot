@@ -199,8 +199,13 @@ func GetFromReddit(chatId int, subj string) SendPhoto {
 	req, _ := http.NewRequest("GET", url, nil)
 	res, err := http.DefaultClient.Do(req)
 
-	if err != nil {
+	if err == nil {
 		fmt.Println("Meme API error: ", err)
+		return SendPhoto{
+			ChatId:  chatId,
+			Photo:   "",
+			Caption: "Meme API error",
+		}
 	}
 
 	defer res.Body.Close()
@@ -224,6 +229,11 @@ func GetAstronomyPictureoftheDay(chatId int) SendPhoto {
 
 	if err != nil {
 		fmt.Println("Nasa API error: ", err)
+		return SendPhoto{
+			ChatId:  chatId,
+			Photo:   "",
+			Caption: "Nasa API error",
+		}
 	}
 	defer res.Body.Close()
 	body, _ := ioutil.ReadAll(res.Body)

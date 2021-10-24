@@ -138,7 +138,7 @@ func GetWeather() string {
 	}
 	res, err := os.Open("weather/weather.json")
 	if err != nil {
-		return "error1"
+		return "error"
 	}
 	defer res.Close()
 	weatherContent, _ := ioutil.ReadAll(res)
