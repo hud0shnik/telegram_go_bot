@@ -199,7 +199,7 @@ func GetFromReddit(chatId int, subj string) SendPhoto {
 	req, _ := http.NewRequest("GET", url, nil)
 	res, err := http.DefaultClient.Do(req)
 
-	if err == nil {
+	if err != nil {
 		fmt.Println("Meme API error: ", err)
 		return SendPhoto{
 			ChatId:  chatId,
