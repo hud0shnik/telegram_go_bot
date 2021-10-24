@@ -7,6 +7,7 @@ import (
 	"math/rand"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/spf13/viper"
@@ -53,9 +54,18 @@ type SendPhoto struct {
 	Photo   string `json:"photo"`
 	Caption string `json:"caption"`
 }
+
 type NasaResponse struct {
 	Explanation string `json:"explanation"`
 	Url         string `json:"url"`
+}
+
+type MemeResponse struct {
+	PostLink string `json:"postLink"`
+	Title    string `json:"title"`
+	Url      string `json:"url"`
+	Spoiler  bool   `json:"spoiler"`
+	Nsfw     bool   `json:"nsfw"`
 }
 
 func Help() string {
@@ -177,6 +187,34 @@ func Coin() string {
 		return "Орёл"
 	}
 	return "Решка"
+}
+
+func GetMeme(chatId int) SendPhoto {
+	InitConfig()
+	url := "https://meme-api.herokuapp.com/gimme"
+	req, _ := http.NewRequest("GET", url, nil)
+	res, err := http.DefaultClient.Do(req)
+
+	if err != nil {
+		fmt.Println("Meme API error: ", err)
+		fmt.Println(err)
+	}
+
+	defer res.Body.Close()
+	body, _ := ioutil.ReadAll(res.Body)
+	var rs = new(MemeResponse)
+	json.Unmarshal(body, &rs)
+
+	if strings.ToLower(rs.Title) == "me_irl" || strings.ToLower(rs.Title) == "me-irl" {
+		rs.Title = ""
+	}
+
+	botImageMessage := SendPhoto{
+		ChatId:  chatId,
+		Photo:   rs.Url,
+		Caption: rs.Title,
+	}
+	return botImageMessage
 }
 
 func GetAstronomyPictureoftheDay(chatId int) SendPhoto {

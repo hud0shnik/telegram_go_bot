@@ -124,6 +124,9 @@ func respond(botUrl string, update mods.Update) error {
 		case "/nasa":
 			sendPict(mods.GetAstronomyPictureoftheDay(update.Message.Chat.ChatId))
 			return nil
+		case "/meme":
+			sendPict(mods.GetMeme(update.Message.Chat.ChatId))
+			return nil
 		case "молодец", "спасибо", "харош", "хорош":
 			sendMsg("Стараюсь UwU")
 			return nil
