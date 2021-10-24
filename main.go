@@ -130,6 +130,9 @@ func respond(botUrl string, update mods.Update) error {
 		case "/parrot":
 			sendPict(mods.GetFromReddit(update.Message.Chat.ChatId, "parrot"))
 			return nil
+		case "/cat":
+			sendPict(mods.GetFromReddit(update.Message.Chat.ChatId, "cat"))
+			return nil
 		case "молодец", "спасибо", "харош", "хорош":
 			sendMsg("Стараюсь UwU")
 			return nil

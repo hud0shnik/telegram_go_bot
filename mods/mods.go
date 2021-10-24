@@ -7,7 +7,6 @@ import (
 	"math/rand"
 	"net/http"
 	"strconv"
-	"strings"
 	"time"
 
 	"github.com/spf13/viper"
@@ -70,8 +69,9 @@ type MemeResponse struct {
 
 func Help() string {
 	return "Привет👋🏻, вот список команд:\n\n/weather - показать погоду на Ольховой\n\n/nasa - картинка дня от Nasa" +
-		"\n\n/d20 - кинуть д20, вместо 20 можно поставить любое число\n\n/coin - подброшу монетку" +
-		"\n\nМожешь позадовать вопросы, я на них отвечу"
+		"\n\n/d20 - кинуть д20, вместо 20 можно поставить любое число\n\n/coin - подбросить монетку" +
+		"\n\n/meme - мем с реддита (смотреть на свой страх и риск, я за этот контент не отвечаю 😅)\n\n/cat и /parrot - картинка кота или попугая " +
+		"\n\nТакже можешь позадовать вопросы, я на них отвечу 🙃"
 }
 
 func Dice(runeMsg []rune) string {
@@ -190,15 +190,15 @@ func Coin() string {
 }
 
 func GetFromReddit(chatId int, subj string) SendPhoto {
-	url := ""
+	url := "https://meme-api.herokuapp.com/gimme/space"
 	switch subj {
 	case "meme":
 		url = "https://meme-api.herokuapp.com/gimme"
 	case "parrot":
 		url = "https://meme-api.herokuapp.com/gimme/parrots"
-
+	case "cat":
+		url = "https://meme-api.herokuapp.com/gimme/cats"
 	}
-	//url := "https://meme-api.herokuapp.com/gimme/parrots"
 	req, _ := http.NewRequest("GET", url, nil)
 	res, err := http.DefaultClient.Do(req)
 
@@ -211,10 +211,6 @@ func GetFromReddit(chatId int, subj string) SendPhoto {
 	body, _ := ioutil.ReadAll(res.Body)
 	var rs = new(MemeResponse)
 	json.Unmarshal(body, &rs)
-
-	if strings.ToLower(rs.Title) == "me_irl" || strings.ToLower(rs.Title) == "me-irl" {
-		rs.Title = ""
-	}
 
 	botImageMessage := SendPhoto{
 		ChatId:  chatId,
