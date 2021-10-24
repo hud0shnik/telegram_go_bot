@@ -189,9 +189,16 @@ func Coin() string {
 	return "Решка"
 }
 
-func GetMeme(chatId int) SendPhoto {
-	InitConfig()
-	url := "https://meme-api.herokuapp.com/gimme"
+func GetFromReddit(chatId int, subj string) SendPhoto {
+	url := ""
+	switch subj {
+	case "meme":
+		url = "https://meme-api.herokuapp.com/gimme"
+	case "parrot":
+		url = "https://meme-api.herokuapp.com/gimme/parrots"
+
+	}
+	//url := "https://meme-api.herokuapp.com/gimme/parrots"
 	req, _ := http.NewRequest("GET", url, nil)
 	res, err := http.DefaultClient.Do(req)
 
