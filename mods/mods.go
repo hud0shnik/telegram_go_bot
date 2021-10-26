@@ -59,9 +59,11 @@ type NasaResponse struct {
 	Url         string `json:"url"`
 }
 
-type MemeResponse struct {
-	Title string `json:"title"`
-	Url   string `json:"url"`
+type RedditResponse struct {
+	Title   string `json:"title"`
+	Url     string `json:"url"`
+	Nsfw    bool   `json:"nsfw"`
+	Spoiler bool   `json:"spoiler"`
 }
 
 func Help() string {
@@ -187,7 +189,7 @@ func Coin() string {
 }
 
 func GetFromReddit(chatId int, subj string) SendPhoto {
-	url := "https://meme-api.herokuapp.com/gimme/space"
+	var url string
 	switch subj {
 	case "meme":
 		url = "https://meme-api.herokuapp.com/gimme"
@@ -195,6 +197,8 @@ func GetFromReddit(chatId int, subj string) SendPhoto {
 		url = "https://meme-api.herokuapp.com/gimme/parrots"
 	case "cat":
 		url = "https://meme-api.herokuapp.com/gimme/cats"
+	default:
+		url = "https://meme-api.herokuapp.com/gimme/space"
 	}
 	req, _ := http.NewRequest("GET", url, nil)
 	res, err := http.DefaultClient.Do(req)
@@ -203,21 +207,27 @@ func GetFromReddit(chatId int, subj string) SendPhoto {
 		fmt.Println("Meme API error: ", err)
 		return SendPhoto{
 			ChatId:  chatId,
-			Photo:   "",
+			Photo:   "https://belikebill.ga/billgen-API.php?default=1",
 			Caption: "Meme API error",
 		}
 	}
 
 	defer res.Body.Close()
 	body, _ := ioutil.ReadAll(res.Body)
-	var rs = new(MemeResponse)
+	var rs = new(RedditResponse)
 	json.Unmarshal(body, &rs)
+
+	if rs.Nsfw || rs.Spoiler {
+		rs.Url = "https://belikebill.ga/billgen-API.php?default=1"
+		rs.Title = "Мем оказался со спойлером или nsfw-контентом, поэтому вместо него вот тебе картинка с Биллом"
+	}
 
 	botImageMessage := SendPhoto{
 		ChatId:  chatId,
 		Photo:   rs.Url,
 		Caption: rs.Title,
 	}
+
 	return botImageMessage
 }
 
