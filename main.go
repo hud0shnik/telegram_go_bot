@@ -115,11 +115,9 @@ func respond(botUrl string, update mods.Update) error {
 		case "/weather", "w":
 			sendMsg(mods.GetWeather())
 			return nil
-		case "/coin":
-			sendMsg(mods.Coin())
-			return nil
-		case "/start", "/help":
-			sendMsg(mods.Help())
+		case "/crypto":
+			sendMsg(mods.GetCryptoData("SHIBBUSD") + mods.GetCryptoData("BTCUSDT") + mods.GetCryptoData("ETHUSDT"))
+			sendStck(mods.GenerateRandomShibaSticker())
 			return nil
 		case "/nasa":
 			sendPict(mods.GetAstronomyPictureoftheDay(update.Message.Chat.ChatId))
@@ -136,12 +134,14 @@ func respond(botUrl string, update mods.Update) error {
 		case "молодец", "спасибо", "харош", "хорош":
 			sendMsg("Стараюсь UwU")
 			return nil
+		case "/coin":
+			sendMsg(mods.Coin())
+			return nil
+		case "/start", "/help":
+			sendMsg(mods.Help())
+			return nil
 		case "owo":
 			sendMsg("UwU")
-			return nil
-		case "/crypto":
-			sendMsg(mods.GetCryptoData("SHIBBUSD") + mods.GetCryptoData("BTCUSDT"))
-			sendStck(mods.GenerateRandomShibaSticker())
 			return nil
 		}
 
