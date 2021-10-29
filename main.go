@@ -115,7 +115,7 @@ func respond(botUrl string, update mods.Update) error {
 		case "/weather", "w":
 			sendMsg(mods.GetWeather())
 			return nil
-		case "/coin", "coin":
+		case "/coin":
 			sendMsg(mods.Coin())
 			return nil
 		case "/start", "/help":
@@ -138,6 +138,10 @@ func respond(botUrl string, update mods.Update) error {
 			return nil
 		case "owo":
 			sendMsg("UwU")
+			return nil
+		case "/crypto":
+			sendMsg(mods.GetCryptoData("SHIBBUSD") + mods.GetCryptoData("BTCUSDT"))
+			sendStck(mods.GenerateRandomShibaSticker())
 			return nil
 		}
 

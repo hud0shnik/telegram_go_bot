@@ -66,10 +66,38 @@ type RedditResponse struct {
 	Spoiler bool   `json:"spoiler"`
 }
 
+type CryptoData struct {
+	Symbol        string `json:"symbol"`
+	ChangePercent string `json:"priceChangePercent"`
+	LastPrice     string `json:"lastPrice"`
+}
+
+func GetCryptoData(ticker string) string {
+	url := "https://api2.binance.com/api/v3/ticker/24hr?symbol=" + ticker
+	req, _ := http.NewRequest("GET", url, nil)
+	res, err := http.DefaultClient.Do(req)
+
+	if err != nil {
+		fmt.Println("Binance API error: ", err)
+		return "error"
+	}
+	defer res.Body.Close()
+	body, _ := ioutil.ReadAll(res.Body)
+	var rs = new(CryptoData)
+	json.Unmarshal(body, &rs)
+
+	fmt.Println(rs)
+	result := "За последние 24 часа курс " + rs.Symbol + " изменился на " + rs.ChangePercent + "%\n" +
+		"до отметки в " + rs.LastPrice + "$\n\n"
+
+	return result
+}
+
 func Help() string {
 	return "Привет👋🏻, вот список команд:\n\n/weather - показать погоду на Ольховой\n\n/nasa - картинка дня от Nasa" +
 		"\n\n/d20 - кинуть д20, вместо 20 можно поставить любое число\n\n/coin - подбросить монетку" +
 		"\n\n/meme - мем с реддита (смотреть на свой страх и риск, я за этот контент не отвечаю 😅)\n\n/cat и /parrot - картинка кота или попугая " +
+		"\n\n/crypto - узнать текущий курс двух криптовалют (SHIB и BTC)" +
 		"\n\nТакже можешь позадовать вопросы, я на них отвечу 🙃"
 }
 

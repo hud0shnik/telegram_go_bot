@@ -1,5 +1,15 @@
 package mods
 
+func GenerateRandomShibaSticker() string {
+	stickers := []string{
+		"CAACAgIAAxkBAAIM7mF7830wgmsiYJ5xHTEZjHgJ_YphAAKRAQACK15TC92mC_kqIE5PIQQ",
+		"CAACAgIAAxkBAAIM8mF785AXsxybm8IbstiOBA8vc7ujAAKHAQACK15TC3gn1k2Gf2lgIQQ",
+		"CAACAgIAAxkBAAIM8GF784o9uWLTWhdCbaiH3xebHlDpAAKKAQACK15TCxtDbMsAAT60RCEE",
+	}
+
+	return stickers[Random(len(stickers))]
+}
+
 func GenerateRandomSticker() string {
 	stickers := []string{
 		"CAACAgIAAxkBAAIFZ2Fq37v-ug4n2LKo4v2LhKFJvW3CAAI_FwACioP4AAEQrA1BEKSgZCEE",
