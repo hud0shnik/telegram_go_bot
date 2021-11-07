@@ -10,6 +10,7 @@ import (
 	"strconv"
 	"strings"
 	"tgBot/mods"
+	"time"
 
 	"github.com/spf13/viper"
 )
@@ -131,7 +132,7 @@ func respond(botUrl string, update mods.Update) error {
 		case "/cat":
 			sendPict(mods.GetFromReddit(update.Message.Chat.ChatId, "cat"))
 			return nil
-		case "молодец", "спасибо", "харош", "хорош":
+		case "молодец", "спасибо", "харош", "хорош", "неплохо":
 			sendMsg("Стараюсь UwU")
 			return nil
 		case "/coin":
@@ -139,6 +140,19 @@ func respond(botUrl string, update mods.Update) error {
 			return nil
 		case "/start", "/help":
 			sendMsg(mods.Help())
+			return nil
+		case "/time", "какой сегодня день?", "сколько времени?":
+			currentTime := time.Now()
+			if currentTime.Format("01-02") == "11-08" {
+				sendMsg("Сегодня день рождения самого умного человека во всей Москве - Дани!!!")
+				if update.Message.Chat.ChatId == viper.GetInt("DanyaChatId") {
+					sendMsg("🎂 C др, создатель!!! 🥳 🎉")
+				}
+				sendStck("CAACAgIAAxkBAAINzWGH6G2PfGPH2eRiI-x9fHQ_McDSAAJZAAOtZbwU9LtHF4nhLQkiBA")
+			} else {
+				sendMsg(currentTime.Format("15:04 2006-01-02"))
+				sendStck("CAACAgIAAxkBAAIN6GGH7YzD5gGxsI3XYzLICzRnQ0vWAAKQAgACVp29CjLSqXG41NC1IgQ")
+			}
 			return nil
 		case "owo":
 			sendMsg("UwU")
