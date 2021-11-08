@@ -9,7 +9,6 @@ import (
 	"strconv"
 	"strings"
 	"tgBot/mods"
-	"time"
 
 	"github.com/spf13/viper"
 )
@@ -69,13 +68,15 @@ func respond(botUrl string, update mods.Update) error {
 		msg := strings.ToLower(update.Message.Text)
 
 		switch msg {
-		case "/weather", "w":
+		case "/weather":
 			mods.SendMsg(botUrl, update, mods.GetWeather())
 			return nil
 		case "/crypto":
-			mods.SendMsg(botUrl, update, mods.GetCryptoData("SHIBBUSD")+mods.GetCryptoData("BTCUSDT")+mods.GetCryptoData("ETHUSDT"))
-			mods.SendStck(botUrl, update, mods.GenerateRandomShibaSticker())
+			mods.SendCryptoData(botUrl, update)
 			return nil
+		/*case "/nasa":
+		mods.SendPict(mods.GetAstronomyPictureoftheDay(update.Message.Chat.ChatId))
+		return nil*/
 		case "/meme":
 			mods.SendPict(botUrl, update, mods.GetFromReddit(update.Message.Chat.ChatId, "meme"))
 			return nil
@@ -95,17 +96,7 @@ func respond(botUrl string, update mods.Update) error {
 			mods.SendMsg(botUrl, update, mods.Help())
 			return nil
 		case "/time", "какой сегодня день?", "сколько времени?":
-			currentTime := time.Now().Add(3 * time.Hour)
-			if currentTime.Format("01-02") == "11-08" {
-				mods.SendMsg(botUrl, update, "Сегодня день рождения самого умного человека во всей Москве - Дани!!!")
-				if DanyaFlag {
-					mods.SendMsg(botUrl, update, "🎂 C др, создатель!!! 🥳 🎉")
-				}
-				mods.SendStck(botUrl, update, "CAACAgIAAxkBAAINzWGH6G2PfGPH2eRiI-x9fHQ_McDSAAJZAAOtZbwU9LtHF4nhLQkiBA")
-			} else {
-				mods.SendMsg(botUrl, update, currentTime.Format("15:04 2006-01-02"))
-				mods.SendStck(botUrl, update, "CAACAgIAAxkBAAIN6GGH7YzD5gGxsI3XYzLICzRnQ0vWAAKQAgACVp29CjLSqXG41NC1IgQ")
-			}
+			mods.GetTime(botUrl, update, DanyaFlag)
 			return nil
 		case "owo":
 			mods.SendMsg(botUrl, update, "UwU")

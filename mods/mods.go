@@ -271,7 +271,7 @@ func GetFromReddit(chatId int, subj string) SendPhoto {
 	return botImageMessage
 }
 
-func GetAstronomyPictureoftheDay(chatId int) SendPhoto {
+/*func GetAstronomyPictureoftheDay(chatId int) SendPhoto {
 	InitConfig()
 	url := "https://api.nasa.gov/planetary/apod?api_key=" + viper.GetString("nasaToken")
 	req, _ := http.NewRequest("GET", url, nil)
@@ -296,6 +296,25 @@ func GetAstronomyPictureoftheDay(chatId int) SendPhoto {
 		Caption: rs.Explanation,
 	}
 	return botImageMessage
+}*/
+
+func SendCryptoData(botUrl string, update Update) {
+	SendMsg(botUrl, update, GetCryptoData("SHIBBUSD")+GetCryptoData("BTCUSDT")+GetCryptoData("ETHUSDT"))
+	SendStck(botUrl, update, GenerateRandomShibaSticker())
+}
+
+func GetTime(botUrl string, update Update, DanyaFlag bool) {
+	currentTime := time.Now().Add(3 * time.Hour)
+	if currentTime.Format("01-02") == "11-08" {
+		SendMsg(botUrl, update, "Сегодня день рождения самого умного человека во всей Москве - Дани!!!")
+		if DanyaFlag {
+			SendMsg(botUrl, update, "🎂 C др, создатель!!! 🥳 🎉")
+		}
+		SendStck(botUrl, update, "CAACAgIAAxkBAAINzWGH6G2PfGPH2eRiI-x9fHQ_McDSAAJZAAOtZbwU9LtHF4nhLQkiBA")
+	} else {
+		SendMsg(botUrl, update, currentTime.Format("15:04 2006-01-02"))
+		SendStck(botUrl, update, "CAACAgIAAxkBAAIN6GGH7YzD5gGxsI3XYzLICzRnQ0vWAAKQAgACVp29CjLSqXG41NC1IgQ")
+	}
 }
 
 func InitConfig() error {
