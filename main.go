@@ -142,7 +142,7 @@ func respond(botUrl string, update mods.Update) error {
 			sendMsg(mods.Help())
 			return nil
 		case "/time", "какой сегодня день?", "сколько времени?":
-			currentTime := time.Now()
+			currentTime := time.Now().Add(3 * time.Hour)
 			if currentTime.Format("01-02") == "11-08" {
 				sendMsg("Сегодня день рождения самого умного человека во всей Москве - Дани!!!")
 				if update.Message.Chat.ChatId == viper.GetInt("DanyaChatId") {
