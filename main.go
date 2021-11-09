@@ -74,9 +74,6 @@ func respond(botUrl string, update mods.Update) error {
 		case "/crypto":
 			mods.SendCryptoData(botUrl, update)
 			return nil
-		/*case "/nasa":
-		mods.SendPict(mods.GetAstronomyPictureoftheDay(update.Message.Chat.ChatId))
-		return nil*/
 		case "/meme":
 			mods.SendPict(botUrl, update, mods.GetFromReddit(update.Message.Chat.ChatId, "meme"))
 			return nil
@@ -98,6 +95,9 @@ func respond(botUrl string, update mods.Update) error {
 		case "/time", "какой сегодня день?", "сколько времени?":
 			mods.GetTime(botUrl, update, DanyaFlag)
 			return nil
+		/*case "/nasa":
+		mods.SendAstronomyPictureoftheDay(botUrl, update)
+		return nil*/
 		case "owo":
 			mods.SendMsg(botUrl, update, "UwU")
 			return nil

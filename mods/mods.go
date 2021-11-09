@@ -56,7 +56,7 @@ type SendPhoto struct {
 
 type NasaResponse struct {
 	Explanation string `json:"explanation"`
-	Url         string `json:"url"`
+	Url         string `json:"hdurl"`
 }
 
 type RedditResponse struct {
@@ -105,7 +105,7 @@ func Help() string {
 	return "Привет👋🏻, вот список команд:" +
 		"\n\n/weather - показать погоду на Ольховой" +
 		"\n\n/crypto - узнать текущий курс трёх криптовалют (SHIB, BTC и ETH)" +
-		"\n\n/nasa - картинка дня от Nasa" +
+		"\n\n/time - узнать какое сейчас время" +
 		"\n\n/d20 - кинуть д20, вместо 20 можно поставить любое число" +
 		"\n\n/coin - подбросить монетку" +
 		"\n\n/meme - мем с реддита (смотреть на свой страх и риск, я за этот контент не отвечаю 😅)" +
@@ -271,7 +271,8 @@ func GetFromReddit(chatId int, subj string) SendPhoto {
 	return botImageMessage
 }
 
-/*func GetAstronomyPictureoftheDay(chatId int) SendPhoto {
+/*
+func SendAstronomyPictureoftheDay(botUrl string, update Update) error {
 	InitConfig()
 	url := "https://api.nasa.gov/planetary/apod?api_key=" + viper.GetString("nasaToken")
 	req, _ := http.NewRequest("GET", url, nil)
@@ -279,23 +280,22 @@ func GetFromReddit(chatId int, subj string) SendPhoto {
 
 	if err != nil {
 		fmt.Println("Nasa API error: ", err)
-		return SendPhoto{
-			ChatId:  chatId,
-			Photo:   "",
-			Caption: "Nasa API error",
-		}
+		return err
 	}
+
 	defer res.Body.Close()
 	body, _ := ioutil.ReadAll(res.Body)
 	var rs = new(NasaResponse)
 	json.Unmarshal(body, &rs)
 
 	botImageMessage := SendPhoto{
-		ChatId:  chatId,
+		ChatId:  update.Message.Chat.ChatId,
 		Photo:   rs.Url,
 		Caption: rs.Explanation,
 	}
-	return botImageMessage
+
+	SendPict(botUrl, update, botImageMessage)
+	return nil
 }*/
 
 func SendCryptoData(botUrl string, update Update) {
