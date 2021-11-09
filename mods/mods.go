@@ -113,12 +113,10 @@ func Help() string {
 		"\n\nТакже можешь позадовать вопросы, я на них отвечу 🙃"
 }
 
-func Dice(runeMsg []rune) string {
-	var num int
-	if runeMsg[0] == '/' {
-		num = MyAtoi(string(runeMsg[2:]))
-	} else {
-		num = MyAtoi(string(runeMsg[1:]))
+func Dice(msg string) string {
+	num, err := strconv.Atoi(msg[2:])
+	if err != nil {
+		return "Это вообще кубик?🤨"
 	}
 	if num < 1 {
 		return "как я по твоему кину такой кубик? Через четвёртое пространство?🤨"
@@ -130,90 +128,20 @@ func Dice(runeMsg []rune) string {
 }
 
 func Ball8() string {
-	rand.Seed(time.Now().Unix())
 	answers := []string{
-		"Да, конечно",
+		"Да, конечно!",
 		"100%",
-		"Да",
+		"Да.",
 		"100000000%",
-		"Несомненно",
-		//
-		"Мб",
-		"50/50",
-		"Скорее да, чем нет",
-		"Скорее нет, чем да",
-		//
+		"Точно да!",
 		"Нет, пфф",
-		"Да нееееееееееет",
-		"Точно нет",
-		"0%",
-		"Нет",
+		"Нееееееееееет",
+		"Точно нет!",
+		"Нет, нет, нет",
+		"Нет.",
 	}
 
-	return answers[rand.Intn(len(answers))]
-}
-
-func MyAtoi(s string) int {
-	max := int64(2 << 30)
-	signFlag := true
-	spaceFlag := true
-	sign := 1
-	digits := []int{}
-
-	for _, char := range s {
-		if char == ' ' && spaceFlag {
-			continue
-		}
-		if signFlag {
-			if char == '+' {
-				signFlag = false
-				spaceFlag = false
-				continue
-			} else if char == '-' {
-				sign = -1
-				signFlag = false
-				spaceFlag = false
-				continue
-			}
-		}
-		if char < '0' || char > '9' {
-			break
-		}
-		spaceFlag, signFlag = false, false
-		digits = append(digits, int(char-48))
-	}
-
-	var result, place int64
-	place, result = 1, 0
-	last := -1
-
-	for i, j := range digits {
-		if j == 0 {
-			last = i
-		} else {
-			break
-		}
-	}
-	if last > -1 {
-		digits = digits[last+1:]
-	}
-
-	var rtnMax int64
-	if sign > 0 {
-		rtnMax = max - 1
-	} else {
-		rtnMax = max
-	}
-
-	digitsLen := len(digits)
-	for i := digitsLen - 1; i >= 0; i-- {
-		result += int64(digits[i]) * place
-		place *= 10
-		if digitsLen-i > 10 || result > rtnMax {
-			return int(int64(sign) * rtnMax)
-		}
-	}
-	return int(result * int64(sign))
+	return answers[Random(len(answers))]
 }
 
 func Random(n int) int {

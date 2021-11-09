@@ -104,10 +104,9 @@ func respond(botUrl string, update mods.Update) error {
 		}
 
 		lenMsg := len(msg)
-		runeMsg := []rune(msg)
 
-		if lenMsg > 1 && (msg[0] == 'd' || msg[:2] == "/d") {
-			mods.SendMsg(botUrl, update, mods.Dice(runeMsg))
+		if lenMsg > 1 && msg[:2] == "/d" {
+			mods.SendMsg(botUrl, update, mods.Dice(msg))
 			return nil
 		}
 		if lenMsg > 3 && ((msg[lenMsg-1] == '?') || (msg[lenMsg-2] == '?')) {
