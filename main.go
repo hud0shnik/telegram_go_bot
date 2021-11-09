@@ -75,13 +75,13 @@ func respond(botUrl string, update mods.Update) error {
 			mods.SendCryptoData(botUrl, update)
 			return nil
 		case "/meme":
-			mods.SendPict(botUrl, update, mods.GetFromReddit(update.Message.Chat.ChatId, "meme"))
+			mods.SendFromReddit(botUrl, update, "")
 			return nil
 		case "/parrot":
-			mods.SendPict(botUrl, update, mods.GetFromReddit(update.Message.Chat.ChatId, "parrot"))
+			mods.SendFromReddit(botUrl, update, "parrots")
 			return nil
 		case "/cat":
-			mods.SendPict(botUrl, update, mods.GetFromReddit(update.Message.Chat.ChatId, "cat"))
+			mods.SendFromReddit(botUrl, update, "cats")
 			return nil
 		case "молодец", "спасибо", "харош", "хорош", "неплохо":
 			mods.SendMsg(botUrl, update, "Стараюсь UwU")
@@ -105,10 +105,11 @@ func respond(botUrl string, update mods.Update) error {
 
 		lenMsg := len(msg)
 
-		if lenMsg > 1 && msg[:2] == "/d" {
+		if msg[:2] == "/d" {
 			mods.SendMsg(botUrl, update, mods.Dice(msg))
 			return nil
 		}
+
 		if lenMsg > 3 && ((msg[lenMsg-1] == '?') || (msg[lenMsg-2] == '?')) {
 			mods.SendMsg(botUrl, update, mods.Ball8())
 			return nil

@@ -156,28 +156,15 @@ func Coin() string {
 	return "Решка"
 }
 
-func GetFromReddit(chatId int, subj string) SendPhoto {
-	var url string
-	switch subj {
-	case "meme":
-		url = "https://meme-api.herokuapp.com/gimme"
-	case "parrot":
-		url = "https://meme-api.herokuapp.com/gimme/parrots"
-	case "cat":
-		url = "https://meme-api.herokuapp.com/gimme/cats"
-	default:
-		url = "https://meme-api.herokuapp.com/gimme/space"
-	}
+func SendFromReddit(botUrl string, update Update, subj string) error {
+
+	url := "https://meme-api.herokuapp.com/gimme/" + subj
 	req, _ := http.NewRequest("GET", url, nil)
 	res, err := http.DefaultClient.Do(req)
 
 	if err != nil {
 		fmt.Println("Meme API error: ", err)
-		return SendPhoto{
-			ChatId:  chatId,
-			Photo:   "https://belikebill.ga/billgen-API.php?default=1",
-			Caption: "Meme API error",
-		}
+		return err
 	}
 
 	defer res.Body.Close()
@@ -187,16 +174,17 @@ func GetFromReddit(chatId int, subj string) SendPhoto {
 
 	if rs.Nsfw || rs.Spoiler {
 		rs.Url = "https://belikebill.ga/billgen-API.php?default=1"
-		rs.Title = "Мем оказался со спойлером или nsfw-контентом, поэтому вместо него вот тебе картинка с Биллом"
+		rs.Title = "Мем оказался со спойлером или nsfw-контентом, поэтому вместо него вот тебе картинка с Биллом :^)"
 	}
 
 	botImageMessage := SendPhoto{
-		ChatId:  chatId,
+		ChatId:  update.Message.Chat.ChatId,
 		Photo:   rs.Url,
 		Caption: rs.Title,
 	}
 
-	return botImageMessage
+	SendPict(botUrl, update, botImageMessage)
+	return nil
 }
 
 /*
