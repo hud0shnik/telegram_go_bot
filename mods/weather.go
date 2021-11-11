@@ -7,12 +7,40 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"time"
 
 	"github.com/spf13/viper"
 )
 
 type WeatherAPIResponse struct {
 	Current Current `json:"current"`
+	Daily   []Day   `json:"daily"`
+}
+
+type Day struct {
+	Dt         int64         `json:"dt"`
+	Sunrise    int           `json:"sunrise"`
+	Sunset     int           `json:"sunset"`
+	Temp       Temp          `json:"temp"`
+	Feels_like Temp          `json:"feels_like"`
+	Wind_speed float32       `json:"wind_speed"`
+	Weather    []WeatherInfo `json:"weather"`
+	Humidity   int           `json:"humidity"`
+}
+
+type Temp struct {
+	/*
+		"night 0,1,2,3,4,5",
+		"morning 6,7,8,9,10,11",
+		"day 12,13,14,15,16,17",
+		"evening 18,19,20,21,22,23"
+	*/
+	Day     float32 `json:"day"`
+	Night   float32 `json:"night"`
+	Evening float32 `json:"eve"`
+	Morning float32 `json:"morn"`
+	Min     float32 `json:"min"`
+	Max     float32 `json:"max"`
 }
 
 type Current struct {
@@ -54,10 +82,20 @@ func GetWeather() string {
 	file.WriteString(string(body))
 	fmt.Println("weather.json Updated!")
 
-	return "Погода на Ольховой:\n \n" +
-		"Сегодня - " + rs.Current.Weather[0].Description +
-		"\n🌡Температура: " + strconv.Itoa(int(rs.Current.Temp)) +
-		"\n🤔Ощущается как: " + strconv.Itoa(int(rs.Current.Feels_like)) + "°" +
-		"\n💨Ветер: " + fmt.Sprintf("%v", rs.Current.Wind_speed) + " м/с" +
-		"\n💧Влажность воздуха: " + strconv.Itoa(rs.Current.Humidity) + "%"
+	n := 1
+	t := time.Unix(rs.Daily[n].Dt, 0)
+
+	return "Погода на " + t.Format("02/01/2006") + ":\n \n" +
+		"Погода - " + rs.Daily[n].Weather[0].Description +
+		"\n🌡Температура: " + strconv.Itoa(int(rs.Daily[n].Temp.Morning)) +
+		"\n🤔Ощущается как: " + strconv.Itoa(int(rs.Daily[n].Feels_like.Morning)) + "°" +
+		"\n💨Ветер: " + fmt.Sprintf("%v", rs.Daily[n].Wind_speed) + " м/с" +
+		"\n💧Влажность воздуха: " + strconv.Itoa(rs.Daily[n].Humidity) + "%"
+
+	/*"Погода на Ольховой:\n \n" +
+	"Сегодня - " + rs.Current.Weather[0].Description +
+	"\n🌡Температура: " + strconv.Itoa(int(rs.Current.Temp)) +
+	"\n🤔Ощущается как: " + strconv.Itoa(int(rs.Current.Feels_like)) + "°" +
+	"\n💨Ветер: " + fmt.Sprintf("%v", rs.Current.Wind_speed) + " м/с" +
+	"\n💧Влажность воздуха: " + strconv.Itoa(rs.Current.Humidity) + "%"*/
 }
