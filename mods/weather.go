@@ -74,7 +74,7 @@ func SendDailyWeather(botUrl string, update Update, days int) error {
 
 	for n := 1; n < days+1; n++ {
 		result := "Погода на " + time.Unix(rs.Daily[n].Dt, 0).Format("02/01/2006") + ":\n \n" +
-			"На улице: " + rs.Daily[n].Weather[0].Description +
+			"На улице " + rs.Daily[n].Weather[0].Description +
 			"\n🌡Температура: " + strconv.Itoa(int(rs.Daily[n].Temp.Morning)) + "°" + " -> " + strconv.Itoa(int(rs.Daily[n].Temp.Evening)) + "°" +
 			"\n🤔Ощущается как: " + strconv.Itoa(int(rs.Daily[n].Feels_like.Morning)) + "°" + " -> " + strconv.Itoa(int(rs.Daily[n].Feels_like.Evening)) + "°" +
 			"\n💨Ветер: " + strconv.Itoa(int(rs.Daily[n].Wind_speed)) + " м/с" +
@@ -100,7 +100,7 @@ func SendCurrentWeather(botUrl string, update Update) error {
 	json.Unmarshal(body, &rs)
 
 	result := "Погода на сегодня" + ":\n \n" +
-		"На улице - " + rs.Current.Weather[0].Description +
+		"На улице " + rs.Current.Weather[0].Description +
 		"\n🌡Температура: " + strconv.Itoa(int(rs.Current.Temp)) +
 		"\n🤔Ощущается как: " + strconv.Itoa(int(rs.Current.Feels_like)) + "°" +
 		"\n💨Ветер: " + strconv.Itoa(int(rs.Current.Wind_speed)) + " м/с" +
