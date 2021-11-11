@@ -59,7 +59,7 @@ type WeatherInfo struct {
 	Icon        string `json:"icon"`
 }
 
-func GetWeather() string {
+func SendWeather(botUrl string, update Update) error {
 	InitConfig()
 	fmt.Println("update weather ...")
 	file, err := os.Create("weather/weather.json")
@@ -73,7 +73,7 @@ func GetWeather() string {
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
 		fmt.Println("weather API error")
-		return "weather error"
+		return err
 	}
 	defer res.Body.Close()
 	body, _ := ioutil.ReadAll(res.Body)
@@ -83,19 +83,14 @@ func GetWeather() string {
 	fmt.Println("weather.json Updated!")
 
 	n := 1
-	t := time.Unix(rs.Daily[n].Dt, 0)
 
-	return "Погода на " + t.Format("02/01/2006") + ":\n \n" +
+	result := "Погода на " + time.Unix(rs.Daily[n].Dt, 0).Format("02/01/2006") + ":\n \n" +
 		"Погода - " + rs.Daily[n].Weather[0].Description +
 		"\n🌡Температура: " + strconv.Itoa(int(rs.Daily[n].Temp.Morning)) +
 		"\n🤔Ощущается как: " + strconv.Itoa(int(rs.Daily[n].Feels_like.Morning)) + "°" +
 		"\n💨Ветер: " + fmt.Sprintf("%v", rs.Daily[n].Wind_speed) + " м/с" +
 		"\n💧Влажность воздуха: " + strconv.Itoa(rs.Daily[n].Humidity) + "%"
 
-	/*"Погода на Ольховой:\n \n" +
-	"Сегодня - " + rs.Current.Weather[0].Description +
-	"\n🌡Температура: " + strconv.Itoa(int(rs.Current.Temp)) +
-	"\n🤔Ощущается как: " + strconv.Itoa(int(rs.Current.Feels_like)) + "°" +
-	"\n💨Ветер: " + fmt.Sprintf("%v", rs.Current.Wind_speed) + " м/с" +
-	"\n💧Влажность воздуха: " + strconv.Itoa(rs.Current.Humidity) + "%"*/
+	SendMsg(botUrl, update, result)
+	return nil
 }

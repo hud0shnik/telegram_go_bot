@@ -69,7 +69,7 @@ func respond(botUrl string, update mods.Update) error {
 
 		switch msg {
 		case "/weather":
-			mods.SendMsg(botUrl, update, mods.GetWeather())
+			mods.SendWeather(botUrl, update)
 			return nil
 		case "/crypto":
 			mods.SendCryptoData(botUrl, update)
