@@ -54,7 +54,10 @@ func GetWeather() string {
 	file.WriteString(string(body))
 	fmt.Println("weather.json Updated!")
 
-	fmt.Println(rs)
-
-	return strconv.Itoa(int(rs.Current.Feels_like))
+	return "Погода на Ольховой:\n \n" +
+		"Сегодня - " + rs.Current.Weather[0].Description +
+		"\n🌡Температура: " + strconv.Itoa(int(rs.Current.Temp)) +
+		"\n🤔Ощущается как: " + strconv.Itoa(int(rs.Current.Feels_like)) + "°" +
+		"\n💨Ветер: " + fmt.Sprintf("%v", rs.Current.Wind_speed) + " м/с" +
+		"\n💧Влажность воздуха: " + strconv.Itoa(rs.Current.Humidity) + "%"
 }
