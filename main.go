@@ -69,9 +69,15 @@ func respond(botUrl string, update mods.Update) error {
 
 		switch msg {
 		case "/weather":
-			mods.SendDailyWeather(botUrl, update)
+			mods.SendDailyWeather(botUrl, update, 8)
 			return nil
-		case "/todayWeather":
+		case "/weather3":
+			mods.SendDailyWeather(botUrl, update, 3)
+			return nil
+		case "/weather5":
+			mods.SendDailyWeather(botUrl, update, 5)
+			return nil
+		case "/todayweather":
 			mods.SendCurrentWeather(botUrl, update)
 			return nil
 		case "/crypto":

@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"os"
 	"strconv"
 	"time"
 
@@ -59,15 +58,8 @@ type WeatherInfo struct {
 	Icon        string `json:"icon"`
 }
 
-func SendDailyWeather(botUrl string, update Update) error {
+func SendDailyWeather(botUrl string, update Update, days int) error {
 	InitConfig()
-	fmt.Println("update weather ...")
-	file, err := os.Create("weather/weather.json")
-	if err != nil {
-		fmt.Println("Unable to create file:", err)
-		os.Exit(1)
-	}
-	defer file.Close()
 	url := "https://api.openweathermap.org/data/2.5/onecall?lat=55.5692101&lon=37.4588852&lang=ru&exclude=minutely,alerts&units=metric&appid=" + viper.GetString("weatherToken")
 	req, _ := http.NewRequest("GET", url, nil)
 	res, err := http.DefaultClient.Do(req)
@@ -79,15 +71,13 @@ func SendDailyWeather(botUrl string, update Update) error {
 	body, _ := ioutil.ReadAll(res.Body)
 	var rs = new(WeatherAPIResponse)
 	json.Unmarshal(body, &rs)
-	file.WriteString(string(body))
-	fmt.Println("weather.json Updated!")
 
-	for n := 0; n < 8; n++ {
+	for n := 1; n < days+1; n++ {
 		result := "Погода на " + time.Unix(rs.Daily[n].Dt, 0).Format("02/01/2006") + ":\n \n" +
-			"Погода - " + rs.Daily[n].Weather[0].Description +
+			"На улице: " + rs.Daily[n].Weather[0].Description +
 			"\n🌡Температура: " + strconv.Itoa(int(rs.Daily[n].Temp.Morning)) + "°" + " -> " + strconv.Itoa(int(rs.Daily[n].Temp.Evening)) + "°" +
 			"\n🤔Ощущается как: " + strconv.Itoa(int(rs.Daily[n].Feels_like.Morning)) + "°" + " -> " + strconv.Itoa(int(rs.Daily[n].Feels_like.Evening)) + "°" +
-			"\n💨Ветер: " + fmt.Sprintf("%v", rs.Daily[n].Wind_speed) + " м/с" +
+			"\n💨Ветер: " + strconv.Itoa(int(rs.Daily[n].Wind_speed)) + " м/с" +
 			"\n💧Влажность воздуха: " + strconv.Itoa(rs.Daily[n].Humidity) + "%"
 
 		SendMsg(botUrl, update, result)
@@ -97,13 +87,6 @@ func SendDailyWeather(botUrl string, update Update) error {
 
 func SendCurrentWeather(botUrl string, update Update) error {
 	InitConfig()
-	fmt.Println("update weather ...")
-	file, err := os.Create("weather/weather.json")
-	if err != nil {
-		fmt.Println("Unable to create file:", err)
-		os.Exit(1)
-	}
-	defer file.Close()
 	url := "https://api.openweathermap.org/data/2.5/onecall?lat=55.5692101&lon=37.4588852&lang=ru&exclude=minutely,alerts&units=metric&appid=" + viper.GetString("weatherToken")
 	req, _ := http.NewRequest("GET", url, nil)
 	res, err := http.DefaultClient.Do(req)
@@ -115,14 +98,12 @@ func SendCurrentWeather(botUrl string, update Update) error {
 	body, _ := ioutil.ReadAll(res.Body)
 	var rs = new(WeatherAPIResponse)
 	json.Unmarshal(body, &rs)
-	file.WriteString(string(body))
-	fmt.Println("weather.json Updated!")
 
 	result := "Погода на сегодня" + ":\n \n" +
 		"На улице - " + rs.Current.Weather[0].Description +
 		"\n🌡Температура: " + strconv.Itoa(int(rs.Current.Temp)) +
 		"\n🤔Ощущается как: " + strconv.Itoa(int(rs.Current.Feels_like)) + "°" +
-		"\n💨Ветер: " + fmt.Sprintf("%v", rs.Current.Wind_speed) + " м/с" +
+		"\n💨Ветер: " + strconv.Itoa(int(rs.Current.Wind_speed)) + " м/с" +
 		"\n💧Влажность воздуха: " + strconv.Itoa(rs.Current.Humidity) + "%"
 
 	SendMsg(botUrl, update, result)
