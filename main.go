@@ -57,7 +57,7 @@ func respond(botUrl string, update mods.Update) error {
 	DanyaFlag := update.Message.Chat.ChatId == viper.GetInt("DanyaChatId")
 
 	if update.Message.Sticker.File_unique_id != "" {
-		mods.SendStck(botUrl, update, mods.GenerateRandomSticker())
+		mods.SendRandomSticker(botUrl, update)
 		return nil
 	}
 

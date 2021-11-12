@@ -177,7 +177,7 @@ func GetCryptoData(botUrl string, update Update, ticker string) error {
 }
 func SendCryptoData(botUrl string, update Update) {
 	GetCryptoData(botUrl, update, "SHIBBUSD")
-	SendStck(botUrl, update, GenerateRandomShibaSticker())
+	SendRandomShibaSticker(botUrl, update)
 }
 
 func GetTime(botUrl string, update Update, DanyaFlag bool) {
@@ -207,10 +207,10 @@ func Check(botUrl string, update Update, DanyaFlag bool) {
 		GetTime(botUrl, update, DanyaFlag)
 		SendMsg(botUrl, update, Dice("/d20"))
 		SendMsg(botUrl, update, Ball8())
-		SendStck(botUrl, update, GenerateRandomSticker())
+		SendRandomSticker(botUrl, update)
 		SendFromReddit(botUrl, update, "parrots")
 
-		for i := 1; i < 6; i++ {
+		for i := 1; i < 7; i++ {
 			SendErrorMessage(botUrl, update, i)
 		}
 
@@ -237,6 +237,9 @@ func SendErrorMessage(botUrl string, update Update, errorCode int) {
 		break
 	case 5:
 		result = "Ошибка работы метода SendMessage"
+		break
+	case 6:
+		result = "Ошибка работы stickers.json"
 		break
 	}
 	result += ", свяжитесь с моим создателем для устранения проблемы \n\nhttps://vk.com/hud0shnik\nhttps://vk.com/hud0shnik\nhttps://vk.com/hud0shnik"
