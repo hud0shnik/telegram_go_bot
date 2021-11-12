@@ -65,6 +65,7 @@ func SendDailyWeather(botUrl string, update Update, days int) error {
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
 		fmt.Println("weather API error")
+		SendErrorMessage(botUrl, update, 1)
 		return err
 	}
 	defer res.Body.Close()
@@ -92,6 +93,7 @@ func SendCurrentWeather(botUrl string, update Update) error {
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
 		fmt.Println("weather API error")
+		SendErrorMessage(botUrl, update, 1)
 		return err
 	}
 	defer res.Body.Close()

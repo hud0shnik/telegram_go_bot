@@ -29,10 +29,14 @@ func SendMsg(botUrl string, update Update, msg string) error {
 	}
 	buf, err := json.Marshal(botMessage)
 	if err != nil {
+		fmt.Println("Marshal json error: ", err)
+		SendErrorMessage(botUrl, update, 2)
 		return err
 	}
 	_, err = http.Post(botUrl+"/sendMessage", "application/json", bytes.NewBuffer(buf))
 	if err != nil {
+		fmt.Println("SendMessage method error: ", err)
+		SendErrorMessage(botUrl, update, 5)
 		return err
 	}
 	return nil
@@ -46,11 +50,13 @@ func SendStck(botUrl string, update Update, url string) error {
 	buf, err := json.Marshal(botStickerMessage)
 	if err != nil {
 		fmt.Println("Marshal json error: ", err)
+		SendErrorMessage(botUrl, update, 2)
 		return err
 	}
 	_, err = http.Post(botUrl+"/sendSticker", "application/json", bytes.NewBuffer(buf))
 	if err != nil {
 		fmt.Println("SendSticker method error: ", err)
+		SendErrorMessage(botUrl, update, 3)
 		return err
 	}
 	return nil
@@ -60,11 +66,13 @@ func SendPict(botUrl string, update Update, pic SendPhoto) error {
 	buf, err := json.Marshal(pic)
 	if err != nil {
 		fmt.Println("Marshal json error: ", err)
+		SendErrorMessage(botUrl, update, 2)
 		return err
 	}
 	_, err = http.Post(botUrl+"/sendPhoto", "application/json", bytes.NewBuffer(buf))
 	if err != nil {
 		fmt.Println("SendPhoto method error: ", err)
+		SendErrorMessage(botUrl, update, 4)
 		return err
 	}
 	return nil

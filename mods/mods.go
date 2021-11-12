@@ -63,7 +63,7 @@ func Help(botUrl string, update Update) {
 	SendMsg(botUrl, update, "Привет👋🏻, вот список команд:"+
 		"\n\n/weather - показать погоду на Ольховой"+
 		"\n\n/weather7 - показать погоду на 7 дней"+
-		"\n\n/crypto - узнать текущий курс трёх криптовалют (SHIB, BTC и ETH)"+
+		"\n\n/crypto - узнать текущий курс криптовалюты SHIB"+
 		"\n\n/time - узнать какое сейчас время"+
 		"\n\n/d20 - кинуть д20, вместо 20 можно поставить любое число"+
 		"\n\n/coin - подбросить монетку"+
@@ -116,13 +116,13 @@ func Coin() string {
 }
 
 func SendFromReddit(botUrl string, update Update, subj string) error {
-
 	url := "https://meme-api.herokuapp.com/gimme/" + subj
 	req, _ := http.NewRequest("GET", url, nil)
 	res, err := http.DefaultClient.Do(req)
 
 	if err != nil {
 		fmt.Println("Meme API error: ", err)
+		SendErrorMessage(botUrl, update, 1)
 		return err
 	}
 
@@ -153,8 +153,10 @@ func GetCryptoData(botUrl string, update Update, ticker string) error {
 
 	if err != nil {
 		fmt.Println("Binance API error: ", err)
+		SendErrorMessage(botUrl, update, 1)
 		return err
 	}
+
 	defer res.Body.Close()
 	body, _ := ioutil.ReadAll(res.Body)
 	var rs = new(CryptoResponse)
@@ -207,8 +209,36 @@ func Check(botUrl string, update Update, DanyaFlag bool) {
 		SendMsg(botUrl, update, Ball8())
 		SendStck(botUrl, update, GenerateRandomSticker())
 		SendFromReddit(botUrl, update, "parrots")
+
+		for i := 1; i < 6; i++ {
+			SendErrorMessage(botUrl, update, i)
+		}
+
 		fmt.Println("That's all!\tTime:", time.Since(start))
 		return
 	}
 	SendMsg(botUrl, update, "Error 403! Beep Bop... Forbidden! Access denied 🤖")
+}
+
+func SendErrorMessage(botUrl string, update Update, errorCode int) {
+	result := "err"
+	switch errorCode {
+	case 1:
+		result = "Ошибка работы API"
+		break
+	case 2:
+		result = "Ошибка работы json.Marshal()"
+		break
+	case 3:
+		result = "Ошибка работы метода SendSticker"
+		break
+	case 4:
+		result = "Ошибка работы метода SendPhoto"
+		break
+	case 5:
+		result = "Ошибка работы метода SendMessage"
+		break
+	}
+	result += ", свяжитесь с моим создателем для устранения проблемы \n\nhttps://vk.com/hud0shnik\nhttps://vk.com/hud0shnik\nhttps://vk.com/hud0shnik"
+	SendMsg(botUrl, update, result)
 }
