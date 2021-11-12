@@ -56,7 +56,7 @@ func getUpdates(botUrl string, offset int) ([]mods.Update, error) {
 func respond(botUrl string, update mods.Update) error {
 	DanyaFlag := update.Message.Chat.ChatId == viper.GetInt("DanyaChatId")
 
-	if update.Message.Sticker.File_unique_id != "" {
+	if update.Message.Sticker.File_id != "" {
 		mods.SendRandomSticker(botUrl, update)
 		return nil
 	}

@@ -18,11 +18,10 @@ type Update struct {
 }
 
 type Sticker struct {
-	File_id        string `json:"file_id"`
-	File_unique_id string `json:"file_unique_id"`
-	Emoji          string `json:"emoji"`
-	Is_animated    bool   `json:"is_animated"`
-	Set_name       string `json:"set_name"`
+	File_id     string `json:"file_id"`
+	Emoji       string `json:"emoji"`
+	Is_animated bool   `json:"is_animated"`
+	Set_name    string `json:"set_name"`
 }
 
 type Message struct {
