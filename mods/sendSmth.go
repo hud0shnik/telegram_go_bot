@@ -7,6 +7,21 @@ import (
 	"net/http"
 )
 
+type SendMessage struct {
+	ChatId int    `json:"chat_id"`
+	Text   string `json:"text"`
+}
+
+type SendSticker struct {
+	ChatId  int    `json:"chat_id"`
+	Sticker string `json:"sticker"`
+}
+type SendPhoto struct {
+	ChatId  int    `json:"chat_id"`
+	Photo   string `json:"photo"`
+	Caption string `json:"caption"`
+}
+
 func SendMsg(botUrl string, update Update, msg string) error {
 	botMessage := SendMessage{
 		ChatId: update.Message.Chat.ChatId,

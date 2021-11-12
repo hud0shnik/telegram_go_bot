@@ -44,7 +44,7 @@ func getUpdates(botUrl string, offset int) ([]mods.Update, error) {
 	if err != nil {
 		return nil, err
 	}
-	var restResponse mods.RestResponse
+	var restResponse mods.TelegramResponse
 	err = json.Unmarshal(body, &restResponse)
 	if err != nil {
 		return nil, err
@@ -99,9 +99,6 @@ func respond(botUrl string, update mods.Update) error {
 		case "/time", "какой сегодня день?", "сколько времени?":
 			mods.GetTime(botUrl, update, DanyaFlag)
 			return nil
-		/*case "/nasa":
-		mods.SendAstronomyPictureoftheDay(botUrl, update)
-		return nil*/
 		case "owo":
 			mods.SendMsg(botUrl, update, "UwU")
 			return nil

@@ -35,28 +35,8 @@ type Chat struct {
 	ChatId int `json:"id"`
 }
 
-type RestResponse struct {
+type TelegramResponse struct {
 	Result []Update `json:"result"`
-}
-
-type SendMessage struct {
-	ChatId int    `json:"chat_id"`
-	Text   string `json:"text"`
-}
-
-type SendSticker struct {
-	ChatId  int    `json:"chat_id"`
-	Sticker string `json:"sticker"`
-}
-type SendPhoto struct {
-	ChatId  int    `json:"chat_id"`
-	Photo   string `json:"photo"`
-	Caption string `json:"caption"`
-}
-
-type NasaResponse struct {
-	Explanation string `json:"explanation"`
-	Url         string `json:"hdurl"`
 }
 
 type RedditResponse struct {
@@ -66,7 +46,7 @@ type RedditResponse struct {
 	Spoiler bool   `json:"spoiler"`
 }
 
-type CryptoData struct {
+type CryptoResponse struct {
 	Symbol        string `json:"symbol"`
 	ChangePercent string `json:"priceChangePercent"`
 	LastPrice     string `json:"lastPrice"`
@@ -83,7 +63,7 @@ func GetCryptoData(ticker string) string {
 	}
 	defer res.Body.Close()
 	body, _ := ioutil.ReadAll(res.Body)
-	var rs = new(CryptoData)
+	var rs = new(CryptoResponse)
 	json.Unmarshal(body, &rs)
 
 	for i := len(rs.LastPrice) - 1; ; {
@@ -187,33 +167,6 @@ func SendFromReddit(botUrl string, update Update, subj string) error {
 	SendPict(botUrl, update, botImageMessage)
 	return nil
 }
-
-/*
-func SendAstronomyPictureoftheDay(botUrl string, update Update) error {
-	InitConfig()
-	url := "https://api.nasa.gov/planetary/apod?api_key=" + viper.GetString("nasaToken")
-	req, _ := http.NewRequest("GET", url, nil)
-	res, err := http.DefaultClient.Do(req)
-
-	if err != nil {
-		fmt.Println("Nasa API error: ", err)
-		return err
-	}
-
-	defer res.Body.Close()
-	body, _ := ioutil.ReadAll(res.Body)
-	var rs = new(NasaResponse)
-	json.Unmarshal(body, &rs)
-
-	botImageMessage := SendPhoto{
-		ChatId:  update.Message.Chat.ChatId,
-		Photo:   rs.Url,
-		Caption: rs.Explanation,
-	}
-
-	SendPict(botUrl, update, botImageMessage)
-	return nil
-}*/
 
 func SendCryptoData(botUrl string, update Update) {
 	SendMsg(botUrl, update, GetCryptoData("SHIBBUSD")+GetCryptoData("BTCUSDT")+GetCryptoData("ETHUSDT"))
