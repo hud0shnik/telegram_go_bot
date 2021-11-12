@@ -72,6 +72,9 @@ func respond(botUrl string, update mods.Update) error {
 			mods.SendCurrentWeather(botUrl, update)
 			mods.SendDailyWeather(botUrl, update, 3)
 			return nil
+		case "/check":
+			mods.Check(botUrl, update, DanyaFlag)
+			return nil
 		case "/weather7":
 			mods.SendDailyWeather(botUrl, update, 7)
 			return nil
@@ -94,7 +97,7 @@ func respond(botUrl string, update mods.Update) error {
 			mods.SendMsg(botUrl, update, mods.Coin())
 			return nil
 		case "/start", "/help":
-			mods.SendMsg(botUrl, update, mods.Help())
+			mods.Help(botUrl, update)
 			return nil
 		case "/time", "какой сегодня день?", "сколько времени?":
 			mods.GetTime(botUrl, update, DanyaFlag)

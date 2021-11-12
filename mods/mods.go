@@ -52,46 +52,24 @@ type CryptoResponse struct {
 	LastPrice     string `json:"lastPrice"`
 }
 
-func GetCryptoData(ticker string) string {
-	url := "https://api2.binance.com/api/v3/ticker/24hr?symbol=" + ticker
-	req, _ := http.NewRequest("GET", url, nil)
-	res, err := http.DefaultClient.Do(req)
+func InitConfig() error {
+	viper.AddConfigPath("configs")
+	viper.SetConfigName("config")
 
-	if err != nil {
-		fmt.Println("Binance API error: ", err)
-		return "error"
-	}
-	defer res.Body.Close()
-	body, _ := ioutil.ReadAll(res.Body)
-	var rs = new(CryptoResponse)
-	json.Unmarshal(body, &rs)
-
-	for i := len(rs.LastPrice) - 1; ; {
-		if rs.LastPrice[i] == '0' {
-			rs.LastPrice = rs.LastPrice[:i]
-		} else {
-			break
-		}
-		i--
-	}
-
-	result := "За последние 24 часа курс " + rs.Symbol + " изменился на " + rs.ChangePercent + "%\n" +
-		"до отметки в " + rs.LastPrice + "$\n\n"
-
-	return result
+	return viper.ReadInConfig()
 }
 
-func Help() string {
-	return "Привет👋🏻, вот список команд:" +
-		"\n\n/weather - показать погоду на Ольховой" +
-		"\n\n/weather7 - показать погоду на 7 дней" +
-		"\n\n/crypto - узнать текущий курс трёх криптовалют (SHIB, BTC и ETH)" +
-		"\n\n/time - узнать какое сейчас время" +
-		"\n\n/d20 - кинуть д20, вместо 20 можно поставить любое число" +
-		"\n\n/coin - подбросить монетку" +
-		"\n\n/meme - мем с реддита (смотреть на свой страх и риск, я за этот контент не отвечаю 😅)" +
-		"\n\n/cat и /parrot - картинка кота или попугая " +
-		"\n\nТакже можешь позадовать вопросы, я на них отвечу 🙃"
+func Help(botUrl string, update Update) {
+	SendMsg(botUrl, update, "Привет👋🏻, вот список команд:"+
+		"\n\n/weather - показать погоду на Ольховой"+
+		"\n\n/weather7 - показать погоду на 7 дней"+
+		"\n\n/crypto - узнать текущий курс трёх криптовалют (SHIB, BTC и ETH)"+
+		"\n\n/time - узнать какое сейчас время"+
+		"\n\n/d20 - кинуть д20, вместо 20 можно поставить любое число"+
+		"\n\n/coin - подбросить монетку"+
+		"\n\n/meme - мем с реддита (смотреть на свой страх и риск, я за этот контент не отвечаю 😅)"+
+		"\n\n/cat и /parrot - картинка кота или попугая "+
+		"\n\nТакже можешь позадовать вопросы, я на них отвечу 🙃")
 }
 
 func Dice(msg string) string {
@@ -168,8 +146,35 @@ func SendFromReddit(botUrl string, update Update, subj string) error {
 	return nil
 }
 
+func GetCryptoData(botUrl string, update Update, ticker string) error {
+	url := "https://api2.binance.com/api/v3/ticker/24hr?symbol=" + ticker
+	req, _ := http.NewRequest("GET", url, nil)
+	res, err := http.DefaultClient.Do(req)
+
+	if err != nil {
+		fmt.Println("Binance API error: ", err)
+		return err
+	}
+	defer res.Body.Close()
+	body, _ := ioutil.ReadAll(res.Body)
+	var rs = new(CryptoResponse)
+	json.Unmarshal(body, &rs)
+
+	for i := len(rs.LastPrice) - 1; ; {
+		if rs.LastPrice[i] == '0' {
+			rs.LastPrice = rs.LastPrice[:i]
+		} else {
+			break
+		}
+		i--
+	}
+
+	SendMsg(botUrl, update, "За последние 24 часа курс "+rs.Symbol+" изменился на "+rs.ChangePercent+"%\n"+
+		"до отметки в "+rs.LastPrice+"$\n\n")
+	return nil
+}
 func SendCryptoData(botUrl string, update Update) {
-	SendMsg(botUrl, update, GetCryptoData("SHIBBUSD")+GetCryptoData("BTCUSDT")+GetCryptoData("ETHUSDT"))
+	GetCryptoData(botUrl, update, "SHIBBUSD")
 	SendStck(botUrl, update, GenerateRandomShibaSticker())
 }
 
@@ -187,9 +192,23 @@ func GetTime(botUrl string, update Update, DanyaFlag bool) {
 	}
 }
 
-func InitConfig() error {
-	viper.AddConfigPath("configs")
-	viper.SetConfigName("config")
-
-	return viper.ReadInConfig()
+func Check(botUrl string, update Update, DanyaFlag bool) {
+	if DanyaFlag {
+		start := time.Now()
+		fmt.Println("Start Check() ...")
+		SendCurrentWeather(botUrl, update)
+		SendDailyWeather(botUrl, update, 3)
+		SendCryptoData(botUrl, update)
+		SendFromReddit(botUrl, update, "")
+		SendMsg(botUrl, update, Coin())
+		Help(botUrl, update)
+		GetTime(botUrl, update, DanyaFlag)
+		SendMsg(botUrl, update, Dice("/d20"))
+		SendMsg(botUrl, update, Ball8())
+		SendStck(botUrl, update, GenerateRandomSticker())
+		SendFromReddit(botUrl, update, "parrots")
+		fmt.Println("That's all!\tTime:", time.Since(start))
+		return
+	}
+	SendMsg(botUrl, update, "Error 403! Beep Bop... Forbidden! Access denied 🤖")
 }
