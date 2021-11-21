@@ -114,7 +114,7 @@ func respond(botUrl string, update mods.Update) error {
 		}
 
 		if lenMsg > 3 && ((update.Message.Text[lenMsg-1] == '?') || (update.Message.Text[lenMsg-2] == '?')) {
-			mods.SendMsg(botUrl, update, mods.Ball8())
+			mods.Ball8(botUrl, update)
 			return nil
 		}
 

@@ -18,10 +18,7 @@ type Update struct {
 }
 
 type Sticker struct {
-	File_id     string `json:"file_id"`
-	Emoji       string `json:"emoji"`
-	Is_animated bool   `json:"is_animated"`
-	Set_name    string `json:"set_name"`
+	File_id string `json:"file_id"`
 }
 
 type Message struct {
@@ -85,7 +82,7 @@ func Dice(msg string) string {
 	return strconv.Itoa(1 + Random(num))
 }
 
-func Ball8() string {
+func Ball8(botUrl string, update Update) {
 	answers := []string{
 		"Да, конечно!",
 		"100%",
@@ -99,7 +96,7 @@ func Ball8() string {
 		"Нет.",
 	}
 
-	return answers[Random(len(answers))]
+	SendMsg(botUrl, update, answers[Random(len(answers))])
 }
 
 func Random(n int) int {
@@ -205,7 +202,7 @@ func Check(botUrl string, update Update, DanyaFlag bool) {
 		Help(botUrl, update)
 		GetTime(botUrl, update, DanyaFlag)
 		SendMsg(botUrl, update, Dice("/d20"))
-		SendMsg(botUrl, update, Ball8())
+		Ball8(botUrl, update)
 		SendRandomSticker(botUrl, update)
 		SendFromReddit(botUrl, update, "parrots")
 
