@@ -72,8 +72,8 @@ func Sun(botUrl string, update Update) error {
 	json.Unmarshal(body, &rs)
 
 	result := "🌄 Восход и закат на сегодня 🌄\n \n" +
-		"🌅 Восход наступит в " + time.Unix(int64(rs.Current.Sunrise), 0).Format("15:04:05") +
-		"\n🌇 А закат в " + time.Unix(int64(rs.Current.Sunset), 0).Format("15:04:05")
+		"🌅 Восход наступит в " + time.Unix(int64(rs.Current.Sunrise), 0).Add(3*time.Hour).Format("15:04:05") +
+		"\n🌇 А закат в " + time.Unix(int64(rs.Current.Sunset), 0).Add(3*time.Hour).Format("15:04:05")
 
 	SendMsg(botUrl, update, result)
 	return nil
