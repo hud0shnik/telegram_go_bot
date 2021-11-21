@@ -53,9 +53,31 @@ type Current struct {
 }
 
 type WeatherInfo struct {
-	Id          int    `json:"id"`
 	Description string `json:"description"`
-	Icon        string `json:"icon"`
+}
+
+func Sun(botUrl string, update Update) error {
+	InitConfig()
+	url := "https://api.openweathermap.org/data/2.5/onecall?lat=55.5692101&lon=37.4588852&lang=ru&exclude=minutely,alerts&units=metric&appid=" + viper.GetString("weatherToken")
+	req, _ := http.NewRequest("GET", url, nil)
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		fmt.Println("weather API error")
+		SendErrorMessage(botUrl, update, 1)
+		return err
+	}
+	defer res.Body.Close()
+	body, _ := ioutil.ReadAll(res.Body)
+	var rs = new(WeatherAPIResponse)
+	json.Unmarshal(body, &rs)
+
+	result := "🌄 Восход и закат на сегодня 🌄\n \n" +
+		"🌅 Восход наступит в " + time.Unix(int64(rs.Current.Sunrise), 0).Format("15:04:05") +
+		"\n🌇 А закат в " + time.Unix(int64(rs.Current.Sunset), 0).Format("15:04:05")
+
+	SendMsg(botUrl, update, result)
+	return nil
+
 }
 
 func SendDailyWeather(botUrl string, update Update, days int) error {
