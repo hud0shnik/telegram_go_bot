@@ -143,15 +143,14 @@ func SendFromReddit(botUrl string, update Update, subj string) error {
 	return nil
 }
 
-func GetCryptoData(botUrl string, update Update, ticker string) error {
-	url := "https://api2.binance.com/api/v3/ticker/24hr?symbol=" + ticker
+func SendCryptoData(botUrl string, update Update) {
+	url := "https://api2.binance.com/api/v3/ticker/24hr?symbol=SHIBBUSD"
 	req, _ := http.NewRequest("GET", url, nil)
 	res, err := http.DefaultClient.Do(req)
 
 	if err != nil {
 		fmt.Println("Binance API error: ", err)
 		SendErrorMessage(botUrl, update, 1)
-		return err
 	}
 
 	defer res.Body.Close()
@@ -159,21 +158,17 @@ func GetCryptoData(botUrl string, update Update, ticker string) error {
 	var rs = new(CryptoResponse)
 	json.Unmarshal(body, &rs)
 
-	for i := len(rs.LastPrice) - 1; ; {
+	for i := len(rs.LastPrice) - 1; ; i-- {
 		if rs.LastPrice[i] == '0' {
 			rs.LastPrice = rs.LastPrice[:i]
 		} else {
 			break
 		}
-		i--
 	}
 
-	SendMsg(botUrl, update, "За последние 24 часа курс "+rs.Symbol+" изменился на "+rs.ChangePercent+"%\n"+
+	SendMsg(botUrl, update, "За сегодняшний день курс "+rs.Symbol+" изменился на "+rs.ChangePercent+"%\n"+
 		"до отметки в "+rs.LastPrice+"$\n\n")
-	return nil
-}
-func SendCryptoData(botUrl string, update Update) {
-	GetCryptoData(botUrl, update, "SHIBBUSD")
+
 	SendRandomShibaSticker(botUrl, update)
 }
 
@@ -194,6 +189,7 @@ func GetTime(botUrl string, update Update, DanyaFlag bool) {
 func Check(botUrl string, update Update, DanyaFlag bool) {
 	if DanyaFlag {
 		start := time.Now()
+
 		fmt.Println("Start Check() ...")
 		SendCurrentWeather(botUrl, update)
 		SendDailyWeather(botUrl, update, 3)
@@ -213,7 +209,7 @@ func Check(botUrl string, update Update, DanyaFlag bool) {
 		}
 
 		fmt.Println("That's all!\tTime:", time.Since(start))
-		SendMsg(botUrl, update, time.Since(start).String())
+		SendMsg(botUrl, update, "Проверка заняла "+time.Since(start).String())
 		return
 	}
 	SendMsg(botUrl, update, "Error 403! Beep Bop... Forbidden! Access denied 🤖")
