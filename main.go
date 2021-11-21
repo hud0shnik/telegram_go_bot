@@ -7,7 +7,6 @@ import (
 	"log"
 	"net/http"
 	"strconv"
-	"strings"
 	"tgBot/mods"
 
 	"github.com/spf13/viper"
@@ -62,12 +61,11 @@ func respond(botUrl string, update mods.Update) error {
 	}
 
 	if update.Message.Text == "" {
-		mods.SendMsg(botUrl, update, "Пока я воспринимаю только текст или стикеры, извини 🤷🏻‍♂️")
+		mods.SendMsg(botUrl, update, "Пока я воспринимаю только текст и стикеры, извини 🤷🏻‍♂️")
 		return nil
 	} else {
-		msg := strings.ToLower(update.Message.Text)
 
-		switch msg {
+		switch update.Message.Text {
 		case "/weather":
 			mods.SendCurrentWeather(botUrl, update)
 			mods.SendDailyWeather(botUrl, update, 3)
@@ -90,7 +88,7 @@ func respond(botUrl string, update mods.Update) error {
 		case "/cat":
 			mods.SendFromReddit(botUrl, update, "cats")
 			return nil
-		case "молодец", "спасибо", "харош", "хорош", "неплохо":
+		case "молодец", "неплохо":
 			mods.SendMsg(botUrl, update, "Стараюсь UwU")
 			return nil
 		case "/coin":
@@ -102,19 +100,19 @@ func respond(botUrl string, update mods.Update) error {
 		case "/time", "какой сегодня день?", "сколько времени?":
 			mods.GetTime(botUrl, update, DanyaFlag)
 			return nil
-		case "owo":
+		case "owo", "OwO":
 			mods.SendMsg(botUrl, update, "UwU")
 			return nil
 		}
 
-		lenMsg := len(msg)
+		lenMsg := len(update.Message.Text)
 
-		if msg[:2] == "/d" {
-			mods.SendMsg(botUrl, update, mods.Dice(msg))
+		if update.Message.Text[:2] == "/d" {
+			mods.SendMsg(botUrl, update, mods.Dice(update.Message.Text))
 			return nil
 		}
 
-		if lenMsg > 3 && ((msg[lenMsg-1] == '?') || (msg[lenMsg-2] == '?')) {
+		if lenMsg > 3 && ((update.Message.Text[lenMsg-1] == '?') || (update.Message.Text[lenMsg-2] == '?')) {
 			mods.SendMsg(botUrl, update, mods.Ball8())
 			return nil
 		}
