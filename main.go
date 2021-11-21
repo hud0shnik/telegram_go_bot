@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"strconv"
 	"tgBot/mods"
@@ -15,15 +14,17 @@ import (
 func main() {
 	err := mods.InitConfig()
 	if err != nil {
-		log.Println("Config error: ", err)
+		fmt.Println("Config error: ", err)
 		return
 	}
+
 	botUrl := "https://api.telegram.org/bot" + viper.GetString("token")
 	offSet := 0
+
 	for {
 		updates, err := getUpdates(botUrl, offSet)
 		if err != nil {
-			log.Println("Something went wrong: ", err)
+			fmt.Println("Something went wrong: ", err)
 		}
 		for _, update := range updates {
 			respond(botUrl, update)
