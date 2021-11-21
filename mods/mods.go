@@ -59,6 +59,7 @@ func Help(botUrl string, update Update) {
 	SendMsg(botUrl, update, "Привет👋🏻, вот список команд:"+
 		"\n\n/weather - показать погоду на Ольховой"+
 		"\n\n/weather7 - показать погоду на 7 дней"+
+		"\n\n/sun - узнать о времени восхода и заката"+
 		"\n\n/crypto - узнать текущий курс криптовалюты SHIB"+
 		"\n\n/time - узнать какое сейчас время"+
 		"\n\n/d20 - кинуть д20, вместо 20 можно поставить любое число"+
@@ -200,6 +201,7 @@ func Check(botUrl string, update Update, DanyaFlag bool) {
 		SendFromReddit(botUrl, update, "")
 		SendMsg(botUrl, update, Coin())
 		Help(botUrl, update)
+		Sun(botUrl, update)
 		GetTime(botUrl, update, DanyaFlag)
 		SendMsg(botUrl, update, Dice("/d20"))
 		Ball8(botUrl, update)
@@ -211,6 +213,7 @@ func Check(botUrl string, update Update, DanyaFlag bool) {
 		}
 
 		fmt.Println("That's all!\tTime:", time.Since(start))
+		SendMsg(botUrl, update, time.Since(start).String())
 		return
 	}
 	SendMsg(botUrl, update, "Error 403! Beep Bop... Forbidden! Access denied 🤖")
