@@ -7,6 +7,7 @@ import (
 	"math/rand"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/spf13/viper"
@@ -239,4 +240,43 @@ func SendErrorMessage(botUrl string, update Update, errorCode int) {
 	}
 	result += ", свяжитесь с моим создателем для устранения проблемы \n\nhttps://vk.com/hud0shnik\nhttps://vk.com/hud0shnik\nhttps://vk.com/hud0shnik"
 	SendMsg(botUrl, update, result)
+}
+
+func CheckGit(botUrl string, update Update, DanyaFlag bool) {
+	resp, err := http.Get("https://github.com/hud0shnik")
+
+	if err != nil {
+		fmt.Println("Github error: ", err)
+		SendErrorMessage(botUrl, update, 1)
+		return
+	}
+
+	defer resp.Body.Close()
+	body, _ := ioutil.ReadAll(resp.Body)
+	currentDate := string(time.Now().Add(3 * time.Hour).Format("2006-01-02"))
+
+	//fmt.Println("\n\n\n", string(body))
+	//<rect width="11" height="11" x="-36" y="75" class="ContributionCalendar-day" rx="2" ry="2" data-count="1" data-date="2021-12-03" data-level="1"></rect>
+
+	if strings.Contains(string(body), "data-date=\""+currentDate+"\" data-level=\"") {
+		pageStr, commits := string(body), ""
+		i := 0
+
+		for ; i < len(pageStr)-40; i++ {
+			if pageStr[i:i+35] == "data-date=\""+currentDate+"\" data-level=\"" {
+				i -= 7
+				break
+			}
+		}
+		//fmt.Println(pageStr[i : i+8])
+		for ; pageStr[i] != '"'; i++ {
+
+		}
+		for i++; pageStr[i] != '"'; i++ {
+			commits += string(pageStr[i])
+		}
+		SendMsg(botUrl, update, "Коммитов за сегодня: "+commits)
+		return
+	}
+	SendMsg(botUrl, update, "Коммитов за сегодня: 0")
 }

@@ -74,6 +74,9 @@ func respond(botUrl string, update mods.Update) error {
 		case "/check":
 			mods.Check(botUrl, update, DanyaFlag)
 			return nil
+		case "/git":
+			mods.CheckGit(botUrl, update, DanyaFlag)
+			return nil
 		case "/sun":
 			mods.Sun(botUrl, update)
 			return nil
