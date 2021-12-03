@@ -242,7 +242,7 @@ func SendErrorMessage(botUrl string, update Update, errorCode int) {
 	SendMsg(botUrl, update, result)
 }
 
-func CheckGit(botUrl string, update Update, DanyaFlag bool) {
+func CheckGit(botUrl string, update Update) {
 	resp, err := http.Get("https://github.com/hud0shnik")
 
 	if err != nil {
