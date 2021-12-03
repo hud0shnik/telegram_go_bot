@@ -182,6 +182,8 @@ func GetTime(botUrl string, update Update, DanyaFlag bool) {
 			SendMsg(botUrl, update, "🎂 C др, создатель!!! 🥳 🎉")
 		}
 		SendStck(botUrl, update, "CAACAgIAAxkBAAINzWGH6G2PfGPH2eRiI-x9fHQ_McDSAAJZAAOtZbwU9LtHF4nhLQkiBA")
+	} else if currentTime.Format("01-02") == "01-01" {
+		SendMsg(botUrl, update, "С новым годом!!!")
 	} else {
 		SendMsg(botUrl, update, currentTime.Format("15:04 2006-01-02"))
 		SendStck(botUrl, update, "CAACAgIAAxkBAAIN6GGH7YzD5gGxsI3XYzLICzRnQ0vWAAKQAgACVp29CjLSqXG41NC1IgQ")
@@ -255,6 +257,7 @@ func CheckGit(botUrl string, update Update) {
 
 	defer resp.Body.Close()
 	body, _ := ioutil.ReadAll(resp.Body)
+	//Добавляю 3 часа из-за того, что сервер находится в другом часовом поясе
 	currentDate := string(time.Now().Add(3 * time.Hour).Format("2006-01-02"))
 
 	//Вот так выглядит html одной ячейки:
@@ -266,6 +269,7 @@ func CheckGit(botUrl string, update Update) {
 
 		for ; i < len(pageStr)-40; i++ {
 			if pageStr[i:i+35] == "data-date=\""+currentDate+"\" data-level=\"" {
+				//так как количество коммитов стоит перед датой, переставляем i
 				i -= 7
 				break
 			}
@@ -274,6 +278,7 @@ func CheckGit(botUrl string, update Update) {
 			//доводит i до символа "
 		}
 		for i++; pageStr[i] != '"'; i++ {
+			//считывает значение в скобках
 			commits += string(pageStr[i])
 		}
 		SendMsg(botUrl, update, "Коммитов за сегодня: "+commits)
