@@ -281,8 +281,20 @@ func CheckGit(botUrl string, update Update) {
 			//считывает значение в скобках
 			commits += string(pageStr[i])
 		}
-		SendMsg(botUrl, update, "Коммитов за сегодня: "+commits)
+		for i += 35; pageStr[i] != '"'; i++ {
+		}
+		dataLevel, _ := strconv.Atoi(pageStr[i+1 : i+2])
+		switch dataLevel {
+		case 2:
+			SendMsg(botUrl, update, "Коммитов за сегодня: "+commits+", неплохо!")
+		case 3:
+			SendMsg(botUrl, update, "Коммитов за сегодня: "+commits+", отлично!!")
+		case 4:
+			SendMsg(botUrl, update, "Коммитов за сегодня: "+commits+", прекрасно!!!")
+		default:
+			SendMsg(botUrl, update, "Коммитов за сегодня: "+commits)
+		}
 		return
 	}
-	SendMsg(botUrl, update, "Коммитов за сегодня: 0")
+	SendMsg(botUrl, update, "Коммитов за сегодня пока ещё нет")
 }
