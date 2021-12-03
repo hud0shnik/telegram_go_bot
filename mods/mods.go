@@ -255,7 +255,7 @@ func CheckGit(botUrl string, update Update) {
 	body, _ := ioutil.ReadAll(resp.Body)
 	currentDate := string(time.Now().Add(3 * time.Hour).Format("2006-01-02"))
 
-	//fmt.Println("\n\n\n", string(body))
+	//Вот так выглядит html одной ячейки:
 	//<rect width="11" height="11" x="-36" y="75" class="ContributionCalendar-day" rx="2" ry="2" data-count="1" data-date="2021-12-03" data-level="1"></rect>
 
 	if strings.Contains(string(body), "data-date=\""+currentDate+"\" data-level=\"") {
@@ -268,9 +268,8 @@ func CheckGit(botUrl string, update Update) {
 				break
 			}
 		}
-		//fmt.Println(pageStr[i : i+8])
 		for ; pageStr[i] != '"'; i++ {
-
+			//доводит i до символа "
 		}
 		for i++; pageStr[i] != '"'; i++ {
 			commits += string(pageStr[i])
