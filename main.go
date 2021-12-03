@@ -111,7 +111,7 @@ func respond(botUrl string, update mods.Update) error {
 
 		lenMsg := len(update.Message.Text)
 
-		if update.Message.Text[:2] == "/d" {
+		if lenMsg > 3 && update.Message.Text[:2] == "/d" {
 			mods.SendMsg(botUrl, update, mods.Dice(update.Message.Text))
 			return nil
 		}
