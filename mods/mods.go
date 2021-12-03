@@ -61,6 +61,7 @@ func Help(botUrl string, update Update) {
 		"\n\n/weather - показать погоду на Ольховой"+
 		"\n\n/weather7 - показать погоду на 7 дней"+
 		"\n\n/sun - узнать о времени восхода и заката"+
+		"\n\n/git - количество коммитов за сегодня"+
 		"\n\n/crypto - узнать текущий курс криптовалюты SHIB"+
 		"\n\n/time - узнать какое сейчас время"+
 		"\n\n/d20 - кинуть д20, вместо 20 можно поставить любое число"+
@@ -198,6 +199,7 @@ func Check(botUrl string, update Update, DanyaFlag bool) {
 		SendFromReddit(botUrl, update, "")
 		SendMsg(botUrl, update, Coin())
 		Help(botUrl, update)
+		CheckGit(botUrl, update)
 		Sun(botUrl, update)
 		GetTime(botUrl, update, DanyaFlag)
 		SendMsg(botUrl, update, Dice("/d20"))
