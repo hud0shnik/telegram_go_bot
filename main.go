@@ -57,6 +57,7 @@ func getUpdates(botUrl string, offset int) ([]mods.Update, error) {
 func respond(botUrl string, update mods.Update) error {
 	DanyaFlag := update.Message.Chat.ChatId == viper.GetInt("DanyaChatId")
 	msg := strings.ToLower(update.Message.Text)
+
 	if update.Message.Sticker.File_id != "" {
 		mods.SendRandomSticker(botUrl, update)
 		return nil
@@ -68,24 +69,18 @@ func respond(botUrl string, update mods.Update) error {
 	} else {
 
 		switch msg {
-		case "/weather":
-			mods.SendCurrentWeather(botUrl, update)
-			mods.SendDailyWeather(botUrl, update, 3)
-			return nil
 		case "/check":
 			mods.Check(botUrl, update, DanyaFlag)
 			return nil
 		case "/git":
 			mods.CheckGit(botUrl, update)
 			return nil
-		case "/sun":
-			mods.Sun(botUrl, update)
-			return nil
 		case "/weather7":
 			mods.SendDailyWeather(botUrl, update, 7)
 			return nil
-		case "/crypto":
-			mods.SendCryptoData(botUrl, update)
+		case "/weather":
+			mods.SendCurrentWeather(botUrl, update)
+			mods.SendDailyWeather(botUrl, update, 3)
 			return nil
 		case "/meme":
 			mods.SendFromReddit(botUrl, update, "")
@@ -95,6 +90,12 @@ func respond(botUrl string, update mods.Update) error {
 			return nil
 		case "/cat":
 			mods.SendFromReddit(botUrl, update, "cats")
+			return nil
+		case "/crypto":
+			mods.SendCryptoData(botUrl, update)
+			return nil
+		case "/sun":
+			mods.Sun(botUrl, update)
 			return nil
 		case "молодец", "неплохо", "ок":
 			mods.SendMsg(botUrl, update, "Стараюсь UwU")
@@ -120,7 +121,7 @@ func respond(botUrl string, update mods.Update) error {
 			return nil
 		}
 
-		if lenMsg > 3 && ((msg[lenMsg-1] == '?') || (msg[lenMsg-2] == '?')) {
+		if lenMsg > 1 && ((msg[lenMsg-1] == '?') || (msg[lenMsg-2] == '?')) {
 			mods.Ball8(botUrl, update)
 			return nil
 		}
