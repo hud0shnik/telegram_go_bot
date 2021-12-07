@@ -11,6 +11,9 @@
 <h3 align="left">📄 О самом проекте:</h3>
 Просто мой телеграм бот. Просто на golang. Функционал постоянно обновляется, так что лучше спросить о нём у самого бота. Из API: уже реализовал погоду, картинки с Reddit'a (попугаи, кошечки и просто смешные картинки) и текущий курс криптовалюты SHIB. 
 
+<h3 align="left">📷 Скриншот:</h3>
+<img src="https://github.com/hud0shnik/telegram_go_bot/blob/master/telegram.png"/>
+
 <h3 align="left">🔗 Ссылка на бота:</h3>
 <h1 align="center">
    <a href="https://t.me/hud0shnik_bot" target="_blank"><img src="https://img.icons8.com/external-vitaliy-gorbachev-blue-vitaly-gorbachev/60/000000/external-robot-support-vitaliy-gorbachev-blue-vitaly-gorbachev.png" alt="telegram" width="60" height="60"/></a>
