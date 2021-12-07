@@ -167,14 +167,16 @@ func SendCryptoData(botUrl string, update Update) {
 			break
 		}
 	}
+
 	if rs.ChangePercent[0] == '-' {
 		SendMsg(botUrl, update, "За сегодняшний день курс "+rs.Symbol+" упал на "+rs.ChangePercent[1:]+"%\n"+
 			"до отметки в "+rs.LastPrice+"$\n\n")
+		SendStck(botUrl, update, "CAACAgIAAxkBAAIWwGGvejH5fkzAcH_lYnMiTdoYVBHUAAKAAQACK15TC6DmST8rBLf3IwQ")
 	} else {
 		SendMsg(botUrl, update, "За сегодняшний день курс "+rs.Symbol+" вырос на "+rs.ChangePercent+"%\n"+
 			"до отметки в "+rs.LastPrice+"$\n\n")
+		SendRandomShibaSticker(botUrl, update)
 	}
-	SendRandomShibaSticker(botUrl, update)
 }
 
 func GetTime(botUrl string, update Update, DanyaFlag bool) {
