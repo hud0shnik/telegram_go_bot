@@ -80,15 +80,25 @@ func SendPict(botUrl string, update Update, pic SendPhoto) error {
 	return nil
 }
 
-func SendRandomShibaSticker(botUrl string, update Update) {
-	stickers := []string{
-		"CAACAgIAAxkBAAIM7mF7830wgmsiYJ5xHTEZjHgJ_YphAAKRAQACK15TC92mC_kqIE5PIQQ",
-		"CAACAgIAAxkBAAIM8mF785AXsxybm8IbstiOBA8vc7ujAAKHAQACK15TC3gn1k2Gf2lgIQQ",
-		"CAACAgIAAxkBAAIM8GF784o9uWLTWhdCbaiH3xebHlDpAAKKAQACK15TCxtDbMsAAT60RCEE",
-		"CAACAgIAAxkBAAITiGGOKl7peNxJRfBRLWvZDikLRMrxAAKMAQACK15TCzSpEXiTiKA5IgQ",
-		"CAACAgIAAxkBAAITimGOKmYIQWpBWdEvs-J-RS4RWJZwAAKBAQACK15TC14KbD5sAAF4tCIE",
+func SendRandomShibaSticker(botUrl string, update Update, sadFlag bool) {
+	var stickers [5]string
+	if sadFlag {
+		stickers = [5]string{
+			"CAACAgIAAxkBAAIWzmGvey9t1OC7aV0860j69WsT9G-DAAJ-AQACK15TC4qyw0Zen8nxIwQ",
+			"CAACAgIAAxkBAAIWz2GvezDv5uKkBgRlqhAW3oK1dzFlAAKAAQACK15TC6DmST8rBLf3IwQ",
+			"CAACAgIAAxkBAAIW0mGvezKCd2-1xoEwA2hKLGsN1-izAAKIAQACK15TCzT4pMalZQrlIwQ",
+			"CAACAgIAAxkBAAIW1GGvezXS4RnzDeu0Lw_L2Sw4YA94AAKDAQACK15TCwzud-biO4E7IwQ",
+			"CAACAgIAAxkBAAIW1mGvezmO36icAAH_ayJKj0ybA-yDVgAChAEAAiteUwtgPKr0UyWrYyME",
+		}
+	} else {
+		stickers = [5]string{
+			"CAACAgIAAxkBAAIM7mF7830wgmsiYJ5xHTEZjHgJ_YphAAKRAQACK15TC92mC_kqIE5PIQQ",
+			"CAACAgIAAxkBAAIM8mF785AXsxybm8IbstiOBA8vc7ujAAKHAQACK15TC3gn1k2Gf2lgIQQ",
+			"CAACAgIAAxkBAAIM8GF784o9uWLTWhdCbaiH3xebHlDpAAKKAQACK15TCxtDbMsAAT60RCEE",
+			"CAACAgIAAxkBAAITiGGOKl7peNxJRfBRLWvZDikLRMrxAAKMAQACK15TCzSpEXiTiKA5IgQ",
+			"CAACAgIAAxkBAAITimGOKmYIQWpBWdEvs-J-RS4RWJZwAAKBAQACK15TC14KbD5sAAF4tCIE",
+		}
 	}
-
 	SendStck(botUrl, update, stickers[Random(len(stickers))])
 }
 
@@ -102,7 +112,7 @@ func SendRandomSticker(botUrl string, update Update) error {
 	defer fileU.Close()
 
 	bodyU, _ := ioutil.ReadAll(fileU)
-	stickers := []string{}
+	stickers := [359]string{}
 
 	json.Unmarshal(bodyU, &stickers)
 
