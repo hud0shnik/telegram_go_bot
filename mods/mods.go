@@ -179,7 +179,12 @@ func GetTime(botUrl string, update Update, DanyaFlag bool) {
 
 	switch currentTime.Format("01-02") {
 	case "01-01":
-		SendMsg(botUrl, update, "С новым годом!!!")
+		SendMsg(botUrl, update, "С Новым годом!!!")
+		SendStck(botUrl, update, "CAACAgIAAxkBAAIWrmGvduu6ERm7-5MIXiO-gyQ060gAA20AA8A2TxO5jCglZ0hJGyME")
+		break
+	case "01-07":
+		SendMsg(botUrl, update, "С Рождеством!!")
+		SendStck(botUrl, update, "CAACAgIAAxkBAAIWs2GveCDTQW0YQxSIGKcVVUBTQBhlAAIYAAOtZbwUjebqlxyfJ9IjBA")
 		break
 	case "11-08":
 		SendMsg(botUrl, update, "Сегодня день рождения самого умного человека во всей Москве - Дани!!!")
