@@ -176,18 +176,23 @@ func SendCryptoData(botUrl string, update Update) {
 
 func GetTime(botUrl string, update Update, DanyaFlag bool) {
 	currentTime := time.Now().Add(3 * time.Hour)
-	if currentTime.Format("01-02") == "11-08" {
+
+	switch currentTime.Format("01-02") {
+	case "01-01":
+		SendMsg(botUrl, update, "С новым годом!!!")
+		break
+	case "11-08":
 		SendMsg(botUrl, update, "Сегодня день рождения самого умного человека во всей Москве - Дани!!!")
 		if DanyaFlag {
 			SendMsg(botUrl, update, "🎂 C др, создатель!!! 🥳 🎉")
 		}
 		SendStck(botUrl, update, "CAACAgIAAxkBAAINzWGH6G2PfGPH2eRiI-x9fHQ_McDSAAJZAAOtZbwU9LtHF4nhLQkiBA")
-	} else if currentTime.Format("01-02") == "01-01" {
-		SendMsg(botUrl, update, "С новым годом!!!")
-	} else {
+		break
+	default:
 		SendMsg(botUrl, update, currentTime.Format("15:04 2006-01-02"))
 		SendStck(botUrl, update, "CAACAgIAAxkBAAIN6GGH7YzD5gGxsI3XYzLICzRnQ0vWAAKQAgACVp29CjLSqXG41NC1IgQ")
 	}
+
 }
 
 func Check(botUrl string, update Update, DanyaFlag bool) {
