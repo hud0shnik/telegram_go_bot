@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strconv"
+	"strings"
 	"tgBot/mods"
 
 	"github.com/spf13/viper"
@@ -55,18 +56,18 @@ func getUpdates(botUrl string, offset int) ([]mods.Update, error) {
 //	https://core.telegram.org/bots/api#using-a-local-bot-api-server
 func respond(botUrl string, update mods.Update) error {
 	DanyaFlag := update.Message.Chat.ChatId == viper.GetInt("DanyaChatId")
-
+	msg := strings.ToLower(update.Message.Text)
 	if update.Message.Sticker.File_id != "" {
 		mods.SendRandomSticker(botUrl, update)
 		return nil
 	}
 
-	if update.Message.Text == "" {
+	if msg == "" {
 		mods.SendMsg(botUrl, update, "Пока я воспринимаю только текст и стикеры, извини 🤷🏻‍♂️")
 		return nil
 	} else {
 
-		switch update.Message.Text {
+		switch msg {
 		case "/weather":
 			mods.SendCurrentWeather(botUrl, update)
 			mods.SendDailyWeather(botUrl, update, 3)
@@ -95,7 +96,7 @@ func respond(botUrl string, update mods.Update) error {
 		case "/cat":
 			mods.SendFromReddit(botUrl, update, "cats")
 			return nil
-		case "молодец", "неплохо":
+		case "молодец", "неплохо", "ок":
 			mods.SendMsg(botUrl, update, "Стараюсь UwU")
 			return nil
 		case "/coin":
@@ -107,19 +108,19 @@ func respond(botUrl string, update mods.Update) error {
 		case "/time", "какой сегодня день?", "сколько времени?":
 			mods.GetTime(botUrl, update, DanyaFlag)
 			return nil
-		case "owo", "OwO":
+		case "owo":
 			mods.SendMsg(botUrl, update, "UwU")
 			return nil
 		}
 
-		lenMsg := len(update.Message.Text)
+		lenMsg := len(msg)
 
-		if lenMsg > 3 && update.Message.Text[:2] == "/d" {
-			mods.SendMsg(botUrl, update, mods.Dice(update.Message.Text))
+		if lenMsg > 3 && msg[:2] == "/d" {
+			mods.SendMsg(botUrl, update, mods.Dice(msg))
 			return nil
 		}
 
-		if lenMsg > 3 && ((update.Message.Text[lenMsg-1] == '?') || (update.Message.Text[lenMsg-2] == '?')) {
+		if lenMsg > 3 && ((msg[lenMsg-1] == '?') || (msg[lenMsg-2] == '?')) {
 			mods.Ball8(botUrl, update)
 			return nil
 		}
