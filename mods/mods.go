@@ -317,21 +317,24 @@ func CheckGit(botUrl string, update Update) {
 	SendStck(botUrl, update, "CAACAgIAAxkBAAIXYGGyDPXZSJOs2zaWpgIbcqgDBGmhAAJDAAOtZbwU_-iXZG7hfLsjBA")
 }
 
-func CheckIPAdress(IP string) string {
+func CheckIPAdress(botUrl string, update Update, IP string) {
 	if IP[0] == ' ' {
 		IP = IP[1:]
 	}
 	ipArray := strings.Split(IP, ".")
 	if len(ipArray) != 4 {
-		return "Не могу считать этот IP"
+		SendMsg(botUrl, update, "Не могу считать этот IP")
+		return
 	}
 	for _, ipPart := range ipArray {
 		num, err := strconv.Atoi(ipPart)
 		if err != nil || num < 0 || num > 255 {
-			return "Неправильно набран IP"
+			SendMsg(botUrl, update, "Неправильно набран IP")
+			return
 		}
 		if ipPart != fmt.Sprint(num) {
-			return "Неправильно набран IP"
+			SendMsg(botUrl, update, "Неправильно набран IP")
+			return
 		}
 	}
 
@@ -341,15 +344,20 @@ func CheckIPAdress(IP string) string {
 
 	if err != nil {
 		fmt.Println("IP2Country API error: ", err)
-		return "Err"
+		SendErrorMessage(botUrl, update, 1)
+		return
 	}
 
 	defer res.Body.Close()
 	body, _ := ioutil.ReadAll(res.Body)
 	var rs = new(IP2CountryResponse)
 	json.Unmarshal(body, &rs)
+
 	if rs.CountryName == "" {
-		return "Не могу найти этот IP"
+		SendMsg(botUrl, update, "Не могу найти этот IP")
+		return
 	}
-	return "Страна происхождения - " + rs.CountryName + " " + rs.CountryEmoji + "\n\nМы не храним IP, которые просят проверить пользователи, весь код бота можно найти на гитхабе."
+
+	SendMsg(botUrl, update, "Страна происхождения - "+rs.CountryName+" "+rs.CountryEmoji+
+		"\n\nМы не храним IP, которые просят проверить пользователи, весь код бота можно найти на гитхабе.")
 }
