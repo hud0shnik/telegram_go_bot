@@ -118,6 +118,11 @@ func respond(botUrl string, update mods.Update) error {
 			return nil
 		}
 
+		if lenMsg > 5 && update.Message.Text[:3] == "/ip" {
+			mods.SendMsg(botUrl, update, mods.CheckIPAdress(update.Message.Text[3:]))
+			return nil
+		}
+
 		if lenMsg > 1 && ((msg[lenMsg-1] == '?') || (msg[lenMsg-2] == '?')) {
 			mods.Ball8(botUrl, update)
 			return nil
