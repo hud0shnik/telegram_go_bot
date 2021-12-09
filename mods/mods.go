@@ -172,7 +172,7 @@ func SendCryptoData(botUrl string, update Update) {
 	}
 }
 
-func GetTime(botUrl string, update Update, DanyaFlag bool) {
+func SendTime(botUrl string, update Update, DanyaFlag bool) {
 	currentTime := time.Now().Add(3 * time.Hour)
 
 	switch currentTime.Format("01-02") {
@@ -211,7 +211,7 @@ func Check(botUrl string, update Update, DanyaFlag bool) {
 		Help(botUrl, update)
 		CheckGit(botUrl, update)
 		Sun(botUrl, update)
-		GetTime(botUrl, update, DanyaFlag)
+		SendTime(botUrl, update, DanyaFlag)
 		SendMsg(botUrl, update, Dice("/d20"))
 		Ball8(botUrl, update)
 		SendRandomSticker(botUrl, update)
@@ -295,14 +295,19 @@ func CheckGit(botUrl string, update Update) {
 		switch dataLevel {
 		case 2:
 			SendMsg(botUrl, update, "Коммитов за сегодня: "+commits+", неплохо!")
+			SendStck(botUrl, update, "CAACAgIAAxkBAAIXWmGyDE1aVXGUY6lcjKxx9bOn0JA1AAJOAAOtZbwUIWzOXysr2zwjBA")
 		case 3:
 			SendMsg(botUrl, update, "Коммитов за сегодня: "+commits+", отлично!!")
+			SendStck(botUrl, update, "CAACAgIAAxkBAAIXXmGyDGGOqHzR7Bu4sxu7BOFSJ5jAAAImAAOtZbwUfEYfHGky-lQjBA")
 		case 4:
 			SendMsg(botUrl, update, "Коммитов за сегодня: "+commits+", прекрасно!!!")
+			SendStck(botUrl, update, "CAACAgIAAxkBAAIXXGGyDFClr69PKZXJo9dlYMbyilXLAAI1AAOtZbwU9aVxXMUw5eAjBA")
 		default:
 			SendMsg(botUrl, update, "Коммитов за сегодня: "+commits)
+			SendStck(botUrl, update, "CAACAgIAAxkBAAIXYmGyDUThPUFILpg56oW5ER3ew3TeAAI5AAOtZbwUdHz8lasybOojBA")
 		}
 		return
 	}
 	SendMsg(botUrl, update, "Коммитов за сегодня пока ещё нет")
+	SendStck(botUrl, update, "CAACAgIAAxkBAAIXYGGyDPXZSJOs2zaWpgIbcqgDBGmhAAJDAAOtZbwU_-iXZG7hfLsjBA")
 }

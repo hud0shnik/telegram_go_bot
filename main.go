@@ -101,7 +101,7 @@ func respond(botUrl string, update mods.Update) error {
 			mods.Help(botUrl, update)
 			return nil
 		case "/time", "какой сегодня день?", "сколько времени?":
-			mods.GetTime(botUrl, update, DanyaFlag)
+			mods.SendTime(botUrl, update, DanyaFlag)
 			return nil
 		case "owo":
 			mods.SendMsg(botUrl, update, "UwU")
