@@ -38,8 +38,6 @@ type Temp struct {
 	Night   float32 `json:"night"`
 	Evening float32 `json:"eve"`
 	Morning float32 `json:"morn"`
-	Min     float32 `json:"min"`
-	Max     float32 `json:"max"`
 }
 
 type Current struct {
