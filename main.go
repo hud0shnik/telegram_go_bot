@@ -95,7 +95,7 @@ func respond(botUrl string, update mods.Update) error {
 			mods.Sun(botUrl, update)
 			return nil
 		case "/coin":
-			mods.SendMsg(botUrl, update, mods.Coin())
+			mods.Coin(botUrl, update)
 			return nil
 		case "/start", "/help":
 			mods.Help(botUrl, update)

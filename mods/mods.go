@@ -107,11 +107,12 @@ func Random(n int) int {
 	return rand.Intn(n)
 }
 
-func Coin() string {
+func Coin(botUrl string, update Update) {
 	if Random(2) == 0 {
-		return "Орёл"
+		SendMsg(botUrl, update, "Орёл")
+	} else {
+		SendMsg(botUrl, update, "Решка")
 	}
-	return "Решка"
 }
 
 func SendFromReddit(botUrl string, update Update, subj string) error {
@@ -206,7 +207,7 @@ func Check(botUrl string, update Update, DanyaFlag bool) {
 		SendDailyWeather(botUrl, update, 3)
 		SendCryptoData(botUrl, update)
 		SendFromReddit(botUrl, update, "")
-		SendMsg(botUrl, update, Coin())
+		Coin(botUrl, update)
 		Help(botUrl, update)
 		CheckGit(botUrl, update)
 		Sun(botUrl, update)
