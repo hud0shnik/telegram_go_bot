@@ -55,7 +55,6 @@ func getUpdates(botUrl string, offset int) ([]mods.Update, error) {
 
 //	https://core.telegram.org/bots/api#using-a-local-bot-api-server
 func respond(botUrl string, update mods.Update) error {
-	DanyaFlag := update.Message.Chat.ChatId == viper.GetInt("DanyaChatId")
 	msg := strings.ToLower(update.Message.Text)
 
 	if update.Message.Sticker.File_id != "" {
@@ -63,10 +62,8 @@ func respond(botUrl string, update mods.Update) error {
 		return nil
 	}
 
-	if msg == "" {
-		mods.SendMsg(botUrl, update, "Пока я воспринимаю только текст и стикеры, извини 🤷🏻‍♂️")
-		return nil
-	} else {
+	if msg != "" {
+		DanyaFlag := update.Message.Chat.ChatId == viper.GetInt("DanyaChatId")
 
 		switch msg {
 		case "/check":
@@ -97,9 +94,6 @@ func respond(botUrl string, update mods.Update) error {
 		case "/sun":
 			mods.Sun(botUrl, update)
 			return nil
-		case "молодец", "неплохо", "ок":
-			mods.SendMsg(botUrl, update, "Стараюсь UwU")
-			return nil
 		case "/coin":
 			mods.SendMsg(botUrl, update, mods.Coin())
 			return nil
@@ -111,6 +105,9 @@ func respond(botUrl string, update mods.Update) error {
 			return nil
 		case "owo":
 			mods.SendMsg(botUrl, update, "UwU")
+			return nil
+		case "молодец", "неплохо", "ок":
+			mods.SendMsg(botUrl, update, "Стараюсь UwU")
 			return nil
 		}
 
@@ -127,6 +124,10 @@ func respond(botUrl string, update mods.Update) error {
 		}
 
 		mods.SendMsg(botUrl, update, "OwO")
+		return nil
+
+	} else {
+		mods.SendMsg(botUrl, update, "Пока я воспринимаю только текст и стикеры, извини 🤷🏻‍♂️")
 		return nil
 	}
 }
