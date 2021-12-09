@@ -337,7 +337,7 @@ func CheckIPAdress(botUrl string, update Update, IP string) {
 			return
 		}
 	}
-
+	SendMsg(botUrl, update, "Ищу...")
 	url := "https://api.ip2country.info/ip?" + IP
 	req, _ := http.NewRequest("GET", url, nil)
 	res, err := http.DefaultClient.Do(req)
@@ -357,7 +357,7 @@ func CheckIPAdress(botUrl string, update Update, IP string) {
 		SendMsg(botUrl, update, "Не могу найти этот IP")
 		return
 	}
-
-	SendMsg(botUrl, update, "Страна происхождения - "+rs.CountryName+" "+rs.CountryEmoji+
+	SendMsg(botUrl, update, "Нашёл! Страна происхождения - "+rs.CountryName+" "+rs.CountryEmoji+
 		"\n\nМы не храним IP, которые просят проверить пользователи, весь код бота можно найти на гитхабе.")
+	SendStck(botUrl, update, "CAACAgIAAxkBAAIXqmGyGtvN_JHUQVDXspAX5jP3BvU9AAI5AAOtZbwUdHz8lasybOojBA")
 }
