@@ -100,8 +100,11 @@ func respond(botUrl string, update mods.Update) error {
 		case "/start", "/help":
 			mods.Help(botUrl, update)
 			return nil
-		case "/time", "какой сегодня день?", "сколько времени?":
+		case "/time", "какой сегодня день?":
 			mods.SendTime(botUrl, update, DanyaFlag)
+			return nil
+		case "/ip":
+			mods.SendMsg(botUrl, update, "Чтобы узнать страну по ip, отправьте: \n\n/ip 67.77.77.7")
 			return nil
 		case "owo":
 			mods.SendMsg(botUrl, update, "UwU")
