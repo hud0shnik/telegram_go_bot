@@ -322,6 +322,11 @@ func CheckIPAdress(botUrl string, update Update, IP string) {
 	if IP[0] == ' ' {
 		IP = IP[1:]
 	}
+	if IP == "127.0.0.1" {
+		SendMsg(botUrl, update, "Айпишник локалхоста, ага")
+		SendStck(botUrl, update, "CAACAgIAAxkBAAIYLGGzR7310Hqf8K2sljgcQF8kgOpYAAJTAAOtZbwUo9c59oswVBQjBA")
+		return
+	}
 	ipArray := strings.Split(IP, ".")
 	if len(ipArray) != 4 {
 		SendMsg(botUrl, update, "Не могу считать этот IP")
