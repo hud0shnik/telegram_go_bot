@@ -57,11 +57,6 @@ func getUpdates(botUrl string, offset int) ([]mods.Update, error) {
 func respond(botUrl string, update mods.Update) error {
 	msg := strings.ToLower(update.Message.Text)
 
-	if update.Message.Sticker.File_id != "" {
-		mods.SendRandomSticker(botUrl, update)
-		return nil
-	}
-
 	if msg != "" {
 		DanyaFlag := update.Message.Chat.ChatId == viper.GetInt("DanyaChatId")
 
@@ -126,7 +121,7 @@ func respond(botUrl string, update mods.Update) error {
 			return nil
 		}
 
-		if lenMsg > 1 && ((msg[lenMsg-1] == '?') || (msg[lenMsg-2] == '?')) {
+		if msg[lenMsg-1] == '?' {
 			mods.Ball8(botUrl, update)
 			return nil
 		}
@@ -135,7 +130,11 @@ func respond(botUrl string, update mods.Update) error {
 		return nil
 
 	} else {
-		mods.SendMsg(botUrl, update, "Пока я воспринимаю только текст и стикеры, извини 🤷🏻‍♂️")
+		if update.Message.Sticker.File_id != "" {
+			mods.SendRandomSticker(botUrl, update)
+			return nil
+		}
+		mods.SendMsg(botUrl, update, "Пока я воспринимаю только текст и стикеры  🤷🏻‍♂️")
 		return nil
 	}
 }
