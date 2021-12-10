@@ -58,11 +58,10 @@ func respond(botUrl string, update mods.Update) error {
 	msg := strings.ToLower(update.Message.Text)
 
 	if msg != "" {
-		DanyaFlag := update.Message.Chat.ChatId == viper.GetInt("DanyaChatId")
 
 		switch msg {
 		case "/check":
-			mods.Check(botUrl, update, DanyaFlag)
+			mods.Check(botUrl, update)
 			return nil
 		case "/git":
 			mods.CheckGit(botUrl, update)

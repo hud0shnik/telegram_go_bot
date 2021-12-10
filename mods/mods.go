@@ -69,7 +69,6 @@ func Help(botUrl string, update Update) {
 		"\n\n/ip 67.77.77.7 - узнать страну по ip"+
 		"\n\n/git - количество коммитов за сегодня"+
 		"\n\n/crypto - узнать текущий курс криптовалюты SHIB"+
-		"\n\n/time - узнать какое сейчас время"+
 		"\n\n/d20 - кинуть д20, вместо 20 можно поставить любое число"+
 		"\n\n/coin - подбросить монетку"+
 		"\n\n/meme - мем с реддита (смотреть на свой страх и риск, я за этот контент не отвечаю 😅)"+
@@ -178,8 +177,8 @@ func SendCryptoData(botUrl string, update Update) {
 	}
 }
 
-func Check(botUrl string, update Update, DanyaFlag bool) {
-	if DanyaFlag {
+func Check(botUrl string, update Update) {
+	if update.Message.Chat.ChatId == viper.GetInt("DanyaChatId") {
 		start := time.Now()
 
 		fmt.Println("Start Check() ...")
