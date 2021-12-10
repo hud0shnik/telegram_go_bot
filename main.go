@@ -104,7 +104,7 @@ func respond(botUrl string, update mods.Update) error {
 		case "owo":
 			mods.SendMsg(botUrl, update, "UwU")
 			return nil
-		case "молодец", "неплохо", "ок":
+		case "молодец", "неплохо":
 			mods.SendMsg(botUrl, update, "Стараюсь UwU")
 			return nil
 		}

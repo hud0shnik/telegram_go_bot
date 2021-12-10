@@ -231,7 +231,7 @@ func Check(botUrl string, update Update, DanyaFlag bool) {
 		SendMsg(botUrl, update, "Проверка заняла "+time.Since(start).String())
 		return
 	}
-	SendMsg(botUrl, update, "Error 403! Beep Bop... Forbidden! Access denied 🤖")
+	SendMsg(botUrl, update, "Error 403! Beep Boop... Forbidden! Access denied 🤖")
 }
 
 func SendErrorMessage(botUrl string, update Update, errorCode int) {
@@ -310,12 +310,12 @@ func CheckGit(botUrl string, update Update) {
 			SendStck(botUrl, update, "CAACAgIAAxkBAAIXXGGyDFClr69PKZXJo9dlYMbyilXLAAI1AAOtZbwU9aVxXMUw5eAjBA")
 		default:
 			SendMsg(botUrl, update, "Коммитов за сегодня: "+commits)
-			SendStck(botUrl, update, "CAACAgIAAxkBAAIXYmGyDUThPUFILpg56oW5ER3ew3TeAAI5AAOtZbwUdHz8lasybOojBA")
+			SendStck(botUrl, update, "CAACAgIAAxkBAAIYG2GzRVNm_d_mVDIOaiLXkGukArlTAAJDAAOtZbwU_-iXZG7hfLsjBA")
 		}
 		return
 	}
 	SendMsg(botUrl, update, "Коммитов за сегодня пока ещё нет")
-	SendStck(botUrl, update, "CAACAgIAAxkBAAIXYGGyDPXZSJOs2zaWpgIbcqgDBGmhAAJDAAOtZbwU_-iXZG7hfLsjBA")
+	SendStck(botUrl, update, "CAACAgIAAxkBAAIYG2GzRVNm_d_mVDIOaiLXkGukArlTAAJDAAOtZbwU_-iXZG7hfLsjBA")
 }
 
 func CheckIPAdress(botUrl string, update Update, IP string) {
