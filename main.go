@@ -13,7 +13,7 @@ import (
 )
 
 func main() {
-	err := mods.InitConfig()
+	err := initConfig()
 	if err != nil {
 		fmt.Println("Config error: ", err)
 		return
@@ -35,6 +35,12 @@ func main() {
 	}
 }
 
+func initConfig() error {
+	viper.AddConfigPath("configs")
+	viper.SetConfigName("config")
+
+	return viper.ReadInConfig()
+}
 func getUpdates(botUrl string, offset int) ([]mods.Update, error) {
 	resp, err := http.Get(botUrl + "/getUpdates?offset=" + strconv.Itoa(offset))
 	if err != nil {

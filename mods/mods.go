@@ -54,13 +54,6 @@ type IP2CountryResponse struct {
 	CountryEmoji string `json:"countryEmoji"`
 }
 
-func InitConfig() error {
-	viper.AddConfigPath("configs")
-	viper.SetConfigName("config")
-
-	return viper.ReadInConfig()
-}
-
 func Help(botUrl string, update Update) {
 	SendMsg(botUrl, update, "Привет👋🏻, вот список команд:"+
 		"\n\n/weather - показать погоду на Ольховой"+

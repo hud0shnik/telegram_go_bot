@@ -55,7 +55,6 @@ type WeatherInfo struct {
 }
 
 func Sun(botUrl string, update Update) error {
-	InitConfig()
 	url := "https://api.openweathermap.org/data/2.5/onecall?lat=55.5692101&lon=37.4588852&lang=ru&exclude=minutely,alerts&units=metric&appid=" + viper.GetString("weatherToken")
 	req, _ := http.NewRequest("GET", url, nil)
 	res, err := http.DefaultClient.Do(req)
@@ -79,7 +78,6 @@ func Sun(botUrl string, update Update) error {
 }
 
 func SendDailyWeather(botUrl string, update Update, days int) error {
-	InitConfig()
 	url := "https://api.openweathermap.org/data/2.5/onecall?lat=55.5692101&lon=37.4588852&lang=ru&exclude=minutely,alerts&units=metric&appid=" + viper.GetString("weatherToken")
 	req, _ := http.NewRequest("GET", url, nil)
 	res, err := http.DefaultClient.Do(req)
@@ -107,7 +105,6 @@ func SendDailyWeather(botUrl string, update Update, days int) error {
 }
 
 func SendCurrentWeather(botUrl string, update Update) error {
-	InitConfig()
 	url := "https://api.openweathermap.org/data/2.5/onecall?lat=55.5692101&lon=37.4588852&lang=ru&exclude=minutely,alerts&units=metric&appid=" + viper.GetString("weatherToken")
 	req, _ := http.NewRequest("GET", url, nil)
 	res, err := http.DefaultClient.Do(req)
