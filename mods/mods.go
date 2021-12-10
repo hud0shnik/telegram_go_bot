@@ -139,7 +139,7 @@ func SendFromReddit(botUrl string, update Update, subj string) error {
 
 	if rs.Nsfw || rs.Spoiler {
 		rs.Url = "https://belikebill.ga/billgen-API.php?default=1"
-		rs.Title = "Мем оказался со спойлером или nsfw-контентом, поэтому вместо него вот тебе картинка с Биллом :^)"
+		rs.Title = "Мем оказался со спойлером или nsfw-контентом, поэтому я заменил его на эту картинку"
 	}
 
 	botImageMessage := SendPhoto{
@@ -178,32 +178,6 @@ func SendCryptoData(botUrl string, update Update) {
 	}
 }
 
-func SendTime(botUrl string, update Update, DanyaFlag bool) {
-	currentTime := time.Now().Add(3 * time.Hour)
-
-	switch currentTime.Format("01-02") {
-	case "01-01":
-		SendMsg(botUrl, update, "С Новым годом!!!")
-		SendStck(botUrl, update, "CAACAgIAAxkBAAIWrmGvduu6ERm7-5MIXiO-gyQ060gAA20AA8A2TxO5jCglZ0hJGyME")
-		break
-	case "01-07":
-		SendMsg(botUrl, update, "С Рождеством!!")
-		SendStck(botUrl, update, "CAACAgIAAxkBAAIWs2GveCDTQW0YQxSIGKcVVUBTQBhlAAIYAAOtZbwUjebqlxyfJ9IjBA")
-		break
-	case "11-08":
-		SendMsg(botUrl, update, "Сегодня день рождения самого умного человека во всей Москве - Дани!!!")
-		if DanyaFlag {
-			SendMsg(botUrl, update, "🎂 C др, создатель!!! 🥳 🎉")
-		}
-		SendStck(botUrl, update, "CAACAgIAAxkBAAINzWGH6G2PfGPH2eRiI-x9fHQ_McDSAAJZAAOtZbwU9LtHF4nhLQkiBA")
-		break
-	default:
-		SendMsg(botUrl, update, currentTime.Format("15:04 2006-01-02"))
-		SendStck(botUrl, update, "CAACAgIAAxkBAAIN6GGH7YzD5gGxsI3XYzLICzRnQ0vWAAKQAgACVp29CjLSqXG41NC1IgQ")
-	}
-
-}
-
 func Check(botUrl string, update Update, DanyaFlag bool) {
 	if DanyaFlag {
 		start := time.Now()
@@ -217,7 +191,6 @@ func Check(botUrl string, update Update, DanyaFlag bool) {
 		Help(botUrl, update)
 		CheckGit(botUrl, update)
 		Sun(botUrl, update)
-		SendTime(botUrl, update, DanyaFlag)
 		SendMsg(botUrl, update, Dice("/d20"))
 		Ball8(botUrl, update)
 		SendRandomSticker(botUrl, update)
