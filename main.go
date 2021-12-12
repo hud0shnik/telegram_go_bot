@@ -26,6 +26,7 @@ func main() {
 		updates, err := getUpdates(botUrl, offSet)
 		if err != nil {
 			fmt.Println("Something went wrong: ", err)
+			return
 		}
 		for _, update := range updates {
 			respond(botUrl, update)

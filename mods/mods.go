@@ -179,6 +179,7 @@ func SendCryptoData(botUrl string, update Update) {
 	if err != nil {
 		fmt.Println("Binance API error: ", err)
 		SendErrorMessage(botUrl, update, 1)
+		return
 	}
 
 	defer res.Body.Close()
