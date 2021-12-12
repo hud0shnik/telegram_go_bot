@@ -269,13 +269,13 @@ func CheckGit(botUrl string, update Update) {
 			SendStck(botUrl, update, "CAACAgIAAxkBAAIXWmGyDE1aVXGUY6lcjKxx9bOn0JA1AAJOAAOtZbwUIWzOXysr2zwjBA")
 		case 3:
 			SendMsg(botUrl, update, "Коммитов за сегодня: "+commits+", отлично!!")
-			SendStck(botUrl, update, "CAACAgIAAxkBAAIXXmGyDGGOqHzR7Bu4sxu7BOFSJ5jAAAImAAOtZbwUfEYfHGky-lQjBA")
+			SendStck(botUrl, update, "CAACAgIAAxkBAAIYymG11mMdODUQUZGsQO97V9O0ZLJCAAJeAAOtZbwUvL_TIkzK-MsjBA")
 		case 4:
 			SendMsg(botUrl, update, "Коммитов за сегодня: "+commits+", прекрасно!!!")
 			SendStck(botUrl, update, "CAACAgIAAxkBAAIXXGGyDFClr69PKZXJo9dlYMbyilXLAAI1AAOtZbwU9aVxXMUw5eAjBA")
 		default:
 			SendMsg(botUrl, update, "Коммитов за сегодня: "+commits)
-			SendStck(botUrl, update, "CAACAgIAAxkBAAIYG2GzRVNm_d_mVDIOaiLXkGukArlTAAJDAAOtZbwU_-iXZG7hfLsjBA")
+			SendStck(botUrl, update, "CAACAgIAAxkBAAIYwmG11bAfndI1wciswTEVJUEdgB2jAAI5AAOtZbwUdHz8lasybOojBA")
 		}
 		return
 	}
