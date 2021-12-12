@@ -132,8 +132,8 @@ func SendDogPic(botUrl string, update Update) error {
 	json.Unmarshal(body, &rs)
 
 	botImageMessage := SendPhoto{
-		ChatId: update.Message.Chat.ChatId,
-		Photo:  rs.DogUrl,
+		ChatId:   update.Message.Chat.ChatId,
+		PhotoUrl: rs.DogUrl,
 	}
 
 	SendPict(botUrl, update, botImageMessage)
@@ -162,9 +162,9 @@ func SendFromReddit(botUrl string, update Update, subj string) error {
 	}
 
 	botImageMessage := SendPhoto{
-		ChatId:  update.Message.Chat.ChatId,
-		Photo:   rs.Url,
-		Caption: rs.Title,
+		ChatId:   update.Message.Chat.ChatId,
+		PhotoUrl: rs.Url,
+		Caption:  rs.Title,
 	}
 
 	SendPict(botUrl, update, botImageMessage)

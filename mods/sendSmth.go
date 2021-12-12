@@ -15,8 +15,8 @@ type SendMessage struct {
 }
 
 type SendSticker struct {
-	ChatId  int    `json:"chat_id"`
-	Sticker string `json:"sticker"`
+	ChatId     int    `json:"chat_id"`
+	StickerUrl string `json:"sticker"`
 }
 type SendPhoto struct {
 	ChatId  int    `json:"chat_id"`
@@ -46,8 +46,8 @@ func SendMsg(botUrl string, update Update, msg string) error {
 
 func SendStck(botUrl string, update Update, url string) error {
 	botStickerMessage := SendSticker{
-		ChatId:  update.Message.Chat.ChatId,
-		Sticker: url,
+		ChatId:     update.Message.Chat.ChatId,
+		StickerUrl: url,
 	}
 	buf, err := json.Marshal(botStickerMessage)
 	if err != nil {
