@@ -53,6 +53,9 @@ type IP2CountryResponse struct {
 	CountryName  string `json:"countryName"`
 	CountryEmoji string `json:"countryEmoji"`
 }
+type DogResponse struct {
+	DogUrl string `json:"message"`
+}
 
 func Help(botUrl string, update Update) {
 	SendMsg(botUrl, update, "Привет👋🏻, вот список команд:"+
@@ -111,6 +114,30 @@ func Coin(botUrl string, update Update) {
 	} else {
 		SendMsg(botUrl, update, "Решка")
 	}
+}
+func SendDogPic(botUrl string, update Update) error {
+	url := "https://dog.ceo/api/breeds/image/random"
+	req, _ := http.NewRequest("GET", url, nil)
+	res, err := http.DefaultClient.Do(req)
+
+	if err != nil {
+		fmt.Println("Dog API error: ", err)
+		SendErrorMessage(botUrl, update, 1)
+		return err
+	}
+
+	defer res.Body.Close()
+	body, _ := ioutil.ReadAll(res.Body)
+	var rs = new(DogResponse)
+	json.Unmarshal(body, &rs)
+
+	botImageMessage := SendPhoto{
+		ChatId: update.Message.Chat.ChatId,
+		Photo:  rs.DogUrl,
+	}
+
+	SendPict(botUrl, update, botImageMessage)
+	return nil
 }
 
 func SendFromReddit(botUrl string, update Update, subj string) error {
