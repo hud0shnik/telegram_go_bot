@@ -19,9 +19,9 @@ type SendSticker struct {
 	StickerUrl string `json:"sticker"`
 }
 type SendPhoto struct {
-	ChatId  int    `json:"chat_id"`
-	Photo   string `json:"photo"`
-	Caption string `json:"caption"`
+	ChatId   int    `json:"chat_id"`
+	PhotoUrl string `json:"photo"`
+	Caption  string `json:"caption"`
 }
 
 func SendMsg(botUrl string, update Update, msg string) error {
