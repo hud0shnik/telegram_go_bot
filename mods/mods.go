@@ -87,7 +87,7 @@ func Dice(msg string) string {
 }
 
 func Ball8(botUrl string, update Update) {
-	answers := []string{
+	answers := [10]string{
 		"Да, конечно!",
 		"100%",
 		"Да.",
@@ -322,16 +322,19 @@ func CheckIPAdress(botUrl string, update Update, IP string) {
 	ipArray := strings.Split(IP, ".")
 	if len(ipArray) != 4 {
 		SendMsg(botUrl, update, "Не могу считать этот IP")
+		SendStck(botUrl, update, "CAACAgIAAxkBAAIY4mG13Vr0CzGwyXA1eL3esZVCWYFhAAJIAAOtZbwUgHOKzxQtAAHcIwQ")
 		return
 	}
 	for _, ipPart := range ipArray {
 		num, err := strconv.Atoi(ipPart)
 		if err != nil || num < 0 || num > 255 {
 			SendMsg(botUrl, update, "Неправильно набран IP")
+			SendStck(botUrl, update, "CAACAgIAAxkBAAIY4GG13SepKZJisWVrMrzQ9JyRpWFrAAJKAAOtZbwUiXsNXgiPepIjBA")
 			return
 		}
 		if ipPart != fmt.Sprint(num) {
 			SendMsg(botUrl, update, "Неправильно набран IP")
+			SendStck(botUrl, update, "CAACAgIAAxkBAAIY4GG13SepKZJisWVrMrzQ9JyRpWFrAAJKAAOtZbwUiXsNXgiPepIjBA")
 			return
 		}
 	}
@@ -353,6 +356,7 @@ func CheckIPAdress(botUrl string, update Update, IP string) {
 
 	if rs.CountryName == "" {
 		SendMsg(botUrl, update, "Не могу найти этот IP")
+		SendStck(botUrl, update, "CAACAgIAAxkBAAIY4mG13Vr0CzGwyXA1eL3esZVCWYFhAAJIAAOtZbwUgHOKzxQtAAHcIwQ")
 		return
 	}
 	SendMsg(botUrl, update, "Нашёл! Страна происхождения - "+rs.CountryName+" "+rs.CountryEmoji+
