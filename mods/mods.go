@@ -13,13 +13,13 @@ import (
 	"github.com/spf13/viper"
 )
 
+type TelegramResponse struct {
+	Result []Update `json:"result"`
+}
+
 type Update struct {
 	UpdateId int     `json:"update_id"`
 	Message  Message `json:"message"`
-}
-
-type Sticker struct {
-	File_id string `json:"file_id"`
 }
 
 type Message struct {
@@ -32,8 +32,8 @@ type Chat struct {
 	ChatId int `json:"id"`
 }
 
-type TelegramResponse struct {
-	Result []Update `json:"result"`
+type Sticker struct {
+	File_id string `json:"file_id"`
 }
 
 type RedditResponse struct {
@@ -225,27 +225,25 @@ func Check(botUrl string, update Update) {
 }
 
 func SendErrorMessage(botUrl string, update Update, errorCode int) {
-	result := "err"
+	result := "Неизвестная ошибка"
 	switch errorCode {
 	case 1:
 		result = "Ошибка работы API"
-		break
 	case 2:
 		result = "Ошибка работы json.Marshal()"
-		break
 	case 3:
 		result = "Ошибка работы метода SendSticker"
-		break
 	case 4:
 		result = "Ошибка работы метода SendPhoto"
-		break
 	case 5:
 		result = "Ошибка работы метода SendMessage"
-		break
 	case 6:
 		result = "Ошибка работы stickers.json"
-		break
 	}
+	var updateDanya Update
+	updateDanya.Message.Chat.ChatId = viper.GetInt("DanyaChatId")
+	SendMsg(botUrl, updateDanya, "Дань, тут у одного из пользователей "+result+", надеюсь он скоро тебе о ней напишет.")
+
 	result += ", свяжитесь с моим создателем для устранения проблемы \n\nhttps://vk.com/hud0shnik\nhttps://vk.com/hud0shnik\nhttps://vk.com/hud0shnik"
 	SendMsg(botUrl, update, result)
 }
@@ -360,4 +358,11 @@ func CheckIPAdress(botUrl string, update Update, IP string) {
 	SendMsg(botUrl, update, "Нашёл! Страна происхождения - "+rs.CountryName+" "+rs.CountryEmoji+
 		"\n\nМы не храним IP, которые просят проверить пользователи, весь код бота можно найти на гитхабе.")
 	SendStck(botUrl, update, "CAACAgIAAxkBAAIXqmGyGtvN_JHUQVDXspAX5jP3BvU9AAI5AAOtZbwUdHz8lasybOojBA")
+}
+
+func InitConfig() error {
+	viper.AddConfigPath("configs")
+	viper.SetConfigName("config")
+
+	return viper.ReadInConfig()
 }
