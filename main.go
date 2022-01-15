@@ -73,13 +73,6 @@ func respond(botUrl string, update mods.Update) error {
 		case "/git":
 			mods.CheckGit(botUrl, update)
 			return nil
-		case "/weather7":
-			mods.SendDailyWeather(botUrl, update, 7)
-			return nil
-		case "/weather":
-			mods.SendCurrentWeather(botUrl, update)
-			mods.SendDailyWeather(botUrl, update, 3)
-			return nil
 		case "/meme":
 			mods.SendFromReddit(botUrl, update, "")
 			return nil
@@ -94,9 +87,6 @@ func respond(botUrl string, update mods.Update) error {
 			return nil
 		case "/crypto":
 			mods.SendCryptoData(botUrl, update)
-			return nil
-		case "/sun":
-			mods.Sun(botUrl, update)
 			return nil
 		case "/coin":
 			mods.Coin(botUrl, update)
