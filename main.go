@@ -139,6 +139,7 @@ func respond(botUrl string, update mods.Update) error {
 		}
 		// Если пользователь отправил не сообщение и не стикер:
 		mods.SendMsg(botUrl, update, "Пока я воспринимаю только текст и стикеры")
+		mods.SendStck(botUrl, update, "CAACAgIAAxkBAAIaImHkPqF8-PQVOwh_Kv1qQxIFpPyfAAJXAAOtZbwUZ0fPMqXZ_GcjBA")
 		return nil
 	}
 }
