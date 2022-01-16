@@ -13,6 +13,7 @@ import (
 	"github.com/spf13/viper"
 )
 
+// Структуры для работы с Telegram API
 type TelegramResponse struct {
 	Result []Update `json:"result"`
 }
@@ -36,6 +37,7 @@ type Sticker struct {
 	File_id string `json:"file_id"`
 }
 
+// Структуры для работы с другими API
 type RedditResponse struct {
 	Title   string `json:"title"`
 	Url     string `json:"url"`
@@ -57,6 +59,8 @@ type DogResponse struct {
 	DogUrl string `json:"message"`
 }
 
+// Функции бота
+// Вывод списка всех команд
 func Help(botUrl string, update Update) {
 	SendMsg(botUrl, update, "Привет👋🏻, вот список команд:"+
 		"\n\n/weather - показать погоду на Ольховой"+
@@ -72,6 +76,7 @@ func Help(botUrl string, update Update) {
 		"\n\nТакже можешь позадовать вопросы, я на них отвечу 🙃")
 }
 
+// Функция, реализующая бросок n-гранного кубика
 func Dice(msg string) string {
 	num, err := strconv.Atoi(msg[2:])
 	if err != nil {
@@ -80,12 +85,14 @@ func Dice(msg string) string {
 	if num < 1 {
 		return "как я по твоему кину такой кубик? Через четвёртое пространство?🤨"
 	}
+	// D10 - единственный кубик, который имеет грань с номером "0"
 	if num == 10 {
 		return strconv.Itoa(Random(10))
 	}
 	return strconv.Itoa(1 + Random(num))
 }
 
+// Функция генерации случайных ответов
 func Ball8(botUrl string, update Update) {
 	answers := [10]string{
 		"Да, конечно!",
@@ -103,11 +110,13 @@ func Ball8(botUrl string, update Update) {
 	SendMsg(botUrl, update, answers[Random(len(answers))])
 }
 
+// Функция, отвечающая за случайные числа
 func Random(n int) int {
 	rand.Seed(time.Now().Unix())
 	return rand.Intn(n)
 }
 
+// Функция броска монетки
 func Coin(botUrl string, update Update) {
 	if Random(2) == 0 {
 		SendMsg(botUrl, update, "Орёл")
@@ -115,6 +124,8 @@ func Coin(botUrl string, update Update) {
 		SendMsg(botUrl, update, "Решка")
 	}
 }
+
+// Отправка фотографии случайной собаки
 func SendDogPic(botUrl string, update Update) error {
 	url := "https://dog.ceo/api/breeds/image/random"
 	req, _ := http.NewRequest("GET", url, nil)
@@ -140,6 +151,7 @@ func SendDogPic(botUrl string, update Update) error {
 	return nil
 }
 
+// Отправка случайного поста с Реддита (мемы, кошки, попугаи)
 func SendFromReddit(botUrl string, update Update, subj string) error {
 	url := "https://meme-api.herokuapp.com/gimme/" + subj
 	req, _ := http.NewRequest("GET", url, nil)
@@ -171,6 +183,7 @@ func SendFromReddit(botUrl string, update Update, subj string) error {
 	return nil
 }
 
+// Вывод курса криптовалюты SHIB
 func SendCryptoData(botUrl string, update Update) {
 	url := "https://api2.binance.com/api/v3/ticker/24hr?symbol=SHIBBUSD"
 	req, _ := http.NewRequest("GET", url, nil)
@@ -198,6 +211,7 @@ func SendCryptoData(botUrl string, update Update) {
 	}
 }
 
+// Функция только для меня, проверка всех комманд
 func Check(botUrl string, update Update) {
 	if update.Message.Chat.ChatId == viper.GetInt("DanyaChatId") {
 		start := time.Now()
@@ -221,9 +235,11 @@ func Check(botUrl string, update Update) {
 		SendMsg(botUrl, update, "Проверка заняла "+time.Since(start).String())
 		return
 	}
+
 	SendMsg(botUrl, update, "Error 403! Beep Boop... Forbidden! Access denied 🤖")
 }
 
+// Обработчик ошибок
 func SendErrorMessage(botUrl string, update Update, errorCode int) {
 	result := "Неизвестная ошибка"
 	switch errorCode {
@@ -240,51 +256,56 @@ func SendErrorMessage(botUrl string, update Update, errorCode int) {
 	case 6:
 		result = "Ошибка работы stickers.json"
 	}
+	// При возникновении ошибки, бот меня оповестит (анонимно)
 	var updateDanya Update
 	updateDanya.Message.Chat.ChatId = viper.GetInt("DanyaChatId")
 	SendMsg(botUrl, updateDanya, "Дань, тут у одного из пользователей "+result+", надеюсь он скоро тебе о ней напишет.")
-
+	// Вывод ошибки пользователю
+	// И просьба связаться со мной для её устранения
 	result += ", свяжитесь с моим создателем для устранения проблемы \n\nhttps://vk.com/hud0shnik\nhttps://vk.com/hud0shnik\nhttps://vk.com/hud0shnik"
 	SendMsg(botUrl, update, result)
 }
 
+// Вывод количества моих коммитов за сегодня
 func CheckGit(botUrl string, update Update) {
+	// Формирование и исполнение запроса
 	resp, err := http.Get("https://github.com/hud0shnik")
-
 	if err != nil {
 		fmt.Println("Github error: ", err)
 		SendErrorMessage(botUrl, update, 1)
 		return
 	}
-
+	// Запись информации из респонса
 	defer resp.Body.Close()
 	body, _ := ioutil.ReadAll(resp.Body)
-	//Добавляю 3 часа из-за того, что сервер находится в другом часовом поясе
+
+	// +3 часа к локальному времени из-за местоположения сервера
 	currentDate := string(time.Now().Add(3 * time.Hour).Format("2006-01-02"))
 
-	//Вот так выглядит html одной ячейки:
-	//<rect width="11" height="11" x="-36" y="75" class="ContributionCalendar-day" rx="2" ry="2" data-count="1" data-date="2021-12-03" data-level="1"></rect>
-
+	// Вот так выглядит html одной ячейки:
+	// <rect width="11" height="11" x="-36" y="75" class="ContributionCalendar-day" rx="2" ry="2" data-count="1" data-date="2021-12-03" data-level="1"></rect>
 	if strings.Contains(string(body), "data-date=\""+currentDate+"\" data-level=\"") {
 		pageStr, commits := string(body), ""
 		i := 0
 
+		// Проход по всему html файлу в поисках нужной клетки
 		for ; i < len(pageStr)-40; i++ {
 			if pageStr[i:i+35] == "data-date=\""+currentDate+"\" data-level=\"" {
-				//так как количество коммитов стоит перед датой, переставляем i
+				// Так как количество коммитов стоит перед датой, переставляем i
 				i -= 7
 				break
 			}
 		}
 		for ; pageStr[i] != '"'; i++ {
-			//доводит i до символа "
+			// Доводит i до символа "
 		}
 		for i++; pageStr[i] != '"'; i++ {
-			//считывает значение в скобках
+			// Считывание значения в скобках
 			commits += string(pageStr[i])
 		}
 		for i += 35; pageStr[i] != '"'; i++ {
 		}
+		// Запись и обработка полученной информации (цвет клетки)
 		dataLevel, _ := strconv.Atoi(pageStr[i+1 : i+2])
 		switch dataLevel {
 		case 2:
@@ -306,6 +327,7 @@ func CheckGit(botUrl string, update Update) {
 	SendStck(botUrl, update, "CAACAgIAAxkBAAIYG2GzRVNm_d_mVDIOaiLXkGukArlTAAJDAAOtZbwU_-iXZG7hfLsjBA")
 }
 
+// Получение местоположения по IP адрессу
 func CheckIPAdress(botUrl string, update Update, IP string) {
 	if IP[0] == ' ' {
 		IP = IP[1:]
@@ -360,6 +382,7 @@ func CheckIPAdress(botUrl string, update Update, IP string) {
 	SendStck(botUrl, update, "CAACAgIAAxkBAAIXqmGyGtvN_JHUQVDXspAX5jP3BvU9AAI5AAOtZbwUdHz8lasybOojBA")
 }
 
+// Функция инициализации конфига (всех токенов)
 func InitConfig() error {
 	viper.AddConfigPath("configs")
 	viper.SetConfigName("config")
