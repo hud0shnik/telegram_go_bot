@@ -71,9 +71,6 @@ type GitHubGoAPIResponse struct {
 // Вывод списка всех команд
 func Help(botUrl string, update Update) {
 	SendMsg(botUrl, update, "Привет👋🏻, вот список команд:"+
-		"\n\n/weather - показать погоду на Ольховой"+
-		"\n\n/weather7 - показать погоду на 7 дней"+
-		"\n\n/sun - узнать о времени восхода и заката"+
 		"\n\n/ip 67.77.77.7 - узнать страну по ip"+
 		"\n\n/git - количество коммитов за сегодня"+
 		"\n\n/crypto - узнать текущий курс криптовалюты SHIB"+
@@ -242,7 +239,6 @@ func Check(botUrl string, update Update) {
 		SendMsg(botUrl, update, "Проверка заняла "+time.Since(start).String())
 		return
 	}
-
 	SendMsg(botUrl, update, "Error 403! Beep Boop... Forbidden! Access denied 🤖")
 }
 
