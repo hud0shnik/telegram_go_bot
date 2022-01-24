@@ -9,6 +9,7 @@ import (
 	"os"
 )
 
+// Структуры для отправки сообщений, стикеров и картинок
 type SendMessage struct {
 	ChatId int    `json:"chat_id"`
 	Text   string `json:"text"`
@@ -24,7 +25,10 @@ type SendPhoto struct {
 	Caption  string `json:"caption"`
 }
 
+// Функции отправки сообщений, стикеров и картинок
+// Отправка сообщения
 func SendMsg(botUrl string, update Update, msg string) error {
+	// Формирование сообщения
 	botMessage := SendMessage{
 		ChatId: update.Message.Chat.ChatId,
 		Text:   msg,
@@ -35,6 +39,8 @@ func SendMsg(botUrl string, update Update, msg string) error {
 		SendErrorMessage(botUrl, update, 2)
 		return err
 	}
+
+	// Отправка сообщения
 	_, err = http.Post(botUrl+"/sendMessage", "application/json", bytes.NewBuffer(buf))
 	if err != nil {
 		fmt.Println("SendMessage method error: ", err)
@@ -44,7 +50,9 @@ func SendMsg(botUrl string, update Update, msg string) error {
 	return nil
 }
 
+// Функция отправки стикера
 func SendStck(botUrl string, update Update, url string) error {
+	// Формирование стикера
 	botStickerMessage := SendSticker{
 		ChatId:     update.Message.Chat.ChatId,
 		StickerUrl: url,
@@ -55,6 +63,7 @@ func SendStck(botUrl string, update Update, url string) error {
 		SendErrorMessage(botUrl, update, 2)
 		return err
 	}
+	// Отправка стикера
 	_, err = http.Post(botUrl+"/sendSticker", "application/json", bytes.NewBuffer(buf))
 	if err != nil {
 		fmt.Println("SendSticker method error: ", err)
@@ -64,13 +73,16 @@ func SendStck(botUrl string, update Update, url string) error {
 	return nil
 }
 
+// Функция отправки картинок
 func SendPict(botUrl string, update Update, pic SendPhoto) error {
+	// Формирование картинки
 	buf, err := json.Marshal(pic)
 	if err != nil {
 		fmt.Println("Marshal json error: ", err)
 		SendErrorMessage(botUrl, update, 2)
 		return err
 	}
+	// Отправка картинки
 	_, err = http.Post(botUrl+"/sendPhoto", "application/json", bytes.NewBuffer(buf))
 	if err != nil {
 		fmt.Println("SendPhoto method error: ", err)
@@ -80,6 +92,7 @@ func SendPict(botUrl string, update Update, pic SendPhoto) error {
 	return nil
 }
 
+// Функция отправки случайного стикера с собакой
 func SendRandomShibaSticker(botUrl string, update Update, sadFlag bool) {
 	var stickers [5]string
 	if sadFlag {
@@ -102,7 +115,9 @@ func SendRandomShibaSticker(botUrl string, update Update, sadFlag bool) {
 	SendStck(botUrl, update, stickers[Random(len(stickers))])
 }
 
+// Отправка случайного стикера
 func SendRandomSticker(botUrl string, update Update) error {
+	// Открытие json файла
 	fileU, err := os.Open("mods/stickers.json")
 	if err != nil {
 		fmt.Println(err)
@@ -111,11 +126,12 @@ func SendRandomSticker(botUrl string, update Update) error {
 	}
 	defer fileU.Close()
 
+	// Запись стикеров в массив
 	bodyU, _ := ioutil.ReadAll(fileU)
 	stickers := [359]string{}
-
 	json.Unmarshal(bodyU, &stickers)
 
+	// Выбор и отправка случайного стикера
 	SendStck(botUrl, update, stickers[Random(len(stickers))])
 	return nil
 }
