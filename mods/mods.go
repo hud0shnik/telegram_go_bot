@@ -135,10 +135,10 @@ func Coin(botUrl string, update Update) {
 
 // Отправка фотографии случайной собаки
 func SendDogPic(botUrl string, update Update) error {
+	// Отправка реквеста и обработка респонса
 	url := "https://dog.ceo/api/breeds/image/random"
 	req, _ := http.NewRequest("GET", url, nil)
 	res, err := http.DefaultClient.Do(req)
-
 	if err != nil {
 		fmt.Println("Dog API error: ", err)
 		SendErrorMessage(botUrl, update, 1)
@@ -146,68 +146,67 @@ func SendDogPic(botUrl string, update Update) error {
 	}
 	defer res.Body.Close()
 	body, _ := ioutil.ReadAll(res.Body)
-
 	var response = new(DogResponse)
 	json.Unmarshal(body, &response)
 
+	// Формирование и отправка результата
 	botImageMessage := SendPhoto{
 		ChatId:   update.Message.Chat.ChatId,
 		PhotoUrl: response.DogUrl,
 	}
-
 	SendPict(botUrl, update, botImageMessage)
 	return nil
 }
 
 // Отправка случайного поста с Реддита (мемы, кошки, попугаи)
 func SendFromReddit(botUrl string, update Update, subj string) error {
+	// Отправка реквеста и обработка респонса
 	url := "https://meme-api.herokuapp.com/gimme/" + subj
 	req, _ := http.NewRequest("GET", url, nil)
 	res, err := http.DefaultClient.Do(req)
-
 	if err != nil {
 		fmt.Println("Meme API error: ", err)
 		SendErrorMessage(botUrl, update, 1)
 		return err
 	}
-
 	defer res.Body.Close()
 	body, _ := ioutil.ReadAll(res.Body)
 	var response = new(RedditResponse)
 	json.Unmarshal(body, &response)
 
+	// Проверка на запрещёнку
 	if response.Nsfw || response.Spoiler {
 		response.Url = "https://belikebill.ga/billgen-API.php?default=1"
 		response.Title = "Картинка оказалась со спойлером или nsfw-контентом, поэтому я заменил её на это"
 	}
 
+	// Формирование и отправка результата
 	botImageMessage := SendPhoto{
 		ChatId:   update.Message.Chat.ChatId,
 		PhotoUrl: response.Url,
 		Caption:  response.Title,
 	}
-
 	SendPict(botUrl, update, botImageMessage)
 	return nil
 }
 
 // Вывод курса криптовалюты SHIB
 func SendCryptoData(botUrl string, update Update) {
+	// Отправка реквеста и обработка респонса
 	url := "https://api2.binance.com/api/v3/ticker/24hr?symbol=SHIBBUSD"
 	req, _ := http.NewRequest("GET", url, nil)
 	res, err := http.DefaultClient.Do(req)
-
 	if err != nil {
 		fmt.Println("Binance API error: ", err)
 		SendErrorMessage(botUrl, update, 1)
 		return
 	}
-
 	defer res.Body.Close()
 	body, _ := ioutil.ReadAll(res.Body)
 	var response = new(CryptoResponse)
 	json.Unmarshal(body, &response)
 
+	// Формирование и отправка результата
 	if response.ChangePercent[0] == '-' {
 		SendMsg(botUrl, update, "За сегодняшний день курс "+response.Symbol+" упал на "+response.ChangePercent[1:]+"%\n"+
 			"до отметки в "+response.LastPrice+"$\n\n")
@@ -264,10 +263,12 @@ func SendErrorMessage(botUrl string, update Update, errorCode int) {
 	case 6:
 		result = "Ошибка работы stickers.json"
 	}
+
 	// При возникновении ошибки, бот меня оповестит (анонимно)
 	var updateDanya Update
 	updateDanya.Message.Chat.ChatId = viper.GetInt("DanyaChatId")
 	SendMsg(botUrl, updateDanya, "Дань, тут у одного из пользователей "+result+", надеюсь он скоро тебе о ней напишет.")
+
 	// Вывод ошибки пользователю
 	// И просьба связаться со мной для её устранения
 	result += ", свяжитесь с моим создателем для устранения проблемы \n\nhttps://vk.com/hud0shnik\nhttps://vk.com/hud0shnik\nhttps://vk.com/hud0shnik"
@@ -333,22 +334,23 @@ func CheckIPAdress(botUrl string, update Update, IP string) {
 			return
 		}
 	}
+
+	// Отправка реквеста и обработка респонса
 	SendMsg(botUrl, update, "Ищу...")
 	url := "https://api.ip2country.info/ip?" + IP
 	req, _ := http.NewRequest("GET", url, nil)
 	res, err := http.DefaultClient.Do(req)
-
 	if err != nil {
 		fmt.Println("IP2Country API error: ", err)
 		SendErrorMessage(botUrl, update, 1)
 		return
 	}
-
 	defer res.Body.Close()
 	body, _ := ioutil.ReadAll(res.Body)
 	var response = new(IP2CountryResponse)
 	json.Unmarshal(body, &response)
 
+	// Вывод результатов поиска
 	if response.CountryName == "" {
 		SendMsg(botUrl, update, "Не могу найти этот IP")
 		SendStck(botUrl, update, "CAACAgIAAxkBAAIY4mG13Vr0CzGwyXA1eL3esZVCWYFhAAJIAAOtZbwUgHOKzxQtAAHcIwQ")
