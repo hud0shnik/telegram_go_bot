@@ -55,6 +55,7 @@ type IP2CountryResponse struct {
 	CountryName  string `json:"countryName"`
 	CountryEmoji string `json:"countryEmoji"`
 }
+
 type DogResponse struct {
 	DogUrl string `json:"message"`
 }
@@ -143,15 +144,15 @@ func SendDogPic(botUrl string, update Update) error {
 		SendErrorMessage(botUrl, update, 1)
 		return err
 	}
-
 	defer res.Body.Close()
 	body, _ := ioutil.ReadAll(res.Body)
-	var rs = new(DogResponse)
-	json.Unmarshal(body, &rs)
+
+	var response = new(DogResponse)
+	json.Unmarshal(body, &response)
 
 	botImageMessage := SendPhoto{
 		ChatId:   update.Message.Chat.ChatId,
-		PhotoUrl: rs.DogUrl,
+		PhotoUrl: response.DogUrl,
 	}
 
 	SendPict(botUrl, update, botImageMessage)
@@ -172,18 +173,18 @@ func SendFromReddit(botUrl string, update Update, subj string) error {
 
 	defer res.Body.Close()
 	body, _ := ioutil.ReadAll(res.Body)
-	var rs = new(RedditResponse)
-	json.Unmarshal(body, &rs)
+	var response = new(RedditResponse)
+	json.Unmarshal(body, &response)
 
-	if rs.Nsfw || rs.Spoiler {
-		rs.Url = "https://belikebill.ga/billgen-API.php?default=1"
-		rs.Title = "Мем оказался со спойлером или nsfw-контентом, поэтому я заменил его на эту картинку"
+	if response.Nsfw || response.Spoiler {
+		response.Url = "https://belikebill.ga/billgen-API.php?default=1"
+		response.Title = "Картинка оказалась со спойлером или nsfw-контентом, поэтому я заменил её на это"
 	}
 
 	botImageMessage := SendPhoto{
 		ChatId:   update.Message.Chat.ChatId,
-		PhotoUrl: rs.Url,
-		Caption:  rs.Title,
+		PhotoUrl: response.Url,
+		Caption:  response.Title,
 	}
 
 	SendPict(botUrl, update, botImageMessage)
@@ -204,16 +205,16 @@ func SendCryptoData(botUrl string, update Update) {
 
 	defer res.Body.Close()
 	body, _ := ioutil.ReadAll(res.Body)
-	var rs = new(CryptoResponse)
-	json.Unmarshal(body, &rs)
+	var response = new(CryptoResponse)
+	json.Unmarshal(body, &response)
 
-	if rs.ChangePercent[0] == '-' {
-		SendMsg(botUrl, update, "За сегодняшний день курс "+rs.Symbol+" упал на "+rs.ChangePercent[1:]+"%\n"+
-			"до отметки в "+rs.LastPrice+"$\n\n")
+	if response.ChangePercent[0] == '-' {
+		SendMsg(botUrl, update, "За сегодняшний день курс "+response.Symbol+" упал на "+response.ChangePercent[1:]+"%\n"+
+			"до отметки в "+response.LastPrice+"$\n\n")
 		SendRandomShibaSticker(botUrl, update, true)
 	} else {
-		SendMsg(botUrl, update, "За сегодняшний день курс "+rs.Symbol+" вырос на "+rs.ChangePercent+"%\n"+
-			"до отметки в "+rs.LastPrice+"$\n\n")
+		SendMsg(botUrl, update, "За сегодняшний день курс "+response.Symbol+" вырос на "+response.ChangePercent+"%\n"+
+			"до отметки в "+response.LastPrice+"$\n\n")
 		SendRandomShibaSticker(botUrl, update, false)
 	}
 }
@@ -320,7 +321,7 @@ func CheckIPAdress(botUrl string, update Update, IP string) {
 	}
 	ipArray := strings.Split(IP, ".")
 	if len(ipArray) != 4 {
-		SendMsg(botUrl, update, "Не могу считать этот IP")
+		SendMsg(botUrl, update, "Не могу обработать этот IP")
 		SendStck(botUrl, update, "CAACAgIAAxkBAAIY4mG13Vr0CzGwyXA1eL3esZVCWYFhAAJIAAOtZbwUgHOKzxQtAAHcIwQ")
 		return
 	}
@@ -350,16 +351,16 @@ func CheckIPAdress(botUrl string, update Update, IP string) {
 
 	defer res.Body.Close()
 	body, _ := ioutil.ReadAll(res.Body)
-	var rs = new(IP2CountryResponse)
-	json.Unmarshal(body, &rs)
+	var response = new(IP2CountryResponse)
+	json.Unmarshal(body, &response)
 
-	if rs.CountryName == "" {
+	if response.CountryName == "" {
 		SendMsg(botUrl, update, "Не могу найти этот IP")
 		SendStck(botUrl, update, "CAACAgIAAxkBAAIY4mG13Vr0CzGwyXA1eL3esZVCWYFhAAJIAAOtZbwUgHOKzxQtAAHcIwQ")
 		return
 	}
-	SendMsg(botUrl, update, "Нашёл! Страна происхождения - "+rs.CountryName+" "+rs.CountryEmoji+
-		"\n\nМы не храним IP, которые просят проверить пользователи, весь код бота можно найти на гитхабе.")
+	SendMsg(botUrl, update, "Нашёл! Страна происхождения - "+response.CountryName+" "+response.CountryEmoji+
+		"\n\nМы не храним IP, которые просят проверить пользователи, весь код можно найти на гитхабе.")
 	SendStck(botUrl, update, "CAACAgIAAxkBAAIXqmGyGtvN_JHUQVDXspAX5jP3BvU9AAI5AAOtZbwUdHz8lasybOojBA")
 }
 
