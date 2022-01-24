@@ -59,6 +59,13 @@ type DogResponse struct {
 	DogUrl string `json:"message"`
 }
 
+type GitHubGoAPIResponse struct {
+	Date     string `json:"date"`
+	Username string `json:"username"`
+	Commits  int    `json:"commits"`
+	Color    int    `json:"color"`
+}
+
 // Функции бота
 // Вывод списка всех команд
 func Help(botUrl string, update Update) {
@@ -268,63 +275,37 @@ func SendErrorMessage(botUrl string, update Update, errorCode int) {
 
 // Вывод количества моих коммитов за сегодня
 func CheckGit(botUrl string, update Update) {
-	// Формирование и исполнение запроса
-	resp, err := http.Get("https://github.com/hud0shnik")
+	// Отправка запроса моему API и обработка респонса
+	resp, err := http.Get("https://hud0shnikgitapi.herokuapp.com/user/hud0shnik")
 	if err != nil {
-		fmt.Println("Github error: ", err)
+		fmt.Println("GithubGoAPI error: ", err)
 		SendErrorMessage(botUrl, update, 1)
 		return
 	}
-	// Запись информации из респонса
 	defer resp.Body.Close()
 	body, _ := ioutil.ReadAll(resp.Body)
+	var user = new(GitHubGoAPIResponse)
+	json.Unmarshal(body, &user)
+	commits := strconv.Itoa(user.Commits)
 
-	// +3 часа к локальному времени из-за местоположения сервера
-	currentDate := string(time.Now().Add(3 * time.Hour).Format("2006-01-02"))
-
-	// Вот так выглядит html одной ячейки:
-	// <rect width="11" height="11" x="-36" y="75" class="ContributionCalendar-day" rx="2" ry="2" data-count="1" data-date="2021-12-03" data-level="1"></rect>
-	if strings.Contains(string(body), "data-date=\""+currentDate+"\" data-level=\"") {
-		pageStr, commits := string(body), ""
-		i := 0
-
-		// Проход по всему html файлу в поисках нужной клетки
-		for ; i < len(pageStr)-40; i++ {
-			if pageStr[i:i+35] == "data-date=\""+currentDate+"\" data-level=\"" {
-				// Так как количество коммитов стоит перед датой, переставляем i
-				i -= 7
-				break
-			}
-		}
-		for ; pageStr[i] != '"'; i++ {
-			// Доводит i до символа "
-		}
-		for i++; pageStr[i] != '"'; i++ {
-			// Считывание значения в скобках
-			commits += string(pageStr[i])
-		}
-		for i += 35; pageStr[i] != '"'; i++ {
-		}
-		// Запись и обработка полученной информации (цвет клетки)
-		dataLevel, _ := strconv.Atoi(pageStr[i+1 : i+2])
-		switch dataLevel {
-		case 2:
-			SendMsg(botUrl, update, "Коммитов за сегодня: "+commits+", неплохо!")
-			SendStck(botUrl, update, "CAACAgIAAxkBAAIXWmGyDE1aVXGUY6lcjKxx9bOn0JA1AAJOAAOtZbwUIWzOXysr2zwjBA")
-		case 3:
-			SendMsg(botUrl, update, "Коммитов за сегодня: "+commits+", отлично!!")
-			SendStck(botUrl, update, "CAACAgIAAxkBAAIYymG11mMdODUQUZGsQO97V9O0ZLJCAAJeAAOtZbwUvL_TIkzK-MsjBA")
-		case 4:
-			SendMsg(botUrl, update, "Коммитов за сегодня: "+commits+", прекрасно!!!")
-			SendStck(botUrl, update, "CAACAgIAAxkBAAIXXGGyDFClr69PKZXJo9dlYMbyilXLAAI1AAOtZbwU9aVxXMUw5eAjBA")
-		default:
-			SendMsg(botUrl, update, "Коммитов за сегодня: "+commits)
-			SendStck(botUrl, update, "CAACAgIAAxkBAAIYwmG11bAfndI1wciswTEVJUEdgB2jAAI5AAOtZbwUdHz8lasybOojBA")
-		}
-		return
+	// Вывод данных пользователю
+	switch user.Color {
+	case 0:
+		SendMsg(botUrl, update, "Коммитов за сегодня пока ещё нет")
+		SendStck(botUrl, update, "CAACAgIAAxkBAAIYG2GzRVNm_d_mVDIOaiLXkGukArlTAAJDAAOtZbwU_-iXZG7hfLsjBA")
+	case 1:
+		SendMsg(botUrl, update, "Коммитов за сегодня: "+commits)
+		SendStck(botUrl, update, "CAACAgIAAxkBAAIYwmG11bAfndI1wciswTEVJUEdgB2jAAI5AAOtZbwUdHz8lasybOojBA")
+	case 2:
+		SendMsg(botUrl, update, "Коммитов за сегодня: "+commits+", неплохо!")
+		SendStck(botUrl, update, "CAACAgIAAxkBAAIXWmGyDE1aVXGUY6lcjKxx9bOn0JA1AAJOAAOtZbwUIWzOXysr2zwjBA")
+	case 3:
+		SendMsg(botUrl, update, "Коммитов за сегодня: "+commits+", отлично!!")
+		SendStck(botUrl, update, "CAACAgIAAxkBAAIYymG11mMdODUQUZGsQO97V9O0ZLJCAAJeAAOtZbwUvL_TIkzK-MsjBA")
+	case 4:
+		SendMsg(botUrl, update, "Коммитов за сегодня: "+commits+", прекрасно!!!")
+		SendStck(botUrl, update, "CAACAgIAAxkBAAIXXGGyDFClr69PKZXJo9dlYMbyilXLAAI1AAOtZbwU9aVxXMUw5eAjBA")
 	}
-	SendMsg(botUrl, update, "Коммитов за сегодня пока ещё нет")
-	SendStck(botUrl, update, "CAACAgIAAxkBAAIYG2GzRVNm_d_mVDIOaiLXkGukArlTAAJDAAOtZbwU_-iXZG7hfLsjBA")
 }
 
 // Получение местоположения по IP адрессу
