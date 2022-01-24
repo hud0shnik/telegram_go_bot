@@ -327,12 +327,7 @@ func CheckIPAdress(botUrl string, update Update, IP string) {
 	}
 	for _, ipPart := range ipArray {
 		num, err := strconv.Atoi(ipPart)
-		if err != nil || num < 0 || num > 255 {
-			SendMsg(botUrl, update, "Неправильно набран IP")
-			SendStck(botUrl, update, "CAACAgIAAxkBAAIY4GG13SepKZJisWVrMrzQ9JyRpWFrAAJKAAOtZbwUiXsNXgiPepIjBA")
-			return
-		}
-		if ipPart != fmt.Sprint(num) {
+		if err != nil || num < 0 || num > 255 || (ipPart != fmt.Sprint(num)) {
 			SendMsg(botUrl, update, "Неправильно набран IP")
 			SendStck(botUrl, update, "CAACAgIAAxkBAAIY4GG13SepKZJisWVrMrzQ9JyRpWFrAAJKAAOtZbwUiXsNXgiPepIjBA")
 			return
