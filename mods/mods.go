@@ -284,26 +284,24 @@ func CheckGit(botUrl string, update Update, username string) {
 	body, _ := ioutil.ReadAll(resp.Body)
 	var user = new(GitHubGoAPIResponse)
 	json.Unmarshal(body, &user)
-	commits := strconv.Itoa(user.Commits)
 
 	// Вывод данных пользователю
 	switch user.Color {
 	case 1:
-		SendMsg(botUrl, update, "Коммитов за сегодня: "+commits)
+		SendMsg(botUrl, update, "Коммитов за сегодня: "+strconv.Itoa(user.Commits))
 		SendStck(botUrl, update, "CAACAgIAAxkBAAIYwmG11bAfndI1wciswTEVJUEdgB2jAAI5AAOtZbwUdHz8lasybOojBA")
 	case 2:
-		SendMsg(botUrl, update, "Коммитов за сегодня: "+commits+", неплохо!")
+		SendMsg(botUrl, update, "Коммитов за сегодня: "+strconv.Itoa(user.Commits)+", неплохо!")
 		SendStck(botUrl, update, "CAACAgIAAxkBAAIXWmGyDE1aVXGUY6lcjKxx9bOn0JA1AAJOAAOtZbwUIWzOXysr2zwjBA")
 	case 3:
-		SendMsg(botUrl, update, "Коммитов за сегодня: "+commits+", отлично!!")
+		SendMsg(botUrl, update, "Коммитов за сегодня: "+strconv.Itoa(user.Commits)+", отлично!!")
 		SendStck(botUrl, update, "CAACAgIAAxkBAAIYymG11mMdODUQUZGsQO97V9O0ZLJCAAJeAAOtZbwUvL_TIkzK-MsjBA")
 	case 4:
-		SendMsg(botUrl, update, "Коммитов за сегодня: "+commits+", прекрасно!!!")
+		SendMsg(botUrl, update, "Коммитов за сегодня: "+strconv.Itoa(user.Commits)+", прекрасно!!!")
 		SendStck(botUrl, update, "CAACAgIAAxkBAAIXXGGyDFClr69PKZXJo9dlYMbyilXLAAI1AAOtZbwU9aVxXMUw5eAjBA")
 	default:
 		SendMsg(botUrl, update, "Коммитов нет")
 		SendStck(botUrl, update, "CAACAgIAAxkBAAIYG2GzRVNm_d_mVDIOaiLXkGukArlTAAJDAAOtZbwU_-iXZG7hfLsjBA")
-
 	}
 }
 
