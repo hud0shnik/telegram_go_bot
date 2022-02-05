@@ -75,7 +75,7 @@ func respond(botUrl string, update mods.Update) error {
 			mods.Check(botUrl, update)
 			return nil
 		case "/git":
-			mods.CheckGit(botUrl, update)
+			mods.CheckGit(botUrl, update, "hud0shnik")
 			return nil
 		case "/meme":
 			mods.SendFromReddit(botUrl, update, "")

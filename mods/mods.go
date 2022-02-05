@@ -225,7 +225,7 @@ func Check(botUrl string, update Update) {
 		SendFromReddit(botUrl, update, "")
 		Coin(botUrl, update)
 		Help(botUrl, update)
-		CheckGit(botUrl, update)
+		CheckGit(botUrl, update, "hud0shnik")
 		SendMsg(botUrl, update, Dice("/d20"))
 		Ball8(botUrl, update)
 		SendRandomSticker(botUrl, update)
@@ -272,9 +272,9 @@ func SendErrorMessage(botUrl string, update Update, errorCode int) {
 }
 
 // Вывод количества моих коммитов за сегодня
-func CheckGit(botUrl string, update Update) {
+func CheckGit(botUrl string, update Update, username string) {
 	// Отправка запроса моему API и обработка респонса
-	resp, err := http.Get("https://hud0shnikgitapi.herokuapp.com/user/hud0shnik")
+	resp, err := http.Get("https://hud0shnikgitapi.herokuapp.com/user/" + username)
 	if err != nil {
 		fmt.Println("GithubGoAPI error: ", err)
 		SendErrorMessage(botUrl, update, 1)
