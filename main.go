@@ -122,6 +122,11 @@ func respond(botUrl string, update mods.Update) error {
 			return nil
 		}
 
+		if lenMsg > 7 && update.Message.Text[:4] == "/git" {
+			mods.CheckGit(botUrl, update, update.Message.Text[5:])
+			return nil
+		}
+
 		if msg[lenMsg-1] == '?' {
 			mods.Ball8(botUrl, update)
 			return nil
