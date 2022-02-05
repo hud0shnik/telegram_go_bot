@@ -288,9 +288,6 @@ func CheckGit(botUrl string, update Update, username string) {
 
 	// Вывод данных пользователю
 	switch user.Color {
-	case 0:
-		SendMsg(botUrl, update, "Коммитов за сегодня пока ещё нет")
-		SendStck(botUrl, update, "CAACAgIAAxkBAAIYG2GzRVNm_d_mVDIOaiLXkGukArlTAAJDAAOtZbwU_-iXZG7hfLsjBA")
 	case 1:
 		SendMsg(botUrl, update, "Коммитов за сегодня: "+commits)
 		SendStck(botUrl, update, "CAACAgIAAxkBAAIYwmG11bAfndI1wciswTEVJUEdgB2jAAI5AAOtZbwUdHz8lasybOojBA")
@@ -303,6 +300,10 @@ func CheckGit(botUrl string, update Update, username string) {
 	case 4:
 		SendMsg(botUrl, update, "Коммитов за сегодня: "+commits+", прекрасно!!!")
 		SendStck(botUrl, update, "CAACAgIAAxkBAAIXXGGyDFClr69PKZXJo9dlYMbyilXLAAI1AAOtZbwU9aVxXMUw5eAjBA")
+	default:
+		SendMsg(botUrl, update, "Коммитов нет")
+		SendStck(botUrl, update, "CAACAgIAAxkBAAIYG2GzRVNm_d_mVDIOaiLXkGukArlTAAJDAAOtZbwU_-iXZG7hfLsjBA")
+
 	}
 }
 
