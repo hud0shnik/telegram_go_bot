@@ -271,10 +271,19 @@ func SendErrorMessage(botUrl string, update Update, errorCode int) {
 	SendMsg(botUrl, update, result)
 }
 
-// Вывод количества моих коммитов за сегодня
-func CheckGit(botUrl string, update Update, username string) {
+// Вывод количества коммитов пользователя GitHub
+func CheckGit(botUrl string, update Update, parametrs string) {
+	i, date := 0, ""
+	for ; i < len(parametrs); i++ {
+		if parametrs[i] == ' ' {
+			break
+		}
+	}
+	if i != len(parametrs) {
+		date = parametrs[i+1:]
+	}
 	// Отправка запроса моему API и обработка респонса
-	resp, err := http.Get("https://hud0shnikgitapi.herokuapp.com/" + username)
+	resp, err := http.Get("https://hud0shnikgitapi.herokuapp.com/" + parametrs[:i] + "/" + date)
 	if err != nil {
 		fmt.Println("GithubGoAPI error: ", err)
 		SendErrorMessage(botUrl, update, 1)
