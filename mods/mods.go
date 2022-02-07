@@ -274,7 +274,7 @@ func SendErrorMessage(botUrl string, update Update, errorCode int) {
 // Вывод количества моих коммитов за сегодня
 func CheckGit(botUrl string, update Update, username string) {
 	// Отправка запроса моему API и обработка респонса
-	resp, err := http.Get("https://hud0shnikgitapi.herokuapp.com/user/" + username)
+	resp, err := http.Get("https://hud0shnikgitapi.herokuapp.com/" + username)
 	if err != nil {
 		fmt.Println("GithubGoAPI error: ", err)
 		SendErrorMessage(botUrl, update, 1)
