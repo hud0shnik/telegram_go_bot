@@ -274,14 +274,19 @@ func SendErrorMessage(botUrl string, update Update, errorCode int) {
 // Вывод количества коммитов пользователя GitHub
 func CheckGit(botUrl string, update Update, parametrs string) {
 	i, date := 0, ""
+
+	// Поиск конца юзернейма и начала даты
 	for ; i < len(parametrs); i++ {
 		if parametrs[i] == ' ' {
 			break
 		}
 	}
+
+	// Если дата задана, записывает её
 	if i != len(parametrs) {
 		date = parametrs[i+1:]
 	}
+
 	// Отправка запроса моему API и обработка респонса
 	resp, err := http.Get("https://hud0shnikgitapi.herokuapp.com/" + parametrs[:i] + "/" + date)
 	if err != nil {
