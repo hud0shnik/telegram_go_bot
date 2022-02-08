@@ -98,8 +98,6 @@ func respond(botUrl string, update mods.Update) error {
 		case "/start", "/help":
 			mods.Help(botUrl, update)
 			return nil
-			mods.SendMsg(botUrl, update, "Чтобы узнать страну по ip, отправьте: \n\n/ip 67.77.77.7")
-			return nil
 		case "owo":
 			mods.SendMsg(botUrl, update, "UwU")
 			return nil
@@ -119,14 +117,15 @@ func respond(botUrl string, update mods.Update) error {
 			return nil
 		}
 
-		if lenMsg > 5 && update.Message.Text[:3] == "/ip" {
-			mods.CheckIPAdress(botUrl, update, update.Message.Text[4:])
-			return nil
-		}
-
-		if lenMsg > 7 && update.Message.Text[:4] == "/git" {
-			mods.CheckGit(botUrl, update, update.Message.Text[5:])
-			return nil
+		if lenMsg > 7 {
+			if update.Message.Text[:3] == "/ip" {
+				mods.CheckIPAdress(botUrl, update, update.Message.Text[4:])
+				return nil
+			}
+			if update.Message.Text[:4] == "/git" {
+				mods.CheckGit(botUrl, update, update.Message.Text[5:])
+				return nil
+			}
 		}
 
 		if msg[lenMsg-1] == '?' {
