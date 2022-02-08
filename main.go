@@ -71,9 +71,6 @@ func respond(botUrl string, update mods.Update) error {
 	// Обработчик комманд
 	if msg != "" {
 		switch msg {
-		case "/check":
-			mods.Check(botUrl, update)
-			return nil
 		case "/git":
 			mods.CheckGit(botUrl, update, "hud0shnik")
 			return nil
@@ -92,13 +89,15 @@ func respond(botUrl string, update mods.Update) error {
 		case "/crypto":
 			mods.SendCryptoData(botUrl, update)
 			return nil
+		case "/ip":
+			mods.SendMsg(botUrl, update, "Чтобы узнать страну по ip, отправьте: \n\n/ip 67.77.77.7")
+			return nil
 		case "/coin":
 			mods.Coin(botUrl, update)
 			return nil
 		case "/start", "/help":
 			mods.Help(botUrl, update)
 			return nil
-		case "/ip":
 			mods.SendMsg(botUrl, update, "Чтобы узнать страну по ip, отправьте: \n\n/ip 67.77.77.7")
 			return nil
 		case "owo":
@@ -106,6 +105,9 @@ func respond(botUrl string, update mods.Update) error {
 			return nil
 		case "молодец", "неплохо":
 			mods.SendMsg(botUrl, update, "Стараюсь UwU")
+			return nil
+		case "/check":
+			mods.Check(botUrl, update)
 			return nil
 		}
 
