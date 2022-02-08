@@ -244,7 +244,8 @@ func Check(botUrl string, update Update) {
 
 // Обработчик ошибок
 func SendErrorMessage(botUrl string, update Update, errorCode int) {
-	result := "Неизвестная ошибка"
+	var result string
+
 	switch errorCode {
 	case 1:
 		result = "Ошибка работы API"
@@ -258,6 +259,8 @@ func SendErrorMessage(botUrl string, update Update, errorCode int) {
 		result = "Ошибка работы метода SendMessage"
 	case 6:
 		result = "Ошибка работы stickers.json"
+	default:
+		result = "Неизвестная ошибка"
 	}
 
 	// При возникновении ошибки, бот меня оповестит (анонимно)
