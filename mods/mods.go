@@ -299,6 +299,7 @@ func CheckGit(botUrl string, update Update, parametrs string) {
 	var user = new(GitHubGoAPIResponse)
 	json.Unmarshal(body, &user)
 
+	// Меняет date на "сегодня" для дальнейшего вывода
 	if date == "" {
 		date = "сегодня"
 	}
