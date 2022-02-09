@@ -130,31 +130,6 @@ func Coin(botUrl string, update Update) {
 	}
 }
 
-// Отправка фотографии случайной собаки
-func SendDogPic(botUrl string, update Update) error {
-	// Отправка реквеста и обработка респонса
-	url := "https://dog.ceo/api/breeds/image/random"
-	req, _ := http.NewRequest("GET", url, nil)
-	res, err := http.DefaultClient.Do(req)
-	if err != nil {
-		fmt.Println("Dog API error: ", err)
-		SendErrorMessage(botUrl, update, 1)
-		return err
-	}
-	defer res.Body.Close()
-	body, _ := ioutil.ReadAll(res.Body)
-	var response = new(DogResponse)
-	json.Unmarshal(body, &response)
-
-	// Формирование и отправка результата
-	botImageMessage := SendPhoto{
-		ChatId:   update.Message.Chat.ChatId,
-		PhotoUrl: response.DogUrl,
-	}
-	SendPict(botUrl, update, botImageMessage)
-	return nil
-}
-
 // Отправка случайного поста с Реддита (мемы, кошки, попугаи)
 func SendFromReddit(botUrl string, update Update, subj string) error {
 	// Отправка реквеста и обработка респонса
@@ -235,7 +210,6 @@ func Check(botUrl string, update Update) {
 			SendErrorMessage(botUrl, update, i)
 		}
 
-		fmt.Println("That's all!\tTime:", time.Since(start))
 		SendMsg(botUrl, update, "Проверка заняла "+time.Since(start).String())
 		return
 	}

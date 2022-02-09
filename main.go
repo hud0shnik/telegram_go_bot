@@ -83,9 +83,6 @@ func respond(botUrl string, update mods.Update) error {
 		case "/cat":
 			mods.SendFromReddit(botUrl, update, "cats")
 			return nil
-		case "/dog":
-			mods.SendDogPic(botUrl, update)
-			return nil
 		case "/crypto":
 			mods.SendCryptoData(botUrl, update)
 			return nil
