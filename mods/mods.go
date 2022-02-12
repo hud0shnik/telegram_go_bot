@@ -284,16 +284,16 @@ func CheckGit(botUrl string, update Update, parametrs string) {
 	// Вывод данных пользователю
 	switch user.Color {
 	case 1:
-		SendMsg(botUrl, update, "Коммитов за "+date+" : "+strconv.Itoa(user.Commits))
+		SendMsg(botUrl, update, "Коммитов за "+date+" "+strconv.Itoa(user.Commits))
 		SendStck(botUrl, update, "CAACAgIAAxkBAAIYwmG11bAfndI1wciswTEVJUEdgB2jAAI5AAOtZbwUdHz8lasybOojBA")
 	case 2:
-		SendMsg(botUrl, update, "Коммитов за "+date+" : "+strconv.Itoa(user.Commits)+", неплохо!")
+		SendMsg(botUrl, update, "Коммитов за "+date+" "+strconv.Itoa(user.Commits)+", неплохо!")
 		SendStck(botUrl, update, "CAACAgIAAxkBAAIXWmGyDE1aVXGUY6lcjKxx9bOn0JA1AAJOAAOtZbwUIWzOXysr2zwjBA")
 	case 3:
-		SendMsg(botUrl, update, "Коммитов за "+date+" : "+strconv.Itoa(user.Commits)+", отлично!!")
+		SendMsg(botUrl, update, "Коммитов за "+date+" "+strconv.Itoa(user.Commits)+", отлично!!")
 		SendStck(botUrl, update, "CAACAgIAAxkBAAIYymG11mMdODUQUZGsQO97V9O0ZLJCAAJeAAOtZbwUvL_TIkzK-MsjBA")
 	case 4:
-		SendMsg(botUrl, update, "Коммитов за "+date+" : "+strconv.Itoa(user.Commits)+", прекрасно!!!")
+		SendMsg(botUrl, update, "Коммитов за "+date+" "+strconv.Itoa(user.Commits)+", прекрасно!!!")
 		SendStck(botUrl, update, "CAACAgIAAxkBAAIXXGGyDFClr69PKZXJo9dlYMbyilXLAAI1AAOtZbwU9aVxXMUw5eAjBA")
 	default:
 		SendMsg(botUrl, update, "Коммитов нет")
