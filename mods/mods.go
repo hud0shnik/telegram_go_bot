@@ -265,7 +265,7 @@ func CheckGit(botUrl string, update Update, parametrs string) {
 	}
 
 	// Отправка запроса моему API и обработка респонса
-	resp, err := http.Get("https://hud0shnikgitapi.herokuapp.com/" + parametrs[:i] + "/" + date)
+	resp, err := http.Get("https://hud0shnikgitapi.herokuapp.com/commits/" + parametrs[:i] + "/" + date)
 	if err != nil {
 		fmt.Println("GithubGoAPI error: ", err)
 		SendErrorMessage(botUrl, update, 1)
