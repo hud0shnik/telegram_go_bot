@@ -278,10 +278,10 @@ func SendInfo(botUrl string, update Update, parametrs string) {
 		PhotoUrl: user.Avatar,
 		ChatId:   update.Message.Chat.ChatId,
 		Caption: "Информация о " + user.Username + ":\n" +
-			"Имя - " + user.Name + "\n" +
-			"Поставленных звезд " + strconv.Itoa(user.Stars) + "⭐\n" +
-			"Подписчиков " + strconv.Itoa(user.Followers) + "🤩\n" +
-			"Подписок " + strconv.Itoa(user.Following) + "🕵️\n" +
+			"Имя " + user.Name + "\n" +
+			"Поставленных звезд " + strconv.Itoa(user.Stars) + " ⭐\n" +
+			"Подписчиков " + strconv.Itoa(user.Followers) + " 🤩\n" +
+			"Подписок " + strconv.Itoa(user.Following) + " 🕵️\n" +
 			"Cсылка на аватар:\n " + user.Avatar,
 	})
 }
