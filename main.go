@@ -75,7 +75,7 @@ func respond(botUrl string, update mods.Update) error {
 			mods.SendCommits(botUrl, update, "hud0shnik")
 			return nil
 		case "/info":
-			mods.SendStats(botUrl, update, "hud0shnik")
+			mods.SendInfo(botUrl, update, "hud0shnik")
 			return nil
 		case "/meme":
 			mods.SendFromReddit(botUrl, update, "")
@@ -127,7 +127,7 @@ func respond(botUrl string, update mods.Update) error {
 				return nil
 			}
 			if update.Message.Text[:5] == "/info" {
-				mods.SendStats(botUrl, update, update.Message.Text[6:])
+				mods.SendInfo(botUrl, update, update.Message.Text[6:])
 				return nil
 			}
 		}

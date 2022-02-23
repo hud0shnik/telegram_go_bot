@@ -60,11 +60,13 @@ type DogResponse struct {
 	DogUrl string `json:"message"`
 }
 
-type StatsResponse struct {
-	Username string `json:"username"`
-	Name     string `json:"name"`
-	Avatar   string `json:"avatar"`
-	Stars    int    `json:"stars"`
+type InfoResponse struct {
+	Username  string `json:"username"`
+	Name      string `json:"name"`
+	Avatar    string `json:"avatar"`
+	Stars     int    `json:"stars"`
+	Followers int    `json:"followers"`
+	Following int    `json:"following"`
 }
 
 type CommitsResponse struct {
@@ -139,9 +141,9 @@ func Coin(botUrl string, update Update) {
 }
 
 // Отправка случайного поста с Реддита (мемы, кошки, попугаи)
-func SendFromReddit(botUrl string, update Update, subj string) error {
+func SendFromReddit(botUrl string, update Update, board string) error {
 	// Отправка реквеста и обработка респонса
-	url := "https://meme-api.herokuapp.com/gimme/" + subj
+	url := "https://meme-api.herokuapp.com/gimme/" + board
 	req, _ := http.NewRequest("GET", url, nil)
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
@@ -257,7 +259,7 @@ func SendErrorMessage(botUrl string, update Update, errorCode int) {
 }
 
 // Вывод информации о пользователе GitHub
-func SendStats(botUrl string, update Update, parametrs string) {
+func SendInfo(botUrl string, update Update, parametrs string) {
 
 	// Отправка запроса моему API и обработка респонса
 	resp, err := http.Get("https://hud0shnikgitapi.herokuapp.com/info/" + parametrs)
@@ -268,7 +270,7 @@ func SendStats(botUrl string, update Update, parametrs string) {
 	}
 	defer resp.Body.Close()
 	body, _ := ioutil.ReadAll(resp.Body)
-	var user = new(StatsResponse)
+	var user = new(InfoResponse)
 	json.Unmarshal(body, &user)
 
 	// Отправка данных пользователю
@@ -278,6 +280,8 @@ func SendStats(botUrl string, update Update, parametrs string) {
 		Caption: "Информация о " + user.Username + ":\n" +
 			"Имя - " + user.Name + "\n" +
 			"Поставленных звезд " + strconv.Itoa(user.Stars) + "⭐\n" +
+			"Подписчиков " + strconv.Itoa(user.Followers) + "🤩\n" +
+			"Подписок " + strconv.Itoa(user.Following) + "🕵️\n" +
 			"Cсылка на аватар:\n " + user.Avatar,
 	})
 }
@@ -337,11 +341,13 @@ func SendCommits(botUrl string, update Update, parametrs string) {
 
 // Получение местоположения по IP адрессу
 func CheckIPAdress(botUrl string, update Update, IP string) {
+	// Проверка на localhost
 	if IP == "127.0.0.1" {
 		SendMsg(botUrl, update, "Айпишник локалхоста, ага")
 		SendStck(botUrl, update, "CAACAgIAAxkBAAIYLGGzR7310Hqf8K2sljgcQF8kgOpYAAJTAAOtZbwUo9c59oswVBQjBA")
 		return
 	}
+	// Проверка ввода
 	ipArray := strings.Split(IP, ".")
 	if len(ipArray) != 4 {
 		SendMsg(botUrl, update, "Не могу обработать этот IP")
