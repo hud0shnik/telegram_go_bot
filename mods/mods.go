@@ -260,7 +260,7 @@ func SendErrorMessage(botUrl string, update Update, errorCode int) {
 func SendStats(botUrl string, update Update, parametrs string) {
 
 	// Отправка запроса моему API и обработка респонса
-	resp, err := http.Get("https://hud0shnikgitapi.herokuapp.com/stats/" + parametrs)
+	resp, err := http.Get("https://hud0shnikgitapi.herokuapp.com/info/" + parametrs)
 	if err != nil {
 		fmt.Println("GithubGoAPI error: ", err)
 		SendErrorMessage(botUrl, update, 1)
