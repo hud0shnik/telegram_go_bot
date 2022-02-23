@@ -74,6 +74,9 @@ func respond(botUrl string, update mods.Update) error {
 		case "/git":
 			mods.SendCommits(botUrl, update, "hud0shnik")
 			return nil
+		case "/info":
+			mods.SendStats(botUrl, update, "hud0shnik")
+			return nil
 		case "/meme":
 			mods.SendFromReddit(botUrl, update, "")
 			return nil
@@ -114,7 +117,7 @@ func respond(botUrl string, update mods.Update) error {
 			return nil
 		}
 
-		if lenMsg > 7 {
+		if lenMsg > 6 {
 			if update.Message.Text[:3] == "/ip" {
 				mods.CheckIPAdress(botUrl, update, update.Message.Text[4:])
 				return nil

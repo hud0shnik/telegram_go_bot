@@ -79,7 +79,8 @@ type CommitsResponse struct {
 func Help(botUrl string, update Update) {
 	SendMsg(botUrl, update, "Привет👋🏻, вот список команд:"+
 		"\n\n/ip 67.77.77.7 - узнать страну по ip"+
-		"\n\n/git username  date - статистика пользователя за день"+
+		"\n\n/git username  date - коммиты пользователя за день"+
+		"\n\n/info username - информация об аккаунте на GitHub"+
 		"\n\n/crypto - узнать текущий курс криптовалюты SHIB"+
 		"\n\n/d20 - кинуть д20, вместо 20 можно поставить любое число"+
 		"\n\n/coin - подбросить монетку"+
@@ -270,12 +271,13 @@ func SendStats(botUrl string, update Update, parametrs string) {
 	var user = new(StatsResponse)
 	json.Unmarshal(body, &user)
 
+	// Отправка данных пользователю
 	SendPict(botUrl, update, SendPhoto{
 		PhotoUrl: user.Avatar,
 		ChatId:   update.Message.Chat.ChatId,
 		Caption: "Информация о " + user.Username + ":\n" +
 			"Имя - " + user.Name + "\n" +
-			"Поставленных звезд " + strconv.Itoa(user.Stars) + "\n" +
+			"Поставленных звезд " + strconv.Itoa(user.Stars) + "⭐\n" +
 			"Cсылка на аватар:\n " + user.Avatar,
 	})
 }
