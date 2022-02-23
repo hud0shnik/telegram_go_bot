@@ -72,7 +72,7 @@ func respond(botUrl string, update mods.Update) error {
 	if msg != "" {
 		switch msg {
 		case "/git":
-			mods.CheckGit(botUrl, update, "hud0shnik")
+			mods.SendCommits(botUrl, update, "hud0shnik")
 			return nil
 		case "/meme":
 			mods.SendFromReddit(botUrl, update, "")
@@ -120,7 +120,11 @@ func respond(botUrl string, update mods.Update) error {
 				return nil
 			}
 			if update.Message.Text[:4] == "/git" {
-				mods.CheckGit(botUrl, update, update.Message.Text[5:])
+				mods.SendCommits(botUrl, update, update.Message.Text[5:])
+				return nil
+			}
+			if update.Message.Text[:5] == "/info" {
+				mods.SendStats(botUrl, update, update.Message.Text[6:])
 				return nil
 			}
 		}

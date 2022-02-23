@@ -60,7 +60,14 @@ type DogResponse struct {
 	DogUrl string `json:"message"`
 }
 
-type GitHubGoAPIResponse struct {
+type StatsResponse struct {
+	Username string `json:"username"`
+	Name     string `json:"name"`
+	Avatar   string `json:"avatar"`
+	Stars    int    `json:"stars"`
+}
+
+type CommitsResponse struct {
 	Date     string `json:"date"`
 	Username string `json:"username"`
 	Commits  int    `json:"commits"`
@@ -200,7 +207,7 @@ func Check(botUrl string, update Update) {
 		SendFromReddit(botUrl, update, "")
 		Coin(botUrl, update)
 		Help(botUrl, update)
-		CheckGit(botUrl, update, "hud0shnik")
+		SendCommits(botUrl, update, "hud0shnik")
 		SendMsg(botUrl, update, Dice("/d20"))
 		Ball8(botUrl, update)
 		SendRandomSticker(botUrl, update)
@@ -248,8 +255,33 @@ func SendErrorMessage(botUrl string, update Update, errorCode int) {
 	SendMsg(botUrl, update, result)
 }
 
+// Вывод информации о пользователе GitHub
+func SendStats(botUrl string, update Update, parametrs string) {
+
+	// Отправка запроса моему API и обработка респонса
+	resp, err := http.Get("https://hud0shnikgitapi.herokuapp.com/stats/" + parametrs)
+	if err != nil {
+		fmt.Println("GithubGoAPI error: ", err)
+		SendErrorMessage(botUrl, update, 1)
+		return
+	}
+	defer resp.Body.Close()
+	body, _ := ioutil.ReadAll(resp.Body)
+	var user = new(StatsResponse)
+	json.Unmarshal(body, &user)
+
+	SendPict(botUrl, update, SendPhoto{
+		PhotoUrl: user.Avatar,
+		ChatId:   update.Message.Chat.ChatId,
+		Caption: "Информация о " + user.Username + ":\n" +
+			"Имя - " + user.Name + "\n" +
+			"Поставленных звезд " + strconv.Itoa(user.Stars) + "\n" +
+			"Cсылка на аватар:\n " + user.Avatar,
+	})
+}
+
 // Вывод количества коммитов пользователя GitHub
-func CheckGit(botUrl string, update Update, parametrs string) {
+func SendCommits(botUrl string, update Update, parametrs string) {
 	i, date := 0, ""
 
 	// Поиск конца юзернейма и начала даты
@@ -273,7 +305,7 @@ func CheckGit(botUrl string, update Update, parametrs string) {
 	}
 	defer resp.Body.Close()
 	body, _ := ioutil.ReadAll(resp.Body)
-	var user = new(GitHubGoAPIResponse)
+	var user = new(CommitsResponse)
 	json.Unmarshal(body, &user)
 
 	// Меняет date на "сегодня" для дальнейшего вывода
