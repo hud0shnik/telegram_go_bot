@@ -61,12 +61,14 @@ type DogResponse struct {
 }
 
 type InfoResponse struct {
-	Username  string `json:"username"`
-	Name      string `json:"name"`
-	Avatar    string `json:"avatar"`
-	Stars     int    `json:"stars"`
-	Followers int    `json:"followers"`
-	Following int    `json:"following"`
+	Username     string `json:"username"`
+	Name         string `json:"name"`
+	Avatar       string `json:"avatar"`
+	Stars        int    `json:"stars"`
+	Followers    int    `json:"followers"`
+	Following    int    `json:"following"`
+	Repositories int    `json:"repositories"`
+	Packages     int    `json:"packages"`
 }
 
 type CommitsResponse struct {
@@ -282,6 +284,8 @@ func SendInfo(botUrl string, update Update, parametrs string) {
 			"Поставленных звезд " + strconv.Itoa(user.Stars) + " ⭐\n" +
 			"Подписчиков " + strconv.Itoa(user.Followers) + " 🤩\n" +
 			"Подписок " + strconv.Itoa(user.Following) + " 🕵️\n" +
+			"Репозиториев " + strconv.Itoa(user.Repositories) + " 📘\n" +
+			"Пакетов " + strconv.Itoa(user.Packages) + " 📦\n" +
 			"Cсылка на аватар:\n " + user.Avatar,
 	})
 }
