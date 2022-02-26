@@ -64,11 +64,11 @@ type InfoResponse struct {
 	Username     string `json:"username"`
 	Name         string `json:"name"`
 	Avatar       string `json:"avatar"`
-	Stars        int    `json:"stars"`
-	Followers    int    `json:"followers"`
-	Following    int    `json:"following"`
-	Repositories int    `json:"repositories"`
-	Packages     int    `json:"packages"`
+	Stars        string `json:"stars"`
+	Followers    string `json:"followers"`
+	Following    string `json:"following"`
+	Repositories string `json:"repositories"`
+	Packages     string `json:"packages"`
 }
 
 type CommitsResponse struct {
@@ -281,11 +281,11 @@ func SendInfo(botUrl string, update Update, parametrs string) {
 		ChatId:   update.Message.Chat.ChatId,
 		Caption: "Информация о " + user.Username + ":\n" +
 			"Имя " + user.Name + "\n" +
-			"Поставленных звезд " + strconv.Itoa(user.Stars) + " ⭐\n" +
-			"Подписчиков " + strconv.Itoa(user.Followers) + " 🤩\n" +
-			"Подписок " + strconv.Itoa(user.Following) + " 🕵️\n" +
-			"Репозиториев " + strconv.Itoa(user.Repositories) + " 📘\n" +
-			"Пакетов " + strconv.Itoa(user.Packages) + " 📦\n" +
+			"Поставленных звезд " + user.Stars + " ⭐\n" +
+			"Подписчиков " + user.Followers + " 🤩\n" +
+			"Подписок " + user.Following + " 🕵️\n" +
+			"Репозиториев " + user.Repositories + " 📘\n" +
+			"Пакетов " + user.Packages + " 📦\n" +
 			"Cсылка на аватар:\n " + user.Avatar,
 	})
 }
