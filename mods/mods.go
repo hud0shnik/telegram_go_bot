@@ -262,10 +262,10 @@ func SendErrorMessage(botUrl string, update Update, errorCode int) {
 }
 
 // Вывод информации о пользователе GitHub
-func SendInfo(botUrl string, update Update, parametrs string) {
+func SendInfo(botUrl string, update Update, parameters string) {
 
 	// Отправка запроса моему API и обработка респонса
-	resp, err := http.Get("https://hud0shnikgitapi.herokuapp.com/info/" + parametrs)
+	resp, err := http.Get("https://hud0shnikgitapi.herokuapp.com/user/" + parameters)
 	if err != nil {
 		fmt.Println("GithubGoAPI error: ", err)
 		SendErrorMessage(botUrl, update, 1)
@@ -288,28 +288,28 @@ func SendInfo(botUrl string, update Update, parametrs string) {
 			"Репозиториев " + user.Repositories + " 📘\n" +
 			"Пакетов " + user.Packages + " 📦\n" +
 			"Контрибуций за год " + user.Contributions + " 🟩\n" +
-			"Cсылка на аватар:\n " + user.Avatar,
+			"Ссылка на аватар:\n " + user.Avatar,
 	})
 }
 
 // Вывод количества коммитов пользователя GitHub
-func SendCommits(botUrl string, update Update, parametrs string) {
+func SendCommits(botUrl string, update Update, parameters string) {
 	i, date := 0, ""
 
 	// Поиск конца юзернейма и начала даты
-	for ; i < len(parametrs); i++ {
-		if parametrs[i] == ' ' {
+	for ; i < len(parameters); i++ {
+		if parameters[i] == ' ' {
 			break
 		}
 	}
 
 	// Если дата задана, записывает её
-	if i != len(parametrs) {
-		date = parametrs[i+1:]
+	if i != len(parameters) {
+		date = parameters[i+1:]
 	}
 
 	// Отправка запроса моему API и обработка респонса
-	resp, err := http.Get("https://hud0shnikgitapi.herokuapp.com/commits/" + parametrs[:i] + "/" + date)
+	resp, err := http.Get("https://hud0shnikgitapi.herokuapp.com/commits/" + parameters[:i] + "/" + date)
 	if err != nil {
 		fmt.Println("GithubGoAPI error: ", err)
 		SendErrorMessage(botUrl, update, 1)
@@ -345,7 +345,7 @@ func SendCommits(botUrl string, update Update, parametrs string) {
 	}
 }
 
-// Получение местоположения по IP адрессу
+// Получение местоположения по IP адресу
 func CheckIPAdress(botUrl string, update Update, IP string) {
 	// Проверка на localhost
 	if IP == "127.0.0.1" {
