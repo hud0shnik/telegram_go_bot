@@ -188,15 +188,19 @@ func SendFromReddit(botUrl string, update Update, board string) error {
 
 // Вывод курса криптовалюты SHIB
 func SendCryptoData(botUrl string, update Update) {
-	// Отправка реквеста и обработка респонса
-	url := "https://api2.binance.com/api/v3/ticker/24hr?symbol=SHIBBUSD"
-	req, _ := http.NewRequest("GET", url, nil)
+
+	// Отправка реквеста
+	req, _ := http.NewRequest("GET", "https://api2.binance.com/api/v3/ticker/24hr?symbol=SHIBBUSD", nil)
 	res, err := http.DefaultClient.Do(req)
+
+	// Проверка на ошибку
 	if err != nil {
 		fmt.Println("Binance API error: ", err)
 		SendErrorMessage(botUrl, update, 1)
 		return
 	}
+
+	// Запись респонса
 	defer res.Body.Close()
 	body, _ := ioutil.ReadAll(res.Body)
 	var response = new(CryptoResponse)
@@ -214,12 +218,16 @@ func SendCryptoData(botUrl string, update Update) {
 	}
 }
 
-// Функция только для меня, проверка всех комманд
+// Функция проверки всех команд
 func Check(botUrl string, update Update) {
+
+	// Проверка на мой id
 	if update.Message.Chat.ChatId == viper.GetInt("DanyaChatId") {
+
+		// Засекает время
 		start := time.Now()
 
-		fmt.Println("Start Check() ...")
+		// Вызов всех команд
 		SendCryptoData(botUrl, update)
 		SendFromReddit(botUrl, update, "")
 		Coin(botUrl, update)
@@ -230,20 +238,24 @@ func Check(botUrl string, update Update) {
 		SendRandomSticker(botUrl, update)
 		SendFromReddit(botUrl, update, "parrots")
 
+		// Отправка ошибок
 		for i := 1; i < 7; i++ {
 			SendErrorMessage(botUrl, update, i)
 		}
 
+		// Отправка результата
 		SendMsg(botUrl, update, "Проверка заняла "+time.Since(start).String())
 		return
 	}
+
+	// Вывод для других пользователей
 	SendMsg(botUrl, update, "Error 403! Beep Boop... Forbidden! Access denied 🤖")
 }
 
 // Обработчик ошибок
 func SendErrorMessage(botUrl string, update Update, errorCode int) {
-	var result string
 
+	var result string
 	switch errorCode {
 	case 1:
 		result = "Ошибка работы API"
