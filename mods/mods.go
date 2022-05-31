@@ -577,7 +577,14 @@ func SendOsuInfo(botUrl string, update Update, parameters string) {
 			"S: " + user.S + "\n" +
 			"A: " + user.A + "\n" +
 			"---------------------------\n" +
+			"Количество игр: " + user.PlayCount + "\n" +
+			"Всего очков: " + user.TotalScore + "\n" +
+			"Всего попаданий: " + user.TotalHits + "\n" +
+			"Максимальное комбо: " + user.MaximumCombo + "\n" +
+			"Реплеев просмотрено другими: " + user.Replays + "\n" +
 			"Старые никнеймы: " + user.Names + "\n" +
+			"Уровень: " + user.Level + "\n" +
+			"Уровень подписки: " + user.SupportLvl + "\n" +
 			"",
 	})
 
