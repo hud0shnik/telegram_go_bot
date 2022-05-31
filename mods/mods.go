@@ -79,8 +79,7 @@ type CommitsResponse struct {
 	Color    int    `json:"color"`
 }
 
-// Функции бота
-// Вывод списка всех команд
+// Функция вывода списка всех команд
 func Help(botUrl string, update Update) {
 	SendMsg(botUrl, update, "Привет👋🏻, вот список команд:"+
 		"\n\n/ip 67.77.77.7 - узнать страну по ip"+
@@ -94,13 +93,19 @@ func Help(botUrl string, update Update) {
 		"\n\nТакже можешь позадавать вопросы, я на них отвечу 🙃")
 }
 
-// Функция, реализующая бросок n-гранного кубика
+// Функция генерации псевдослучайных чисел
+func Random(n int) int {
+	rand.Seed(time.Now().Unix())
+	return rand.Intn(n)
+}
+
+// Функция броска n-гранного кубика
 func Dice(msg string) string {
 
 	// Считывание числа граней
 	num, err := strconv.Atoi(msg[2:])
 
-	// Проверки
+	// Проверки на невозможное количество граней
 	if err != nil {
 		return "Это вообще кубик?🤨"
 	}
@@ -115,6 +120,7 @@ func Dice(msg string) string {
 
 	// Бросок
 	return strconv.Itoa(1 + Random(num))
+
 }
 
 // Функция генерации случайных ответов
@@ -136,12 +142,7 @@ func Ball8(botUrl string, update Update) {
 
 	// Выбор случайного ответа
 	SendMsg(botUrl, update, answers[Random(len(answers))])
-}
 
-// Функция генерации псевдослучайных чисел
-func Random(n int) int {
-	rand.Seed(time.Now().Unix())
-	return rand.Intn(n)
 }
 
 // Функция броска монетки
@@ -153,17 +154,22 @@ func Coin(botUrl string, update Update) {
 	}
 }
 
-// Отправка случайного поста с Реддита (мемы, кошки, попугаи)
+// Функция отправки случайного поста с Reddit
 func SendFromReddit(botUrl string, update Update, board string) error {
-	// Отправка реквеста и обработка респонса
+
+	// Отправка реквеста
 	url := "https://meme-api.herokuapp.com/gimme/" + board
 	req, _ := http.NewRequest("GET", url, nil)
 	res, err := http.DefaultClient.Do(req)
+
+	// Проверка на ошибку
 	if err != nil {
 		fmt.Println("Meme API error: ", err)
 		SendErrorMessage(botUrl, update, 1)
 		return err
 	}
+
+	// Запись респонса
 	defer res.Body.Close()
 	body, _ := ioutil.ReadAll(res.Body)
 	var response = new(RedditResponse)
@@ -175,18 +181,20 @@ func SendFromReddit(botUrl string, update Update, board string) error {
 		response.Title = "Картинка оказалась со спойлером или nsfw-контентом, поэтому я заменил её на это"
 	}
 
-	// Формирование и отправка результата
+	// Формирование сообщения
 	botImageMessage := SendPhoto{
 		ChatId:   update.Message.Chat.ChatId,
 		PhotoUrl: response.Url,
 		Caption:  response.Title,
 	}
 
+	// Отправка результата
 	SendPict(botUrl, update, botImageMessage)
 	return nil
+
 }
 
-// Вывод курса криптовалюты SHIB
+// Функция вывода курса криптовалюты SHIB
 func SendCryptoData(botUrl string, update Update) {
 
 	// Отправка реквеста
@@ -208,14 +216,15 @@ func SendCryptoData(botUrl string, update Update) {
 
 	// Формирование и отправка результата
 	if response.ChangePercent[0] == '-' {
-		SendMsg(botUrl, update, "За сегодняшний день курс "+response.Symbol+" упал на "+response.ChangePercent[1:]+"%\n"+
+		SendMsg(botUrl, update, "За сегодняшний день "+response.Symbol+" упал на "+response.ChangePercent[1:]+"%\n"+
 			"до отметки в "+response.LastPrice+"$\n\n")
 		SendRandomShibaSticker(botUrl, update, true)
 	} else {
-		SendMsg(botUrl, update, "За сегодняшний день курс "+response.Symbol+" вырос на "+response.ChangePercent+"%\n"+
+		SendMsg(botUrl, update, "За сегодняшний день "+response.Symbol+" вырос на "+response.ChangePercent+"%\n"+
 			"до отметки в "+response.LastPrice+"$\n\n")
 		SendRandomShibaSticker(botUrl, update, false)
 	}
+
 }
 
 // Функция проверки всех команд
@@ -224,7 +233,7 @@ func Check(botUrl string, update Update) {
 	// Проверка на мой id
 	if update.Message.Chat.ChatId == viper.GetInt("DanyaChatId") {
 
-		// Засекает время
+		// Временная метка начала проверки
 		start := time.Now()
 
 		// Вызов всех команд
@@ -250,11 +259,13 @@ func Check(botUrl string, update Update) {
 
 	// Вывод для других пользователей
 	SendMsg(botUrl, update, "Error 403! Beep Boop... Forbidden! Access denied 🤖")
+
 }
 
-// Обработчик ошибок
+// Функция отправки сообщений об ошибках
 func SendErrorMessage(botUrl string, update Update, errorCode int) {
 
+	// Генерация текста ошибки по коду
 	var result string
 	switch errorCode {
 	case 1:
@@ -273,27 +284,30 @@ func SendErrorMessage(botUrl string, update Update, errorCode int) {
 		result = "Неизвестная ошибка"
 	}
 
-	// При возникновении ошибки, бот меня оповестит (анонимно)
+	// Анонимное оповещение меня
 	var updateDanya Update
 	updateDanya.Message.Chat.ChatId = viper.GetInt("DanyaChatId")
 	SendMsg(botUrl, updateDanya, "Дань, тут у одного из пользователей "+result+", надеюсь он скоро тебе о ней напишет.")
 
-	// Вывод ошибки пользователю
-	// И просьба связаться со мной для её устранения
-	result += ", свяжитесь с моим создателем для устранения проблемы \n\nhttps://vk.com/hud0shnik\nhttps://vk.com/hud0shnik\nhttps://vk.com/hud0shnik"
+	// Вывод ошибки пользователю с просьбой связаться со мной для её устранения
+	result += ", пожалуйста свяжитесь с моим создателем для устранения проблемы \n\nhttps://vk.com/hud0shnik\nhttps://vk.com/hud0shnik\nhttps://vk.com/hud0shnik"
 	SendMsg(botUrl, update, result)
 }
 
-// Вывод информации о пользователе GitHub
+// Функция вывода информации о пользователе GitHub
 func SendInfo(botUrl string, update Update, parameters string) {
 
-	// Отправка запроса моему API и обработка респонса
+	// Отправка запроса моему API
 	resp, err := http.Get("https://hud0shnikgitapi.herokuapp.com/user/" + parameters)
+
+	// Проверка на ошибку
 	if err != nil {
 		fmt.Println("GithubGoAPI error: ", err)
 		SendErrorMessage(botUrl, update, 1)
 		return
 	}
+
+	// Запись респонса
 	defer resp.Body.Close()
 	body, _ := ioutil.ReadAll(resp.Body)
 	var user = new(InfoResponse)
@@ -313,10 +327,13 @@ func SendInfo(botUrl string, update Update, parameters string) {
 			"Контрибуций за год " + user.Contributions + " 🟩\n" +
 			"Ссылка на аватар:\n " + user.Avatar,
 	})
+
 }
 
-// Вывод количества коммитов пользователя GitHub
+// Функция вывода количества коммитов пользователя GitHub
 func SendCommits(botUrl string, update Update, parameters string) {
+
+	// Индекс пробела и дата
 	i, date := 0, ""
 
 	// Поиск конца юзернейма и начала даты
@@ -331,19 +348,23 @@ func SendCommits(botUrl string, update Update, parameters string) {
 		date = parameters[i+1:]
 	}
 
-	// Отправка запроса моему API и обработка респонса
+	// Отправка запроса моему API
 	resp, err := http.Get("https://hud0shnikgitapi.herokuapp.com/commits/" + parameters[:i] + "/" + date)
+
+	// Проверка на ошибку
 	if err != nil {
 		fmt.Println("GithubGoAPI error: ", err)
 		SendErrorMessage(botUrl, update, 1)
 		return
 	}
+
+	// Запись респонса
 	defer resp.Body.Close()
 	body, _ := ioutil.ReadAll(resp.Body)
 	var user = new(CommitsResponse)
 	json.Unmarshal(body, &user)
 
-	// Меняет date на "сегодня" для дальнейшего вывода
+	// Если поле пустое, меняет date на "сегодня"
 	if date == "" {
 		date = "сегодня"
 	}
@@ -366,17 +387,20 @@ func SendCommits(botUrl string, update Update, parameters string) {
 		SendMsg(botUrl, update, "Коммитов нет")
 		SendStck(botUrl, update, "CAACAgIAAxkBAAIYG2GzRVNm_d_mVDIOaiLXkGukArlTAAJDAAOtZbwU_-iXZG7hfLsjBA")
 	}
+
 }
 
-// Получение местоположения по IP адресу
+// Функция нахождения местоположения по IP адресу
 func CheckIPAdress(botUrl string, update Update, IP string) {
+
 	// Проверка на localhost
 	if IP == "127.0.0.1" {
 		SendMsg(botUrl, update, "Айпишник локалхоста, ага")
 		SendStck(botUrl, update, "CAACAgIAAxkBAAIYLGGzR7310Hqf8K2sljgcQF8kgOpYAAJTAAOtZbwUo9c59oswVBQjBA")
 		return
 	}
-	// Проверка ввода
+
+	// Проверка корректности ввода
 	ipArray := strings.Split(IP, ".")
 	if len(ipArray) != 4 {
 		SendMsg(botUrl, update, "Не могу обработать этот IP")
@@ -392,7 +416,7 @@ func CheckIPAdress(botUrl string, update Update, IP string) {
 		}
 	}
 
-	// Отправка реквеста и обработка респонса
+	// Отправка запроса
 	SendMsg(botUrl, update, "Ищу...")
 	url := "https://api.ip2country.info/ip?" + IP
 	req, _ := http.NewRequest("GET", url, nil)
@@ -402,20 +426,25 @@ func CheckIPAdress(botUrl string, update Update, IP string) {
 		SendErrorMessage(botUrl, update, 1)
 		return
 	}
+
+	// Запись респонса
 	defer res.Body.Close()
 	body, _ := ioutil.ReadAll(res.Body)
 	var response = new(IP2CountryResponse)
 	json.Unmarshal(body, &response)
 
-	// Вывод результатов поиска
+	// Вывод сообщения для спец айпишников
 	if response.CountryName == "" {
 		SendMsg(botUrl, update, "Не могу найти этот IP")
 		SendStck(botUrl, update, "CAACAgIAAxkBAAIY4mG13Vr0CzGwyXA1eL3esZVCWYFhAAJIAAOtZbwUgHOKzxQtAAHcIwQ")
 		return
 	}
+
+	// Вывод результатов поиска
 	SendMsg(botUrl, update, "Нашёл! Страна происхождения - "+response.CountryName+" "+response.CountryEmoji+
 		"\n\nМы не храним IP, которые просят проверить пользователи, весь код можно найти на гитхабе.")
 	SendStck(botUrl, update, "CAACAgIAAxkBAAIXqmGyGtvN_JHUQVDXspAX5jP3BvU9AAI5AAOtZbwUdHz8lasybOojBA")
+
 }
 
 // Функция инициализации конфига (всех токенов)
