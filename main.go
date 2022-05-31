@@ -13,17 +13,21 @@ import (
 )
 
 func main() {
+
 	// Инициализация конфига (токенов)
 	err := mods.InitConfig()
 	if err != nil {
 		fmt.Println("Config error: ", err)
 		return
 	}
+
 	// Url бота для отправки и приёма сообщений
 	botUrl := "https://api.telegram.org/bot" + viper.GetString("token")
 	offSet := 0
 
+	// Цикл работы приложения
 	for {
+
 		// Получение апдейтов
 		updates, err := getUpdates(botUrl, offSet)
 		if err != nil {
@@ -42,6 +46,7 @@ func main() {
 }
 
 func getUpdates(botUrl string, offset int) ([]mods.Update, error) {
+
 	// Rest запрос для получения апдейтов
 	resp, err := http.Get(botUrl + "/getUpdates?offset=" + strconv.Itoa(offset))
 	if err != nil {
@@ -65,10 +70,11 @@ func getUpdates(botUrl string, offset int) ([]mods.Update, error) {
 
 //	https://core.telegram.org/bots/api#using-a-local-bot-api-server
 func respond(botUrl string, update mods.Update) error {
+
 	// msg - текст сообщения пользователя
 	msg := strings.ToLower(update.Message.Text)
 
-	// Обработчик комманд
+	// Обработчик команд
 	if msg != "" {
 		switch msg {
 		case "/git":
@@ -141,15 +147,17 @@ func respond(botUrl string, update mods.Update) error {
 		return nil
 
 	} else {
-		// Если пользователь отправил стикер,
-		// бот отправит стикер в ответ
+
+		// Проверка на стикер
 		if update.Message.Sticker.File_id != "" {
 			mods.SendRandomSticker(botUrl, update)
 			return nil
 		}
+
 		// Если пользователь отправил не сообщение и не стикер:
 		mods.SendMsg(botUrl, update, "Пока я воспринимаю только текст и стикеры")
 		mods.SendStck(botUrl, update, "CAACAgIAAxkBAAIaImHkPqF8-PQVOwh_Kv1qQxIFpPyfAAJXAAOtZbwUZ0fPMqXZ_GcjBA")
 		return nil
+
 	}
 }
