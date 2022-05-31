@@ -79,6 +79,91 @@ type CommitsResponse struct {
 	Color    int    `json:"color"`
 }
 
+type OsuUserInfo struct {
+	Username                 string     `json:"username"`
+	Names                    string     `json:"previous_usernames"`
+	AvatarUrl                string     `json:"avatar_url"`
+	UserID                   string     `json:"id"`
+	CountryCode              string     `json:"country_code"`
+	GlobalRank               string     `json:"global_rank"`
+	CountryRank              string     `json:"country_rank"`
+	PP                       string     `json:"pp"`
+	PlayTime                 string     `json:"play_time"`
+	SSH                      string     `json:"ssh"`
+	SS                       string     `json:"ss"`
+	SH                       string     `json:"sh"`
+	S                        string     `json:"s"`
+	A                        string     `json:"a"`
+	RankedScore              string     `json:"ranked_score"`
+	Accuracy                 string     `json:"accuracy"`
+	PlayCount                string     `json:"play_count"`
+	TotalScore               string     `json:"total_score"`
+	TotalHits                string     `json:"total_hits"`
+	MaximumCombo             string     `json:"maximum_combo"`
+	Replays                  string     `json:"replays"`
+	Level                    string     `json:"level"`
+	SupportLvl               string     `json:"support_level"`
+	DefaultGroup             string     `json:"default_group"`
+	IsOnline                 string     `json:"is_online"`
+	IsActive                 string     `json:"is_active"`
+	IsDeleted                string     `json:"is_deleted"`
+	IsBot                    string     `json:"is_bot"`
+	IsSupporter              string     `json:"is_supporter"`
+	LastVisit                string     `json:"last_visit"`
+	ProfileColor             string     `json:"profile_color"`
+	RankedBeatmapsetCount    string     `json:"ranked_beatmapset_count"`
+	PendingBeatmapsetCount   string     `json:"pending_beatmapset_count"`
+	PmFriendsOnly            string     `json:"pm_friends_only"`
+	GraveyardBeatmapsetCount string     `json:"graveyard_beatmapset_count"`
+	BeatmapPlaycountsCount   string     `json:"beatmap_playcounts_count"`
+	CommentsCount            string     `json:"comments_count"`
+	FavoriteBeatmapsetCount  string     `json:"favorite_beatmapset_count"`
+	GuestBeatmapsetCount     string     `json:"guest_beatmapset_count"`
+	FollowerCount            string     `json:"follower_count"`
+	BestBeatMap              OsuBeatMap `json:"best_beat_map"`
+}
+
+type OsuBeatMap struct {
+	DifficultyRating string `json:"difficulty_rating"`
+	Id               string `json:"id"`
+	Rank             string `json:"rank"`
+	EndedAt          string `json:"ended_at"`
+	Accuracy         string `json:"accuracy"`
+	MaximumCombo     string `json:"maximum_combo"`
+	PP               string `json:"pp"`
+	Passed           string `json:"passed"`
+	TotalScore       string `json:"total_score"`
+	LegacyPerfect    string `json:"legacy_perfect"`
+	Replay           string `json:"replay"`
+	Mode             string `json:"mode"`
+	Status           string `json:"status"`
+	TotalLength      string `json:"total_length"`
+	Ar               string `json:"ar"`
+	Bpm              string `json:"bpm"`
+	Convert          string `json:"convert"`
+	CountCircles     string `json:"count_circles"`
+	CountSliders     string `json:"count_sliders"`
+	CountSpinners    string `json:"count_spinners"`
+	Cs               string `json:"cs"`
+	DeletedAt        string `json:"deleted_at"`
+	Drain            string `json:"drain"`
+	HitLength        string `json:"hit_length"`
+	IsScoreable      string `json:"is_scoreable"`
+	LastUpdated      string `json:"last_updated"`
+	ModeInt          string `json:"mode_int"`
+	PassCount        string `json:"pass_count"`
+	PlayCount        string `json:"play_count"`
+	Ranked           string `json:"ranked"`
+	Url              string `json:"url"`
+	Checksum         string `json:"checksum"`
+	Creator          string `json:"creator"`
+	FavoriteCount    string `json:"favorite_count"`
+	Hype             string `json:"hype"`
+	Nsfw             string `json:"nsfw"`
+	Offset           string `json:"offset"`
+	Spotlight        string `json:"spotlight"`
+}
+
 // Функция вывода списка всех команд
 func Help(botUrl string, update Update) {
 	SendMsg(botUrl, update, "Привет👋🏻, вот список команд:"+
@@ -453,4 +538,38 @@ func InitConfig() error {
 	viper.SetConfigName("config")
 
 	return viper.ReadInConfig()
+}
+
+// Функция вывода информации о пользователе Osu!
+func SendOsuInfo(botUrl string, update Update, parameters string) {
+
+	// Отправка запроса моему API
+	resp, err := http.Get("https://osu-stats-api.herokuapp.com/user/" + parameters)
+
+	// Проверка на ошибку
+	if err != nil {
+		fmt.Println("OsuStatsAPI error: ", err)
+		SendErrorMessage(botUrl, update, 1)
+		return
+	}
+
+	// Запись респонса
+	defer resp.Body.Close()
+	body, _ := ioutil.ReadAll(resp.Body)
+	var user = new(OsuUserInfo)
+	json.Unmarshal(body, &user)
+
+	// Отправка данных пользователю
+	SendPict(botUrl, update, SendPhoto{
+		PhotoUrl: user.AvatarUrl,
+		ChatId:   update.Message.Chat.ChatId,
+		Caption: "Информация о " + user.Username + ":\n" +
+			"Код страны: " + user.CountryCode + "\n" +
+			"Рейтинг в мире: " + user.GlobalRank + "\n" +
+			"Рейтинг в стране: " + user.CountryRank + "\n" +
+			"Старые никнеймы: " + user.Names + "\n" +
+
+			"",
+	})
+
 }

@@ -77,6 +77,9 @@ func respond(botUrl string, update mods.Update) error {
 	// Обработчик команд
 	if msg != "" {
 		switch msg {
+		case "/osu":
+			mods.SendOsuInfo(botUrl, update, "29829158")
+			return nil
 		case "/git":
 			mods.SendCommits(botUrl, update, "hud0shnik")
 			return nil
@@ -130,6 +133,10 @@ func respond(botUrl string, update mods.Update) error {
 			}
 			if update.Message.Text[:4] == "/git" {
 				mods.SendCommits(botUrl, update, update.Message.Text[5:])
+				return nil
+			}
+			if update.Message.Text[:4] == "/osu" {
+				mods.SendOsuInfo(botUrl, update, update.Message.Text[5:])
 				return nil
 			}
 			if update.Message.Text[:5] == "/info" {
