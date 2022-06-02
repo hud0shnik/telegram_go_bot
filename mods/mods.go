@@ -585,6 +585,7 @@ func SendOsuInfo(botUrl string, update Update, parameters string) {
 			"Старые никнеймы: " + user.Names + "\n" +
 			"Уровень: " + user.Level + "\n" +
 			"Уровень подписки: " + user.SupportLvl + "\n" +
+			"Сейчас онлайн? " + user.IsOnline + "\n" +
 			"",
 	})
 
