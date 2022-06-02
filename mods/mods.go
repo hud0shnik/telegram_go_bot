@@ -577,6 +577,7 @@ func SendOsuInfo(botUrl string, update Update, parameters string) {
 			"S: " + user.S + "\n" +
 			"A: " + user.A + "\n" +
 			"---------------------------\n" +
+			"Рейтинговые очки: " + user.RankedScore + "\n" +
 			"Количество игр: " + user.PlayCount + "\n" +
 			"Всего очков: " + user.TotalScore + "\n" +
 			"Всего попаданий: " + user.TotalHits + "\n" +
