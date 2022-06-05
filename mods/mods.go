@@ -568,8 +568,8 @@ func SendOsuInfo(botUrl string, update Update, parameters string) {
 			"Код страны: " + user.CountryCode + "\n" +
 			"Рейтинг в мире: " + user.GlobalRank + "\n" +
 			"Рейтинг в стране: " + user.CountryRank + "\n" +
-			"Точность попаданий: " + user.Accuracy + "\n" +
 			"PP: " + user.PP + "\n" +
+			"Точность попаданий " + user.Accuracy + "%\n" +
 			"-------карты---------\n" +
 			"SSH: " + user.SSH + "\n" +
 			"SH: " + user.SH + "\n" +
