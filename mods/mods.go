@@ -564,12 +564,12 @@ func SendOsuInfo(botUrl string, update Update, parameters string) {
 	SendPict(botUrl, update, SendPhoto{
 		PhotoUrl: user.AvatarUrl,
 		ChatId:   update.Message.Chat.ChatId,
-		Caption: "Информация о " + user.Username + ":\n" +
-			"Код страны: " + user.CountryCode + "\n" +
-			"Рейтинг в мире: " + user.GlobalRank + "\n" +
-			"Рейтинг в стране: " + user.CountryRank + "\n" +
-			"PP: " + user.PP + "\n" +
+		Caption: "Информация о " + user.Username + "\n" +
+			"Код страны " + user.CountryCode + "\n" +
+			"Рейтинг в мире " + user.GlobalRank + "\n" +
+			"Рейтинг в стране " + user.CountryRank + "\n" +
 			"Точность попаданий " + user.Accuracy + "%\n" +
+			"PP " + user.PP + "\n" +
 			"-------карты---------\n" +
 			"SSH: " + user.SSH + "\n" +
 			"SH: " + user.SH + "\n" +
@@ -577,17 +577,17 @@ func SendOsuInfo(botUrl string, update Update, parameters string) {
 			"S: " + user.S + "\n" +
 			"A: " + user.A + "\n" +
 			"---------------------------\n" +
-			"Рейтинговые очки: " + user.RankedScore + "\n" +
-			"Количество игр: " + user.PlayCount + "\n" +
-			"Всего очков: " + user.TotalScore + "\n" +
-			"Всего попаданий: " + user.TotalHits + "\n" +
-			"Максимальное комбо: " + user.MaximumCombo + "\n" +
-			"Реплеев просмотрено другими: " + user.Replays + "\n" +
-			"Уровень: " + user.Level + "\n" +
+			"Рейтинговые очки " + user.RankedScore + "\n" +
+			"Количество игр " + user.PlayCount + "\n" +
+			"Всего очков " + user.TotalScore + "\n" +
+			"Всего попаданий " + user.TotalHits + "\n" +
+			"Максимальное комбо " + user.MaximumCombo + "\n" +
+			"Реплеев просмотрено другими " + user.Replays + "\n" +
+			"Уровень " + user.Level + "\n" +
 			"---------------------------\n" +
-			"Старые никнеймы: " + user.Names + "\n" +
-			"Время в игре: " + user.PlayTime + "\n" +
-			"Уровень подписки: " + user.SupportLvl + "\n" +
+			"Старые никнеймы " + user.Names + "\n" +
+			"Время в игре " + user.PlayTime + "\n" +
+			"Уровень подписки " + user.SupportLvl + "\n" +
 			"Сейчас онлайн? " + user.IsOnline + "\n" +
 			"",
 	})
