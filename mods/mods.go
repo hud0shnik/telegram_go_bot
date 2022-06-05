@@ -560,8 +560,13 @@ func SendOsuInfo(botUrl string, update Update, parameters string) {
 	var user = new(OsuUserInfo)
 	json.Unmarshal(body, &user)
 
-	responseText := "Информация о " + user.Username + "\n" +
-		"Код страны " + user.CountryCode + "\n" +
+	responseText := "Информация о " + user.Username + "\n"
+
+	if user.Names != "" {
+		responseText += "Aka " + user.Names + "\n"
+	}
+
+	responseText += "Код страны " + user.CountryCode + "\n" +
 		"Рейтинг в мире " + user.GlobalRank + "\n" +
 		"Рейтинг в стране " + user.CountryRank + "\n" +
 		"Точность попаданий " + user.Accuracy + "%\n" +
@@ -581,7 +586,6 @@ func SendOsuInfo(botUrl string, update Update, parameters string) {
 		"Реплеев просмотрено другими " + user.Replays + "\n" +
 		"Уровень " + user.Level + "\n" +
 		"---------------------------\n" +
-		"Старые никнеймы " + user.Names + "\n" +
 		"Время в игре " + user.PlayTime + "\n" +
 		"Уровень подписки " + user.SupportLvl + "\n"
 
