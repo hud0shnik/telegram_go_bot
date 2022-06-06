@@ -606,6 +606,10 @@ func SendOsuInfo(botUrl string, update Update, parameters string) {
 		responseText += "Аккаунт удалён \n"
 	}
 
+	if user.IsBot == "true" {
+		responseText += "Это аккаунт бота \n"
+	}
+
 	// Отправка данных пользователю
 	SendPict(botUrl, update, SendPhoto{
 		PhotoUrl: user.AvatarUrl,
