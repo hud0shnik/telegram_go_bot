@@ -610,6 +610,10 @@ func SendOsuInfo(botUrl string, update Update, parameters string) {
 		responseText += "Это аккаунт бота \n"
 	}
 
+	if user.ProfileColor != "null" {
+		responseText += "Цвет профиля" + user.ProfileColor + "\n"
+	}
+
 	// Отправка данных пользователю
 	SendPict(botUrl, update, SendPhoto{
 		PhotoUrl: user.AvatarUrl,
