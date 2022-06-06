@@ -560,6 +560,7 @@ func SendOsuInfo(botUrl string, update Update, parameters string) {
 	var user = new(OsuUserInfo)
 	json.Unmarshal(body, &user)
 
+	// Формирование текста респонса
 	responseText := "Информация о " + user.Username + "\n"
 
 	if user.Names != "" {
@@ -593,6 +594,12 @@ func SendOsuInfo(botUrl string, update Update, parameters string) {
 		responseText += "Сейчас онлайн \n"
 	} else {
 		responseText += "Сейчас не в сети \n"
+	}
+
+	if user.IsActive == "true" {
+		responseText += "Аккаунт активен \n"
+	} else {
+		responseText += "Аккаунт не активен \n"
 	}
 
 	// Отправка данных пользователю
