@@ -602,6 +602,10 @@ func SendOsuInfo(botUrl string, update Update, parameters string) {
 		responseText += "Аккаунт не активен \n"
 	}
 
+	if user.IsDeleted == "true" {
+		responseText += "Аккаунт удалён \n"
+	}
+
 	// Отправка данных пользователю
 	SendPict(botUrl, update, SendPhoto{
 		PhotoUrl: user.AvatarUrl,
