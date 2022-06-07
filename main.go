@@ -80,10 +80,10 @@ func respond(botUrl string, update mods.Update) error {
 		case "/osu":
 			mods.SendOsuInfo(botUrl, update, "29829158")
 			return nil
-		case "/git":
+		case "/commits":
 			mods.SendCommits(botUrl, update, "hud0shnik")
 			return nil
-		case "/info":
+		case "/github":
 			mods.SendInfo(botUrl, update, "hud0shnik")
 			return nil
 		case "/meme":
