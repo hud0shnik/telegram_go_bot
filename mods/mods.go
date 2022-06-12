@@ -545,7 +545,7 @@ func InitConfig() error {
 func SendOsuInfo(botUrl string, update Update, parameters string) {
 
 	// Отправка запроса моему API
-	resp, err := http.Get("https://osu-stats-api.herokuapp.com/user/" + parameters)
+	resp, err := http.Get("https://osustatsapi.herokuapp.com/user/" + parameters)
 
 	// Проверка на ошибку
 	if err != nil {
