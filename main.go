@@ -109,6 +109,10 @@ func respond(botUrl string, update mods.Update) error {
 		case "Молодец", "молодец":
 			mods.SendMsg(botUrl, update, "Стараюсь UwU")
 			return nil
+		case "Живой?", "живой?":
+			mods.SendMsg(botUrl, update, "Живой")
+			mods.SendStck(botUrl, update, "CAACAgIAAxkBAAIdGWKu5rpWxb4gn4dmYi_rRJ9OHM9xAAJ-FgACsS8ISQjT6d1ChY7VJAQ")
+			return nil
 		case "/check":
 			mods.Check(botUrl, update)
 			return nil
