@@ -6,7 +6,6 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strconv"
-	"strings"
 	"tgBot/mods"
 
 	"github.com/spf13/viper"
@@ -71,12 +70,9 @@ func getUpdates(botUrl string, offset int) ([]mods.Update, error) {
 //	https://core.telegram.org/bots/api#using-a-local-bot-api-server
 func respond(botUrl string, update mods.Update) error {
 
-	// msg - текст сообщения пользователя
-	msg := strings.ToLower(update.Message.Text)
-
 	// Обработчик команд
-	if msg != "" {
-		switch msg {
+	if update.Message.Text != "" {
+		switch update.Message.Text {
 		case "/osu":
 			mods.SendOsuInfo(botUrl, update, "")
 			return nil
@@ -107,10 +103,10 @@ func respond(botUrl string, update mods.Update) error {
 		case "/start", "/help":
 			mods.Help(botUrl, update)
 			return nil
-		case "owo":
+		case "OwO":
 			mods.SendMsg(botUrl, update, "UwU")
 			return nil
-		case "молодец", "неплохо":
+		case "Молодец", "молодец":
 			mods.SendMsg(botUrl, update, "Стараюсь UwU")
 			return nil
 		case "/check":
@@ -118,7 +114,7 @@ func respond(botUrl string, update mods.Update) error {
 			return nil
 		}
 
-		lenMsg := len(msg)
+		lenMsg := len(update.Message.Text)
 
 		// Команды, которые нельзя поместить в switch
 		if lenMsg > 2 && update.Message.Text[:2] == "/d" {
@@ -145,7 +141,7 @@ func respond(botUrl string, update mods.Update) error {
 			}
 		}
 
-		if msg[lenMsg-1] == '?' {
+		if update.Message.Text[lenMsg-1] == '?' {
 			mods.Ball8(botUrl, update)
 			return nil
 		}
