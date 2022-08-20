@@ -120,6 +120,11 @@ func respond(botUrl string, update mods.Update) error {
 
 		lenMsg := len(update.Message.Text)
 
+		if update.Message.Text[lenMsg-1] == '?' {
+			mods.Ball8(botUrl, update)
+			return nil
+		}
+
 		// Команды, которые нельзя поместить в switch
 		if lenMsg > 2 && update.Message.Text[:2] == "/d" {
 			mods.SendMsg(botUrl, update, mods.Dice(update.Message.Text))
@@ -131,23 +136,18 @@ func respond(botUrl string, update mods.Update) error {
 				mods.CheckIPAdress(botUrl, update, update.Message.Text[4:])
 				return nil
 			}
-			if update.Message.Text[:4] == "/git" {
-				mods.SendCommits(botUrl, update, update.Message.Text[5:])
-				return nil
-			}
 			if update.Message.Text[:4] == "/osu" {
 				mods.SendOsuInfo(botUrl, update, update.Message.Text[5:])
 				return nil
 			}
-			if update.Message.Text[:5] == "/info" {
-				mods.SendInfo(botUrl, update, update.Message.Text[6:])
+			if update.Message.Text[:7] == "/github" {
+				mods.SendInfo(botUrl, update, update.Message.Text[8:])
 				return nil
 			}
-		}
-
-		if update.Message.Text[lenMsg-1] == '?' {
-			mods.Ball8(botUrl, update)
-			return nil
+			if update.Message.Text[:8] == "/commits" {
+				mods.SendInfo(botUrl, update, update.Message.Text[9:])
+				return nil
+			}
 		}
 
 		mods.SendMsg(botUrl, update, "OwO")
