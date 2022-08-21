@@ -321,100 +321,6 @@ func SendCryptoData(botUrl string, update Update) {
 	}
 }
 
-// Функция вывода информации о пользователе GitHub
-func SendInfo(botUrl string, update Update, parameters string) {
-
-	// Отправка запроса моему API
-	resp, err := http.Get("https://hud0shnikgitapi.herokuapp.com/user/" + parameters)
-
-	// Проверка на ошибку
-	if err != nil {
-		fmt.Println("GithubGoAPI error: ", err)
-		SendErrorMessage(botUrl, update, 1)
-		return
-	}
-
-	// Запись респонса
-	defer resp.Body.Close()
-	body, _ := ioutil.ReadAll(resp.Body)
-	var user = new(InfoResponse)
-	json.Unmarshal(body, &user)
-
-	// Отправка данных пользователю
-	SendPict(botUrl, update, SendPhoto{
-		PhotoUrl: user.Avatar,
-		ChatId:   update.Message.Chat.ChatId,
-		Caption: "Информация о " + user.Username + ":\n" +
-			"Имя " + user.Name + "\n" +
-			"Поставленных звезд " + user.Stars + " ⭐\n" +
-			"Подписчиков " + user.Followers + " 🤩\n" +
-			"Подписок " + user.Following + " 🕵️\n" +
-			"Репозиториев " + user.Repositories + " 📘\n" +
-			"Пакетов " + user.Packages + " 📦\n" +
-			"Контрибуций за год " + user.Contributions + " 🟩\n" +
-			"Ссылка на аватар:\n " + user.Avatar,
-	})
-}
-
-// Функция вывода количества коммитов пользователя GitHub
-func SendCommits(botUrl string, update Update, parameters string) {
-
-	// Индекс пробела и дата
-	i, date := 0, ""
-
-	// Поиск конца юзернейма и начала даты
-	for ; i < len(parameters); i++ {
-		if parameters[i] == ' ' {
-			break
-		}
-	}
-
-	// Если дата задана, записывает её
-	if i != len(parameters) {
-		date = parameters[i+1:]
-	}
-
-	// Отправка запроса моему API
-	resp, err := http.Get("https://hud0shnikgitapi.herokuapp.com/commits/" + parameters[:i] + "/" + date)
-
-	// Проверка на ошибку
-	if err != nil {
-		fmt.Println("GithubStatsAPI error: ", err)
-		SendErrorMessage(botUrl, update, 1)
-		return
-	}
-
-	// Запись респонса
-	defer resp.Body.Close()
-	body, _ := ioutil.ReadAll(resp.Body)
-	var user = new(CommitsResponse)
-	json.Unmarshal(body, &user)
-
-	// Если поле пустое, меняет date на "сегодня"
-	if date == "" {
-		date = "сегодня"
-	}
-
-	// Вывод данных пользователю
-	switch user.Color {
-	case 1:
-		SendMsg(botUrl, update, "Коммитов за "+date+" "+strconv.Itoa(user.Commits))
-		SendStck(botUrl, update, "CAACAgIAAxkBAAIYwmG11bAfndI1wciswTEVJUEdgB2jAAI5AAOtZbwUdHz8lasybOojBA")
-	case 2:
-		SendMsg(botUrl, update, "Коммитов за "+date+" "+strconv.Itoa(user.Commits)+", неплохо!")
-		SendStck(botUrl, update, "CAACAgIAAxkBAAIXWmGyDE1aVXGUY6lcjKxx9bOn0JA1AAJOAAOtZbwUIWzOXysr2zwjBA")
-	case 3:
-		SendMsg(botUrl, update, "Коммитов за "+date+" "+strconv.Itoa(user.Commits)+", отлично!!")
-		SendStck(botUrl, update, "CAACAgIAAxkBAAIYymG11mMdODUQUZGsQO97V9O0ZLJCAAJeAAOtZbwUvL_TIkzK-MsjBA")
-	case 4:
-		SendMsg(botUrl, update, "Коммитов за "+date+" "+strconv.Itoa(user.Commits)+", прекрасно!!!")
-		SendStck(botUrl, update, "CAACAgIAAxkBAAIXXGGyDFClr69PKZXJo9dlYMbyilXLAAI1AAOtZbwU9aVxXMUw5eAjBA")
-	default:
-		SendMsg(botUrl, update, "Коммитов нет")
-		SendStck(botUrl, update, "CAACAgIAAxkBAAIYG2GzRVNm_d_mVDIOaiLXkGukArlTAAJDAAOtZbwU_-iXZG7hfLsjBA")
-	}
-}
-
 // Функция нахождения местоположения по IP адресу
 func CheckIPAdress(botUrl string, update Update, IP string) {
 
@@ -470,6 +376,114 @@ func CheckIPAdress(botUrl string, update Update, IP string) {
 	SendStck(botUrl, update, "CAACAgIAAxkBAAIXqmGyGtvN_JHUQVDXspAX5jP3BvU9AAI5AAOtZbwUdHz8lasybOojBA")
 }
 
+// Функция вывода информации о пользователе GitHub
+func SendInfo(botUrl string, update Update, parameters string) {
+
+	// Отправка запроса моему API
+	resp, err := http.Get("https://hud0shnikgitapi.herokuapp.com/user/" + parameters)
+
+	// Проверка на ошибку
+	if err != nil {
+		fmt.Println("GithubGoAPI error: ", err)
+		SendErrorMessage(botUrl, update, 1)
+		return
+	}
+
+	// Запись респонса
+	defer resp.Body.Close()
+	body, _ := ioutil.ReadAll(resp.Body)
+	var user = new(InfoResponse)
+	json.Unmarshal(body, &user)
+
+	if user.Error != "" || resp.StatusCode != 200 {
+		fmt.Println("GithubGoAPI error: ", err)
+		SendErrorMessage(botUrl, update, 1)
+		SendMsg(botUrl, update, user.Error)
+		return
+	}
+
+	// Отправка данных пользователю
+	SendPict(botUrl, update, SendPhoto{
+		PhotoUrl: user.Avatar,
+		ChatId:   update.Message.Chat.ChatId,
+		Caption: "Информация о " + user.Username + ":\n" +
+			"Имя " + user.Name + "\n" +
+			"Поставленных звезд " + user.Stars + " ⭐\n" +
+			"Подписчиков " + user.Followers + " 🤩\n" +
+			"Подписок " + user.Following + " 🕵️\n" +
+			"Репозиториев " + user.Repositories + " 📘\n" +
+			"Пакетов " + user.Packages + " 📦\n" +
+			"Контрибуций за год " + user.Contributions + " 🟩\n" +
+			"Ссылка на аватар:\n " + user.Avatar,
+	})
+}
+
+// Функция вывода количества коммитов пользователя GitHub
+func SendCommits(botUrl string, update Update, parameters string) {
+
+	// Индекс пробела и дата
+	i, date := 0, ""
+
+	// Поиск конца юзернейма и начала даты
+	for ; i < len(parameters); i++ {
+		if parameters[i] == ' ' {
+			break
+		}
+	}
+
+	// Если дата задана, записывает её
+	if i != len(parameters) {
+		date = parameters[i+1:]
+	}
+
+	// Отправка запроса моему API
+	resp, err := http.Get("https://hud0shnikgitapi.herokuapp.com/commits/" + parameters[:i] + "/" + date)
+
+	// Проверка на ошибку
+	if err != nil {
+		fmt.Println("GithubStatsAPI error: ", err)
+		SendErrorMessage(botUrl, update, 1)
+		return
+	}
+
+	// Запись респонса
+	defer resp.Body.Close()
+	body, _ := ioutil.ReadAll(resp.Body)
+	var user = new(CommitsResponse)
+	json.Unmarshal(body, &user)
+
+	if user.Error != "" || resp.StatusCode != 200 {
+		fmt.Println("GithubStatsAPI error: ", err)
+		SendErrorMessage(botUrl, update, 1)
+		SendMsg(botUrl, update, user.Error)
+		return
+	}
+
+	// Если поле пустое, меняет date на "сегодня"
+	if date == "" {
+		date = "сегодня"
+	}
+
+	// Вывод данных пользователю
+	switch user.Color {
+	case 1:
+		SendMsg(botUrl, update, "Коммитов за "+date+" "+strconv.Itoa(user.Commits))
+		SendStck(botUrl, update, "CAACAgIAAxkBAAIYwmG11bAfndI1wciswTEVJUEdgB2jAAI5AAOtZbwUdHz8lasybOojBA")
+	case 2:
+		SendMsg(botUrl, update, "Коммитов за "+date+" "+strconv.Itoa(user.Commits)+", неплохо!")
+		SendStck(botUrl, update, "CAACAgIAAxkBAAIXWmGyDE1aVXGUY6lcjKxx9bOn0JA1AAJOAAOtZbwUIWzOXysr2zwjBA")
+	case 3:
+		SendMsg(botUrl, update, "Коммитов за "+date+" "+strconv.Itoa(user.Commits)+", отлично!!")
+		SendStck(botUrl, update, "CAACAgIAAxkBAAIYymG11mMdODUQUZGsQO97V9O0ZLJCAAJeAAOtZbwUvL_TIkzK-MsjBA")
+	case 4:
+		SendMsg(botUrl, update, "Коммитов за "+date+" "+strconv.Itoa(user.Commits)+", прекрасно!!!")
+		SendStck(botUrl, update, "CAACAgIAAxkBAAIXXGGyDFClr69PKZXJo9dlYMbyilXLAAI1AAOtZbwU9aVxXMUw5eAjBA")
+	default:
+		SendMsg(botUrl, update, "Коммитов нет")
+		SendStck(botUrl, update, "CAACAgIAAxkBAAIYG2GzRVNm_d_mVDIOaiLXkGukArlTAAJDAAOtZbwU_-iXZG7hfLsjBA")
+	}
+}
+
 // Функция вывода информации о пользователе Osu!
 func SendOsuInfo(botUrl string, update Update, parameters string) {
 
@@ -488,6 +502,13 @@ func SendOsuInfo(botUrl string, update Update, parameters string) {
 	body, _ := ioutil.ReadAll(resp.Body)
 	var user = new(OsuUserInfo)
 	json.Unmarshal(body, &user)
+
+	if user.Error != "" || resp.StatusCode != 200 {
+		fmt.Println("OsuStatsAPI error: ", err)
+		SendErrorMessage(botUrl, update, 1)
+		SendMsg(botUrl, update, user.Error)
+		return
+	}
 
 	// Формирование текста респонса
 
