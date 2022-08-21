@@ -14,6 +14,7 @@ import (
 )
 
 // Структуры для работы с Telegram API
+
 type TelegramResponse struct {
 	Result []Update `json:"result"`
 }
@@ -38,6 +39,7 @@ type Sticker struct {
 }
 
 // Структуры для работы с другими API
+
 type RedditResponse struct {
 	Title   string `json:"title"`
 	Url     string `json:"url"`
@@ -61,6 +63,7 @@ type DogResponse struct {
 }
 
 type InfoResponse struct {
+	Error         string `json:"error"`
 	Username      string `json:"username"`
 	Name          string `json:"name"`
 	Followers     string `json:"followers"`
@@ -73,19 +76,15 @@ type InfoResponse struct {
 }
 
 type CommitsResponse struct {
+	Error    string `json:"error"`
 	Date     string `json:"date"`
 	Username string `json:"username"`
 	Commits  int    `json:"commits"`
 	Color    int    `json:"color"`
 }
 
-type OsuBadge struct {
-	AwardedAt   string `json:"awarded_at"`
-	Description string `json:"description"`
-	ImageUrl    string `json:"image_url"`
-}
-
 type OsuUserInfo struct {
+	Error                    string `json:"error"`
 	Username                 string `json:"username"`
 	Names                    string `json:"previous_usernames"`
 	AvatarUrl                string `json:"avatar_url"`
@@ -134,6 +133,12 @@ type OsuUserInfo struct {
 	FollowerCount            string `json:"follower_count"`
 	// BestBeatMap           OsuBeatMap `json:"best_beat_map"`
 	// Badges                []OsuBadge `json:"badges"`
+}
+
+type OsuBadge struct {
+	AwardedAt   string `json:"awarded_at"`
+	Description string `json:"description"`
+	ImageUrl    string `json:"image_url"`
 }
 
 // Функция вывода списка всех команд
@@ -199,7 +204,7 @@ func Ball8(botUrl string, update Update) {
 	}
 
 	// Выбор случайного ответа
-	SendMsg(botUrl, update, answers[Random(len(answers))])
+	SendMsg(botUrl, update, answers[Random(10)])
 
 }
 
@@ -247,7 +252,6 @@ func SendFromReddit(botUrl string, update Update, board string) error {
 	// Отправка результата
 	SendPict(botUrl, update, botImageMessage)
 	return nil
-
 }
 
 // Функция вывода курса криптовалюты SHIB
@@ -279,7 +283,6 @@ func SendCryptoData(botUrl string, update Update) {
 			"до отметки в "+response.LastPrice+"$\n\n")
 		SendRandomShibaSticker(botUrl, update, false)
 	}
-
 }
 
 // Функция проверки всех команд
@@ -314,7 +317,6 @@ func Check(botUrl string, update Update) {
 
 	// Вывод для других пользователей
 	SendMsg(botUrl, update, "Error 403! Beep Boop... Forbidden! Access denied 🤖")
-
 }
 
 // Функция отправки сообщений об ошибках
@@ -382,7 +384,6 @@ func SendInfo(botUrl string, update Update, parameters string) {
 			"Контрибуций за год " + user.Contributions + " 🟩\n" +
 			"Ссылка на аватар:\n " + user.Avatar,
 	})
-
 }
 
 // Функция вывода количества коммитов пользователя GitHub
@@ -442,7 +443,6 @@ func SendCommits(botUrl string, update Update, parameters string) {
 		SendMsg(botUrl, update, "Коммитов нет")
 		SendStck(botUrl, update, "CAACAgIAAxkBAAIYG2GzRVNm_d_mVDIOaiLXkGukArlTAAJDAAOtZbwU_-iXZG7hfLsjBA")
 	}
-
 }
 
 // Функция нахождения местоположения по IP адресу
@@ -498,7 +498,6 @@ func CheckIPAdress(botUrl string, update Update, IP string) {
 	SendMsg(botUrl, update, "Нашёл! Страна происхождения - "+response.CountryName+" "+response.CountryEmoji+
 		"\n\nМы не храним IP, которые просят проверить пользователи, весь код можно найти на гитхабе.")
 	SendStck(botUrl, update, "CAACAgIAAxkBAAIXqmGyGtvN_JHUQVDXspAX5jP3BvU9AAI5AAOtZbwUdHz8lasybOojBA")
-
 }
 
 // Функция инициализации конфига (всех токенов)
@@ -529,6 +528,7 @@ func SendOsuInfo(botUrl string, update Update, parameters string) {
 	json.Unmarshal(body, &user)
 
 	// Формирование текста респонса
+
 	responseText := "Информация о " + user.Username + "\n"
 
 	if user.Names != "" {
@@ -596,5 +596,4 @@ func SendOsuInfo(botUrl string, update Update, parameters string) {
 		ChatId:   update.Message.Chat.ChatId,
 		Caption:  responseText,
 	})
-
 }
