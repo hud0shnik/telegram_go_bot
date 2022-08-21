@@ -183,7 +183,6 @@ func Dice(msg string) string {
 
 	// Бросок
 	return strconv.Itoa(1 + Random(num))
-
 }
 
 // Функция генерации случайных ответов
@@ -205,7 +204,6 @@ func Ball8(botUrl string, update Update) {
 
 	// Выбор случайного ответа
 	SendMsg(botUrl, update, answers[Random(10)])
-
 }
 
 // Функция броска монетки
@@ -217,106 +215,12 @@ func Coin(botUrl string, update Update) {
 	}
 }
 
-// Функция отправки случайного поста с Reddit
-func SendFromReddit(botUrl string, update Update, board string) error {
+// Функция инициализации конфига (всех токенов)
+func InitConfig() error {
+	viper.AddConfigPath("configs")
+	viper.SetConfigName("config")
 
-	// Отправка запроса
-	resp, err := http.Get("https://meme-api.herokuapp.com/gimme/" + board)
-
-	// Проверка на ошибку
-	if err != nil {
-		fmt.Println("Meme API error: ", err)
-		SendErrorMessage(botUrl, update, 1)
-		return err
-	}
-
-	// Запись респонса
-	defer resp.Body.Close()
-	body, _ := ioutil.ReadAll(resp.Body)
-	var response = new(RedditResponse)
-	json.Unmarshal(body, &response)
-
-	// Проверка на запрещёнку
-	if response.Nsfw || response.Spoiler {
-		response.Url = "https://belikebill.ga/billgen-API.php?default=1"
-		response.Title = "Картинка оказалась со спойлером или nsfw-контентом, поэтому я заменил её на это"
-	}
-
-	// Формирование сообщения
-	botImageMessage := SendPhoto{
-		ChatId:   update.Message.Chat.ChatId,
-		PhotoUrl: response.Url,
-		Caption:  response.Title,
-	}
-
-	// Отправка результата
-	SendPict(botUrl, update, botImageMessage)
-	return nil
-}
-
-// Функция вывода курса криптовалюты SHIB
-func SendCryptoData(botUrl string, update Update) {
-
-	// Отправка запроса
-	resp, err := http.Get("https://api2.binance.com/api/v3/ticker/24hr?symbol=SHIBBUSD")
-
-	// Проверка на ошибку
-	if err != nil {
-		fmt.Println("Binance API error: ", err)
-		SendErrorMessage(botUrl, update, 1)
-		return
-	}
-
-	// Запись респонса
-	defer resp.Body.Close()
-	body, _ := ioutil.ReadAll(resp.Body)
-	var response = new(CryptoResponse)
-	json.Unmarshal(body, &response)
-
-	// Формирование и отправка результата
-	if response.ChangePercent[0] == '-' {
-		SendMsg(botUrl, update, "За сегодняшний день "+response.Symbol+" упал на "+response.ChangePercent[1:]+"%\n"+
-			"до отметки в "+response.LastPrice+"$\n\n")
-		SendRandomShibaSticker(botUrl, update, true)
-	} else {
-		SendMsg(botUrl, update, "За сегодняшний день "+response.Symbol+" вырос на "+response.ChangePercent+"%\n"+
-			"до отметки в "+response.LastPrice+"$\n\n")
-		SendRandomShibaSticker(botUrl, update, false)
-	}
-}
-
-// Функция проверки всех команд
-func Check(botUrl string, update Update) {
-
-	// Проверка на мой id
-	if update.Message.Chat.ChatId == viper.GetInt("DanyaChatId") {
-
-		// Временная метка начала проверки
-		start := time.Now()
-
-		// Вызов всех команд
-		SendCryptoData(botUrl, update)
-		SendFromReddit(botUrl, update, "")
-		Coin(botUrl, update)
-		Help(botUrl, update)
-		SendCommits(botUrl, update, "hud0shnik")
-		SendMsg(botUrl, update, Dice("/d20"))
-		Ball8(botUrl, update)
-		SendRandomSticker(botUrl, update)
-		SendFromReddit(botUrl, update, "parrots")
-
-		// Отправка ошибок
-		for i := 1; i < 7; i++ {
-			SendErrorMessage(botUrl, update, i)
-		}
-
-		// Отправка результата
-		SendMsg(botUrl, update, "Проверка заняла "+time.Since(start).String())
-		return
-	}
-
-	// Вывод для других пользователей
-	SendMsg(botUrl, update, "Error 403! Beep Boop... Forbidden! Access denied 🤖")
+	return viper.ReadInConfig()
 }
 
 // Функция отправки сообщений об ошибках
@@ -349,6 +253,72 @@ func SendErrorMessage(botUrl string, update Update, errorCode int) {
 	// Вывод ошибки пользователю с просьбой связаться со мной для её устранения
 	result += ", пожалуйста свяжитесь с моим создателем для устранения проблемы \n\nhttps://vk.com/hud0shnik\nhttps://vk.com/hud0shnik\nhttps://vk.com/hud0shnik"
 	SendMsg(botUrl, update, result)
+}
+
+// Функция отправки случайного поста с Reddit
+func SendFromReddit(botUrl string, update Update, board string) error {
+
+	// Отправка запроса
+	resp, err := http.Get("https://meme-api.herokuapp.com/gimme/" + board)
+
+	// Проверка на ошибку
+	if err != nil {
+		fmt.Println("Meme API error: ", err)
+		SendErrorMessage(botUrl, update, 1)
+		return err
+	}
+
+	// Запись респонса
+	defer resp.Body.Close()
+	body, _ := ioutil.ReadAll(resp.Body)
+	var response = new(RedditResponse)
+	json.Unmarshal(body, &response)
+
+	// Проверка на запрещёнку
+	if response.Nsfw || response.Spoiler {
+		response.Url = "https://belikebill.ga/billgen-API.php?default=1"
+		response.Title = "Картинка оказалась со спойлером или nsfw-контентом, поэтому я заменил её на это"
+	}
+
+	// Отправка результата
+	SendPict(botUrl, update, SendPhoto{
+		ChatId:   update.Message.Chat.ChatId,
+		PhotoUrl: response.Url,
+		Caption:  response.Title,
+	})
+
+	return nil
+}
+
+// Функция вывода курса криптовалюты SHIB
+func SendCryptoData(botUrl string, update Update) {
+
+	// Отправка запроса
+	resp, err := http.Get("https://api2.binance.com/api/v3/ticker/24hr?symbol=SHIBBUSD")
+
+	// Проверка на ошибку
+	if err != nil {
+		fmt.Println("Binance API error: ", err)
+		SendErrorMessage(botUrl, update, 1)
+		return
+	}
+
+	// Запись респонса
+	defer resp.Body.Close()
+	body, _ := ioutil.ReadAll(resp.Body)
+	var response = new(CryptoResponse)
+	json.Unmarshal(body, &response)
+
+	// Формирование и отправка результата
+	if response.ChangePercent[0] == '-' {
+		SendMsg(botUrl, update, "За сегодняшний день "+response.Symbol+" упал на "+response.ChangePercent[1:]+"%\n"+
+			"до отметки в "+response.LastPrice+"$\n\n")
+		SendRandomShibaSticker(botUrl, update, true)
+	} else {
+		SendMsg(botUrl, update, "За сегодняшний день "+response.Symbol+" вырос на "+response.ChangePercent+"%\n"+
+			"до отметки в "+response.LastPrice+"$\n\n")
+		SendRandomShibaSticker(botUrl, update, false)
+	}
 }
 
 // Функция вывода информации о пользователе GitHub
@@ -409,7 +379,7 @@ func SendCommits(botUrl string, update Update, parameters string) {
 
 	// Проверка на ошибку
 	if err != nil {
-		fmt.Println("GithubGoAPI error: ", err)
+		fmt.Println("GithubStatsAPI error: ", err)
 		SendErrorMessage(botUrl, update, 1)
 		return
 	}
@@ -500,14 +470,6 @@ func CheckIPAdress(botUrl string, update Update, IP string) {
 	SendStck(botUrl, update, "CAACAgIAAxkBAAIXqmGyGtvN_JHUQVDXspAX5jP3BvU9AAI5AAOtZbwUdHz8lasybOojBA")
 }
 
-// Функция инициализации конфига (всех токенов)
-func InitConfig() error {
-	viper.AddConfigPath("configs")
-	viper.SetConfigName("config")
-
-	return viper.ReadInConfig()
-}
-
 // Функция вывода информации о пользователе Osu!
 func SendOsuInfo(botUrl string, update Update, parameters string) {
 
@@ -596,4 +558,38 @@ func SendOsuInfo(botUrl string, update Update, parameters string) {
 		ChatId:   update.Message.Chat.ChatId,
 		Caption:  responseText,
 	})
+}
+
+// Функция проверки всех команд
+func Check(botUrl string, update Update) {
+
+	// Проверка на мой id
+	if update.Message.Chat.ChatId == viper.GetInt("DanyaChatId") {
+
+		// Временная метка начала проверки
+		start := time.Now()
+
+		// Вызов всех команд
+		SendCryptoData(botUrl, update)
+		SendFromReddit(botUrl, update, "")
+		Coin(botUrl, update)
+		Help(botUrl, update)
+		SendCommits(botUrl, update, "hud0shnik")
+		SendMsg(botUrl, update, Dice("/d20"))
+		Ball8(botUrl, update)
+		SendRandomSticker(botUrl, update)
+		SendFromReddit(botUrl, update, "parrots")
+
+		// Отправка ошибок
+		for i := 1; i < 7; i++ {
+			SendErrorMessage(botUrl, update, i)
+		}
+
+		// Отправка результата
+		SendMsg(botUrl, update, "Проверка заняла "+time.Since(start).String())
+		return
+	}
+
+	// Вывод для других пользователей
+	SendMsg(botUrl, update, "Error 403! Beep Boop... Forbidden! Access denied 🤖")
 }
