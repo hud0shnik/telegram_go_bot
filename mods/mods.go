@@ -215,10 +215,8 @@ func Coin(botUrl string, update Update) {
 // Функция отправки случайного поста с Reddit
 func SendFromReddit(botUrl string, update Update, board string) error {
 
-	// Отправка реквеста
-	url := "https://meme-api.herokuapp.com/gimme/" + board
-	req, _ := http.NewRequest("GET", url, nil)
-	res, err := http.DefaultClient.Do(req)
+	// Отправка запроса
+	resp, err := http.Get("https://meme-api.herokuapp.com/gimme/" + board)
 
 	// Проверка на ошибку
 	if err != nil {
@@ -228,8 +226,8 @@ func SendFromReddit(botUrl string, update Update, board string) error {
 	}
 
 	// Запись респонса
-	defer res.Body.Close()
-	body, _ := ioutil.ReadAll(res.Body)
+	defer resp.Body.Close()
+	body, _ := ioutil.ReadAll(resp.Body)
 	var response = new(RedditResponse)
 	json.Unmarshal(body, &response)
 
@@ -255,9 +253,8 @@ func SendFromReddit(botUrl string, update Update, board string) error {
 // Функция вывода курса криптовалюты SHIB
 func SendCryptoData(botUrl string, update Update) {
 
-	// Отправка реквеста
-	req, _ := http.NewRequest("GET", "https://api2.binance.com/api/v3/ticker/24hr?symbol=SHIBBUSD", nil)
-	res, err := http.DefaultClient.Do(req)
+	// Отправка запроса
+	resp, err := http.Get("https://api2.binance.com/api/v3/ticker/24hr?symbol=SHIBBUSD")
 
 	// Проверка на ошибку
 	if err != nil {
@@ -267,8 +264,8 @@ func SendCryptoData(botUrl string, update Update) {
 	}
 
 	// Запись респонса
-	defer res.Body.Close()
-	body, _ := ioutil.ReadAll(res.Body)
+	defer resp.Body.Close()
+	body, _ := ioutil.ReadAll(resp.Body)
 	var response = new(CryptoResponse)
 	json.Unmarshal(body, &response)
 
@@ -474,11 +471,10 @@ func CheckIPAdress(botUrl string, update Update, IP string) {
 		}
 	}
 
-	// Отправка запроса
-	SendMsg(botUrl, update, "Ищу...")
-	url := "https://api.ip2country.info/ip?" + IP
-	req, _ := http.NewRequest("GET", url, nil)
-	res, err := http.DefaultClient.Do(req)
+	// Отправка запроса API
+	resp, err := http.Get("https://api.ip2country.info/ip?" + IP)
+
+	// Проверка на ошибку
 	if err != nil {
 		fmt.Println("IP2Country API error: ", err)
 		SendErrorMessage(botUrl, update, 1)
@@ -486,12 +482,12 @@ func CheckIPAdress(botUrl string, update Update, IP string) {
 	}
 
 	// Запись респонса
-	defer res.Body.Close()
-	body, _ := ioutil.ReadAll(res.Body)
+	defer resp.Body.Close()
+	body, _ := ioutil.ReadAll(resp.Body)
 	var response = new(IP2CountryResponse)
 	json.Unmarshal(body, &response)
 
-	// Вывод сообщения для спец айпишников
+	// Вывод сообщения для айпишников без страны
 	if response.CountryName == "" {
 		SendMsg(botUrl, update, "Не могу найти этот IP")
 		SendStck(botUrl, update, "CAACAgIAAxkBAAIY4mG13Vr0CzGwyXA1eL3esZVCWYFhAAJIAAOtZbwUgHOKzxQtAAHcIwQ")
