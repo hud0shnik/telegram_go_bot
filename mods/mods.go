@@ -571,7 +571,7 @@ func SendOsuInfo(botUrl string, update Update, parameters string) {
 		responseText += "Это аккаунт модератора \n"
 	}
 
-	if user.ProfileColor != "null" {
+	if user.ProfileColor != "" {
 		responseText += "Цвет профиля" + user.ProfileColor + "\n"
 	}
 
