@@ -84,53 +84,53 @@ type CommitsResponse struct {
 }
 
 type OsuUserInfo struct {
-	Error                    string `json:"error"`
-	Username                 string `json:"username"`
-	Names                    string `json:"previous_usernames"`
-	AvatarUrl                string `json:"avatar_url"`
-	UserID                   string `json:"id"`
-	CountryCode              string `json:"country_code"`
-	GlobalRank               string `json:"global_rank"`
-	CountryRank              string `json:"country_rank"`
-	PP                       string `json:"pp"`
-	PlayTime                 string `json:"play_time"`
-	PlayTimeSeconds          string `json:"play_time_seconds"`
-	SSH                      string `json:"ssh"`
-	SS                       string `json:"ss"`
-	SH                       string `json:"sh"`
-	S                        string `json:"s"`
-	A                        string `json:"a"`
-	RankedScore              string `json:"ranked_score"`
-	Accuracy                 string `json:"accuracy"`
-	PlayCount                string `json:"play_count"`
-	TotalScore               string `json:"total_score"`
-	TotalHits                string `json:"total_hits"`
-	MaximumCombo             string `json:"maximum_combo"`
-	Replays                  string `json:"replays"`
-	Level                    string `json:"level"`
-	SupportLvl               string `json:"support_level"`
-	DefaultGroup             string `json:"default_group"`
-	IsOnline                 string `json:"is_online"`
-	IsActive                 string `json:"is_active"`
-	IsDeleted                string `json:"is_deleted"`
-	IsNat                    string `json:"is_nat"`
-	IsModerator              string `json:"is_moderator"`
-	IsBot                    string `json:"is_bot"`
-	IsSilenced               string `json:"is_silenced"`
-	IsRestricted             string `json:"is_restricted"`
-	IsLimitedBn              string `json:"is_limited_bn"`
-	IsSupporter              string `json:"is_supporter"`
-	LastVisit                string `json:"last_visit"`
-	ProfileColor             string `json:"profile_color"`
-	RankedBeatmapsetCount    string `json:"ranked_beatmapset_count"`
-	PendingBeatmapsetCount   string `json:"pending_beatmapset_count"`
-	PmFriendsOnly            string `json:"pm_friends_only"`
-	GraveyardBeatmapsetCount string `json:"graveyard_beatmapset_count"`
-	BeatmapPlaycountsCount   string `json:"beatmap_playcounts_count"`
-	CommentsCount            string `json:"comments_count"`
-	FavoriteBeatmapsetCount  string `json:"favorite_beatmapset_count"`
-	GuestBeatmapsetCount     string `json:"guest_beatmapset_count"`
-	FollowerCount            string `json:"follower_count"`
+	Error                    string   `json:"error"`
+	Username                 string   `json:"username"`
+	Names                    []string `json:"previous_usernames"`
+	AvatarUrl                string   `json:"avatar_url"`
+	UserID                   string   `json:"id"`
+	CountryCode              string   `json:"country_code"`
+	GlobalRank               string   `json:"global_rank"`
+	CountryRank              string   `json:"country_rank"`
+	PP                       string   `json:"pp"`
+	PlayTime                 string   `json:"play_time"`
+	PlayTimeSeconds          string   `json:"play_time_seconds"`
+	SSH                      string   `json:"ssh"`
+	SS                       string   `json:"ss"`
+	SH                       string   `json:"sh"`
+	S                        string   `json:"s"`
+	A                        string   `json:"a"`
+	RankedScore              string   `json:"ranked_score"`
+	Accuracy                 string   `json:"accuracy"`
+	PlayCount                string   `json:"play_count"`
+	TotalScore               string   `json:"total_score"`
+	TotalHits                string   `json:"total_hits"`
+	MaximumCombo             string   `json:"maximum_combo"`
+	Replays                  string   `json:"replays"`
+	Level                    string   `json:"level"`
+	SupportLvl               string   `json:"support_level"`
+	DefaultGroup             string   `json:"default_group"`
+	IsOnline                 string   `json:"is_online"`
+	IsActive                 string   `json:"is_active"`
+	IsDeleted                string   `json:"is_deleted"`
+	IsNat                    string   `json:"is_nat"`
+	IsModerator              string   `json:"is_moderator"`
+	IsBot                    string   `json:"is_bot"`
+	IsSilenced               string   `json:"is_silenced"`
+	IsRestricted             string   `json:"is_restricted"`
+	IsLimitedBn              string   `json:"is_limited_bn"`
+	IsSupporter              string   `json:"is_supporter"`
+	LastVisit                string   `json:"last_visit"`
+	ProfileColor             string   `json:"profile_color"`
+	RankedBeatmapsetCount    string   `json:"ranked_beatmapset_count"`
+	PendingBeatmapsetCount   string   `json:"pending_beatmapset_count"`
+	PmFriendsOnly            string   `json:"pm_friends_only"`
+	GraveyardBeatmapsetCount string   `json:"graveyard_beatmapset_count"`
+	BeatmapPlaycountsCount   string   `json:"beatmap_playcounts_count"`
+	CommentsCount            string   `json:"comments_count"`
+	FavoriteBeatmapsetCount  string   `json:"favorite_beatmapset_count"`
+	GuestBeatmapsetCount     string   `json:"guest_beatmapset_count"`
+	FollowerCount            string   `json:"follower_count"`
 	// BestBeatMap           OsuBeatMap `json:"best_beat_map"`
 	// Badges                []OsuBadge `json:"badges"`
 }
@@ -488,7 +488,7 @@ func SendCommits(botUrl string, update Update, parameters string) {
 func SendOsuInfo(botUrl string, update Update, parameters string) {
 
 	// Отправка запроса моему API
-	resp, err := http.Get("https://osustatsapi.herokuapp.com/user/" + parameters)
+	resp, err := http.Get("https://osustatsapi.vercel.app/api/userstring?id=" + parameters)
 
 	// Проверка на ошибку
 	if err != nil {
@@ -503,7 +503,9 @@ func SendOsuInfo(botUrl string, update Update, parameters string) {
 	var user = new(OsuUserInfo)
 	json.Unmarshal(body, &user)
 
-	if user.Error != "" || resp.StatusCode != 200 {
+	fmt.Println(user)
+
+	if user.Username == "" {
 		fmt.Println("OsuStatsAPI error: ", err)
 		SendErrorMessage(botUrl, update, 1)
 		SendMsg(botUrl, update, user.Error)
@@ -514,8 +516,8 @@ func SendOsuInfo(botUrl string, update Update, parameters string) {
 
 	responseText := "Информация о " + user.Username + "\n"
 
-	if user.Names != "" {
-		responseText += "Aka " + user.Names + "\n"
+	if user.Names[0] != "" {
+		responseText += "Aka " + user.Names[0] + "\n"
 	}
 
 	responseText += "Код страны " + user.CountryCode + "\n" +
