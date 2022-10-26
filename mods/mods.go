@@ -424,7 +424,7 @@ func SendCommits(botUrl string, update Update, parameters string) {
 	}
 
 	// Отправка запроса моему API
-	resp, err := http.Get("https://hud0shnikgitapi.herokuapp.com/commits/" + parameters[:i] + "/" + date)
+	resp, err := http.Get("https://githubstatsapi.vercel.app/api/commits?id=" + parameters[:i] + "/" + date)
 
 	// Проверка на ошибку
 	if err != nil {
@@ -439,7 +439,7 @@ func SendCommits(botUrl string, update Update, parameters string) {
 	var user = new(CommitsResponse)
 	json.Unmarshal(body, &user)
 
-	if user.Error != "" || resp.StatusCode != 200 {
+	if user.Date == "" {
 		fmt.Println("GithubStatsAPI error: ", err)
 		SendErrorMessage(botUrl, update, 1)
 		SendMsg(botUrl, update, user.Error)
