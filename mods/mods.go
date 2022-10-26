@@ -367,7 +367,7 @@ func CheckIPAdress(botUrl string, update Update, IP string) {
 func SendInfo(botUrl string, update Update, parameters string) {
 
 	// Отправка запроса моему API
-	resp, err := http.Get("https://hud0shnikgitapi.herokuapp.com/user/" + parameters)
+	resp, err := http.Get("https://githubstatsapi.vercel.app/api/user?id=" + parameters)
 
 	// Проверка на ошибку
 	if err != nil {
@@ -382,7 +382,7 @@ func SendInfo(botUrl string, update Update, parameters string) {
 	var user = new(InfoResponse)
 	json.Unmarshal(body, &user)
 
-	if user.Error != "" || resp.StatusCode != 200 {
+	if user.Username == "" {
 		fmt.Println("GithubGoAPI error: ", err)
 		SendErrorMessage(botUrl, update, 1)
 		SendMsg(botUrl, update, user.Error)
