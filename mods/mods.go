@@ -423,8 +423,13 @@ func SendCommits(botUrl string, update Update, parameters string) {
 		date = parameters[i+1:]
 	}
 
+	// Если поле даты пустое, функция поставит сегодняшнее число
+	if date == "" {
+		date = string(time.Now().Format("2006-01-02"))
+	}
+
 	// Отправка запроса моему API
-	resp, err := http.Get("https://githubstatsapi.vercel.app/api/commits?id=" + parameters[:i] + "/" + date)
+	resp, err := http.Get("https://githubstatsapi.vercel.app/api/commits?id=" + parameters[:i] + "&date=" + date)
 
 	// Проверка на ошибку
 	if err != nil {
