@@ -126,18 +126,21 @@ func respond(botUrl string, update mods.Update) error {
 		}
 
 		// Команды, которые нельзя поместить в switch
-		if lenMsg > 2 && update.Message.Text[:2] == "/d" {
-			mods.SendMsg(botUrl, update, mods.Dice(update.Message.Text))
-			return nil
+		if lenMsg > 2 {
+			if update.Message.Text[:2] == "/d" {
+				mods.SendMsg(botUrl, update, mods.Dice(update.Message.Text))
+				return nil
+			}
+			if update.Message.Text[:4] == "/osu" {
+				mods.SendOsuInfo(botUrl, update, update.Message.Text[5:])
+				return nil
+			}
+
 		}
 
 		if lenMsg > 6 {
 			if update.Message.Text[:3] == "/ip" {
 				mods.CheckIPAdress(botUrl, update, update.Message.Text[4:])
-				return nil
-			}
-			if update.Message.Text[:4] == "/osu" {
-				mods.SendOsuInfo(botUrl, update, update.Message.Text[5:])
 				return nil
 			}
 			if update.Message.Text[:7] == "/github" {
