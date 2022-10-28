@@ -74,7 +74,7 @@ func respond(botUrl string, update mods.Update) error {
 	if update.Message.Text != "" {
 		switch update.Message.Text {
 		case "/osu":
-			mods.SendOsuInfo(botUrl, update, "")
+			mods.SendOsuInfo(botUrl, update, "hud0shnik")
 			return nil
 		case "/commits":
 			mods.SendCommits(botUrl, update, "hud0shnik")
