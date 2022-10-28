@@ -385,7 +385,6 @@ func SendInfo(botUrl string, update Update, parameters string) {
 	if user.Username == "" {
 		fmt.Println("GithubGoAPI error: ", err)
 		SendErrorMessage(botUrl, update, 1)
-		SendMsg(botUrl, update, user.Error)
 		return
 	}
 
@@ -423,11 +422,6 @@ func SendCommits(botUrl string, update Update, parameters string) {
 		date = parameters[i+1:]
 	}
 
-	// Если поле даты пустое, функция поставит сегодняшнее число
-	if date == "" {
-		date = string(time.Now().Format("2006-01-02"))
-	}
-
 	// Отправка запроса моему API
 	resp, err := http.Get("https://githubstatsapi.vercel.app/api/commits?id=" + parameters[:i] + "&date=" + date)
 
@@ -447,7 +441,6 @@ func SendCommits(botUrl string, update Update, parameters string) {
 	if user.Date == "" {
 		fmt.Println("GithubStatsAPI error: ", err)
 		SendErrorMessage(botUrl, update, 1)
-		SendMsg(botUrl, update, user.Error)
 		return
 	}
 
@@ -495,8 +488,7 @@ func SendOsuInfo(botUrl string, update Update, parameters string) {
 	var user = new(OsuUserInfo)
 	json.Unmarshal(body, &user)
 
-	fmt.Println(user)
-
+	// Проверка на результат
 	if user.Username == "" {
 		fmt.Println("OsuStatsAPI error: ", err)
 		SendErrorMessage(botUrl, update, 1)

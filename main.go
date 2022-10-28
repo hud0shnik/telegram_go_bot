@@ -148,7 +148,7 @@ func respond(botUrl string, update mods.Update) error {
 				return nil
 			}
 			if update.Message.Text[:8] == "/commits" {
-				mods.SendInfo(botUrl, update, update.Message.Text[9:])
+				mods.SendCommits(botUrl, update, update.Message.Text[9:])
 				return nil
 			}
 		}
