@@ -24,7 +24,7 @@ func main() {
 	botUrl := "https://api.telegram.org/bot" + viper.GetString("token")
 	offSet := 0
 
-	// Цикл работы приложения
+	// Цикл работы бота
 	for {
 
 		// Получение апдейтов
@@ -40,10 +40,11 @@ func main() {
 		}
 
 		// Вывод в консоль для тестов
-		fmt.Println(updates)
+		// fmt.Println(updates)
 	}
 }
 
+// Функция получения апдейтов
 func getUpdates(botUrl string, offset int) ([]mods.Update, error) {
 
 	// Rest запрос для получения апдейтов
@@ -67,7 +68,7 @@ func getUpdates(botUrl string, offset int) ([]mods.Update, error) {
 	return restResponse.Result, nil
 }
 
-//	https://core.telegram.org/bots/api#using-a-local-bot-api-server
+// Функция генерации и отправки ответа
 func respond(botUrl string, update mods.Update) error {
 
 	// Обработчик команд
@@ -126,6 +127,7 @@ func respond(botUrl string, update mods.Update) error {
 		}
 
 		// Команды, которые нельзя поместить в switch
+
 		if lenMsg > 2 {
 			if update.Message.Text[:2] == "/d" {
 				mods.SendMsg(botUrl, update, mods.Dice(update.Message.Text))
