@@ -473,7 +473,7 @@ func SendCommits(botUrl string, update Update, parameters string) {
 func SendOsuInfo(botUrl string, update Update, parameters string) {
 
 	// Отправка запроса моему API
-	resp, err := http.Get("https://osustatsapi.vercel.app/api/userstring?id=" + parameters)
+	resp, err := http.Get("https://osustatsapi.vercel.app/api/userString?id=" + parameters)
 
 	// Проверка на ошибку
 	if err != nil {
