@@ -83,10 +83,10 @@ func respond(botUrl string, update mods.Update) error {
 			mods.SendOsuInfo(botUrl, update, request[1])
 			return nil
 		case "/commits":
-			mods.SendCommits(botUrl, update, "hud0shnik")
+			mods.SendCommits(botUrl, update, request[1], request[2])
 			return nil
 		case "/github":
-			mods.SendInfo(botUrl, update, "hud0shnik")
+			mods.SendInfo(botUrl, update, request[1])
 			return nil
 		case "/meme":
 			mods.SendFromReddit(botUrl, update, "")
@@ -101,7 +101,7 @@ func respond(botUrl string, update mods.Update) error {
 			mods.SendCryptoData(botUrl, update)
 			return nil
 		case "/ip":
-			mods.SendMsg(botUrl, update, "Чтобы узнать страну по ip, отправьте: \n\n/ip 67.77.77.7")
+			mods.CheckIPAdress(botUrl, update, request[1])
 			return nil
 		case "/coin":
 			mods.Coin(botUrl, update)
@@ -123,32 +123,13 @@ func respond(botUrl string, update mods.Update) error {
 			mods.Check(botUrl, update)
 			return nil
 		case "/d":
-			mods.Dice(request[1])
+			mods.SendMsg(botUrl, update, mods.Dice(request[1]))
 			return nil
 		}
 
-		lenMsg := len(update.Message.Text)
-
-		if update.Message.Text[lenMsg-1] == '?' {
+		if update.Message.Text[len(update.Message.Text)-1] == '?' {
 			mods.Ball8(botUrl, update)
 			return nil
-		}
-
-		// Команды, которые нельзя поместить в switch
-
-		if lenMsg > 6 {
-			if update.Message.Text[:3] == "/ip" {
-				mods.CheckIPAdress(botUrl, update, update.Message.Text[4:])
-				return nil
-			}
-			if update.Message.Text[:7] == "/github" {
-				mods.SendInfo(botUrl, update, update.Message.Text[8:])
-				return nil
-			}
-			if update.Message.Text[:8] == "/commits" {
-				mods.SendCommits(botUrl, update, update.Message.Text[9:])
-				return nil
-			}
 		}
 
 		mods.SendMsg(botUrl, update, "OwO")
