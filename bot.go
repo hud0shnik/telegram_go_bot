@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strconv"
+	"strings"
 	"tgBot/mods"
 
 	"github.com/spf13/viper"
@@ -73,9 +74,13 @@ func respond(botUrl string, update mods.Update) error {
 
 	// Обработчик команд
 	if update.Message.Text != "" {
-		switch update.Message.Text {
+
+		request := append(strings.Split(update.Message.Text, " "), "", "")
+		fmt.Println("request: \t", request)
+
+		switch request[0] {
 		case "/osu":
-			mods.SendOsuInfo(botUrl, update, "hud0shnik")
+			mods.SendOsuInfo(botUrl, update, request[1])
 			return nil
 		case "/commits":
 			mods.SendCommits(botUrl, update, "hud0shnik")
@@ -117,6 +122,9 @@ func respond(botUrl string, update mods.Update) error {
 		case "/check":
 			mods.Check(botUrl, update)
 			return nil
+		case "/d":
+			mods.Dice(request[1])
+			return nil
 		}
 
 		lenMsg := len(update.Message.Text)
@@ -127,18 +135,6 @@ func respond(botUrl string, update mods.Update) error {
 		}
 
 		// Команды, которые нельзя поместить в switch
-
-		if lenMsg > 2 {
-			if update.Message.Text[:2] == "/d" {
-				mods.SendMsg(botUrl, update, mods.Dice(update.Message.Text))
-				return nil
-			}
-			if update.Message.Text[:4] == "/osu" {
-				mods.SendOsuInfo(botUrl, update, update.Message.Text[5:])
-				return nil
-			}
-
-		}
 
 		if lenMsg > 6 {
 			if update.Message.Text[:3] == "/ip" {
