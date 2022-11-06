@@ -421,25 +421,15 @@ func SendInfo(botUrl string, update Update, parameter string) {
 }
 
 // Функция вывода количества коммитов пользователя GitHub
-func SendCommits(botUrl string, update Update, parameters string) {
+func SendCommits(botUrl string, update Update, username, date string) {
 
-	// Индекс пробела и дата
-	i, date := 0, ""
-
-	// Поиск конца юзернейма и начала даты
-	for ; i < len(parameters); i++ {
-		if parameters[i] == ' ' {
-			break
-		}
-	}
-
-	// Если дата задана, записывает её
-	if i != len(parameters) {
-		date = parameters[i+1:]
+	// Значение по дефолту
+	if username == "" {
+		username = "hud0shnik"
 	}
 
 	// Отправка запроса моему API
-	resp, err := http.Get("https://githubstatsapi.vercel.app/api/commits?id=" + parameters[:i] + "&date=" + date)
+	resp, err := http.Get("https://githubstatsapi.vercel.app/api/commits?id=" + username + "&date=" + date)
 
 	// Проверка на ошибку
 	if err != nil {
@@ -601,7 +591,7 @@ func Check(botUrl string, update Update) {
 		SendFromReddit(botUrl, update, "")
 		Coin(botUrl, update)
 		Help(botUrl, update)
-		SendCommits(botUrl, update, "hud0shnik")
+		SendCommits(botUrl, update, "hud0shnik", "")
 		SendMsg(botUrl, update, Dice("/d20"))
 		Ball8(botUrl, update)
 		SendRandomSticker(botUrl, update)
