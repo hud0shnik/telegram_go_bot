@@ -374,10 +374,15 @@ func CheckIPAdress(botUrl string, update Update, IP string) {
 }
 
 // Функция вывода информации о пользователе GitHub
-func SendInfo(botUrl string, update Update, parameters string) {
+func SendInfo(botUrl string, update Update, parameter string) {
+
+	// Значение по дефолту
+	if parameter == "" {
+		parameter = "hud0shnik"
+	}
 
 	// Отправка запроса моему API
-	resp, err := http.Get("https://githubstatsapi.vercel.app/api/user?id=" + parameters)
+	resp, err := http.Get("https://githubstatsapi.vercel.app/api/user?id=" + parameter)
 
 	// Проверка на ошибку
 	if err != nil {
@@ -392,9 +397,10 @@ func SendInfo(botUrl string, update Update, parameters string) {
 	var user = new(InfoResponse)
 	json.Unmarshal(body, &user)
 
+	// Проверка на ошибки со стороны API
 	if user.Username == "" {
 		fmt.Println("GithubGoAPI error: ", err)
-		SendErrorMessage(botUrl, update, 1)
+		SendMsg(botUrl, update, user.Error)
 		return
 	}
 
