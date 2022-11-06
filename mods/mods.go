@@ -150,10 +150,10 @@ func Random(n int) int {
 }
 
 // Функция броска n-гранного кубика
-func Dice(msg string) string {
+func Dice(parameter string) string {
 
 	// Считывание числа граней
-	num, err := strconv.Atoi(msg[2:])
+	num, err := strconv.Atoi(parameter)
 
 	// Проверки на невозможное количество граней
 	if err != nil {
@@ -470,10 +470,15 @@ func SendCommits(botUrl string, update Update, parameters string) {
 }
 
 // Функция вывода информации о пользователе Osu!
-func SendOsuInfo(botUrl string, update Update, parameters string) {
+func SendOsuInfo(botUrl string, update Update, parameter string) {
+
+	// Значение по дефолту
+	if parameter == "" {
+		parameter = "hud0shnik"
+	}
 
 	// Отправка запроса моему API
-	resp, err := http.Get("https://osustatsapi.vercel.app/api/userString?id=" + parameters)
+	resp, err := http.Get("https://osustatsapi.vercel.app/api/userString?id=" + parameter)
 
 	// Проверка на ошибку
 	if err != nil {
@@ -491,7 +496,6 @@ func SendOsuInfo(botUrl string, update Update, parameters string) {
 	// Проверка на результат
 	if user.Username == "" {
 		fmt.Println("OsuStatsAPI error: ", err)
-		SendErrorMessage(botUrl, update, 1)
 		SendMsg(botUrl, update, user.Error)
 		return
 	}
