@@ -53,9 +53,11 @@ type CryptoResponse struct {
 	LastPrice     string `json:"lastPrice"`
 }
 
-type IP2CountryResponse struct {
-	CountryName  string `json:"countryName"`
-	CountryEmoji string `json:"countryEmoji"`
+type IPApiResponse struct {
+	Status      string `json:"status"`
+	CountryName string `json:"country"`
+	Region      string `json:"regionName"`
+	Zip         string `json:"zip"`
 }
 
 type DogResponse struct {
@@ -311,6 +313,12 @@ func SendCryptoData(botUrl string, update Update) {
 // Функция нахождения местоположения по IP адресу
 func CheckIPAdress(botUrl string, update Update, IP string) {
 
+	// Проверка на пустой IP
+	if IP == "" {
+		SendMsg(botUrl, update, "Чтобы узнать страну по ip, отправьте: \n\n/ip 67.77.77.7")
+		return
+	}
+
 	// Проверка на localhost
 	if IP == "127.0.0.1" {
 		SendMsg(botUrl, update, "Айпишник локалхоста, ага")
@@ -335,11 +343,11 @@ func CheckIPAdress(botUrl string, update Update, IP string) {
 	}
 
 	// Отправка запроса API
-	resp, err := http.Get("https://api.ip2country.info/ip?" + IP)
+	resp, err := http.Get("http://ip-api.com/json/" + IP)
 
 	// Проверка на ошибку
 	if err != nil {
-		fmt.Println("IP2Country API error: ", err)
+		fmt.Println("IP API error: ", err)
 		SendErrorMessage(botUrl, update, 1)
 		return
 	}
@@ -347,19 +355,21 @@ func CheckIPAdress(botUrl string, update Update, IP string) {
 	// Запись респонса
 	defer resp.Body.Close()
 	body, _ := ioutil.ReadAll(resp.Body)
-	var response = new(IP2CountryResponse)
+	var response = new(IPApiResponse)
 	json.Unmarshal(body, &response)
 
 	// Вывод сообщения для айпишников без страны
-	if response.CountryName == "" {
+	if response.Status != "success" {
 		SendMsg(botUrl, update, "Не могу найти этот IP")
 		SendStck(botUrl, update, "CAACAgIAAxkBAAIY4mG13Vr0CzGwyXA1eL3esZVCWYFhAAJIAAOtZbwUgHOKzxQtAAHcIwQ")
 		return
 	}
 
 	// Вывод результатов поиска
-	SendMsg(botUrl, update, "Нашёл! Страна происхождения - "+response.CountryName+" "+response.CountryEmoji+
-		"\n\nМы не храним IP, которые просят проверить пользователи, весь код можно найти на гитхабе.")
+	SendMsg(botUrl, update, "Нашёл! Страна происхождения - "+response.CountryName+" "+"\n"+
+		"Регион - "+response.Region+"\n"+
+		"Индекс - "+response.Zip+"\n\n"+
+		"Мы не храним IP, которые просят проверить пользователи, весь код можно найти на гитхабе.")
 	SendStck(botUrl, update, "CAACAgIAAxkBAAIXqmGyGtvN_JHUQVDXspAX5jP3BvU9AAI5AAOtZbwUdHz8lasybOojBA")
 }
 
