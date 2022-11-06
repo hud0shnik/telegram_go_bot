@@ -374,15 +374,15 @@ func CheckIPAdress(botUrl string, update Update, IP string) {
 }
 
 // Функция вывода информации о пользователе GitHub
-func SendInfo(botUrl string, update Update, parameter string) {
+func SendInfo(botUrl string, update Update, username string) {
 
 	// Значение по дефолту
-	if parameter == "" {
-		parameter = "hud0shnik"
+	if username == "" {
+		username = "hud0shnik"
 	}
 
 	// Отправка запроса моему API
-	resp, err := http.Get("https://githubstatsapi.vercel.app/api/user?id=" + parameter)
+	resp, err := http.Get("https://githubstatsapi.vercel.app/api/user?id=" + username)
 
 	// Проверка на ошибку
 	if err != nil {
@@ -476,15 +476,15 @@ func SendCommits(botUrl string, update Update, username, date string) {
 }
 
 // Функция вывода информации о пользователе Osu!
-func SendOsuInfo(botUrl string, update Update, parameter string) {
+func SendOsuInfo(botUrl string, update Update, username string) {
 
 	// Значение по дефолту
-	if parameter == "" {
-		parameter = "hud0shnik"
+	if username == "" {
+		username = "hud0shnik"
 	}
 
 	// Отправка запроса моему API
-	resp, err := http.Get("https://osustatsapi.vercel.app/api/userString?id=" + parameter)
+	resp, err := http.Get("https://osustatsapi.vercel.app/api/userString?id=" + username)
 
 	// Проверка на ошибку
 	if err != nil {
