@@ -122,6 +122,7 @@ type OsuUserInfo struct {
 	IsSupporter   string   `json:"is_supporter"`
 	ProfileColor  string   `json:"profile_color"`
 	PmFriendsOnly string   `json:"pm_friends_only"`
+	PostCount     string   `json:"post_count"`
 }
 
 type OsuBadge struct {
@@ -539,6 +540,10 @@ func SendOsuInfo(botUrl string, update Update, username string) {
 		"---------------------------\n" +
 		"Время в игре " + user.PlayTime + "\n" +
 		"Уровень подписки " + user.SupportLvl + "\n"
+
+	if user.PostCount != "0" {
+		responseText += "Постов на форуме " + user.PostCount + "\n"
+	}
 
 	if user.IsOnline == "true" {
 		responseText += "Сейчас онлайн \n"
