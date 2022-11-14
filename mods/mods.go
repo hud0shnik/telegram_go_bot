@@ -86,43 +86,44 @@ type CommitsResponse struct {
 }
 
 type OsuUserInfo struct {
-	Error         string   `json:"error"`
-	Username      string   `json:"username"`
-	Names         []string `json:"previous_usernames"`
-	AvatarUrl     string   `json:"avatar_url"`
-	CountryCode   string   `json:"country_code"`
-	GlobalRank    string   `json:"global_rank"`
-	CountryRank   string   `json:"country_rank"`
-	PP            string   `json:"pp"`
-	PlayTime      string   `json:"play_time"`
-	SSH           string   `json:"ssh"`
-	SS            string   `json:"ss"`
-	SH            string   `json:"sh"`
-	S             string   `json:"s"`
-	A             string   `json:"a"`
-	RankedScore   string   `json:"ranked_score"`
-	Accuracy      string   `json:"accuracy"`
-	PlayCount     string   `json:"play_count"`
-	TotalScore    string   `json:"total_score"`
-	TotalHits     string   `json:"total_hits"`
-	MaximumCombo  string   `json:"maximum_combo"`
-	Replays       string   `json:"replays"`
-	Level         string   `json:"level"`
-	SupportLvl    string   `json:"support_level"`
-	DefaultGroup  string   `json:"default_group"`
-	IsOnline      string   `json:"is_online"`
-	IsActive      string   `json:"is_active"`
-	IsDeleted     string   `json:"is_deleted"`
-	IsNat         string   `json:"is_nat"`
-	IsModerator   string   `json:"is_moderator"`
-	IsBot         string   `json:"is_bot"`
-	IsSilenced    string   `json:"is_silenced"`
-	IsRestricted  string   `json:"is_restricted"`
-	IsLimitedBn   string   `json:"is_limited_bn"`
-	IsSupporter   string   `json:"is_supporter"`
-	ProfileColor  string   `json:"profile_color"`
-	PmFriendsOnly string   `json:"pm_friends_only"`
-	PostCount     string   `json:"post_count"`
+	Error          string   `json:"error"`
+	Username       string   `json:"username"`
+	Names          []string `json:"previous_usernames"`
+	AvatarUrl      string   `json:"avatar_url"`
+	CountryCode    string   `json:"country_code"`
+	GlobalRank     string   `json:"global_rank"`
+	CountryRank    string   `json:"country_rank"`
+	PP             string   `json:"pp"`
+	PlayTime       string   `json:"play_time"`
+	SSH            string   `json:"ssh"`
+	SS             string   `json:"ss"`
+	SH             string   `json:"sh"`
+	S              string   `json:"s"`
+	A              string   `json:"a"`
+	RankedScore    string   `json:"ranked_score"`
+	Accuracy       string   `json:"accuracy"`
+	PlayCount      string   `json:"play_count"`
+	TotalScore     string   `json:"total_score"`
+	TotalHits      string   `json:"total_hits"`
+	MaximumCombo   string   `json:"maximum_combo"`
+	Replays        string   `json:"replays"`
+	Level          string   `json:"level"`
+	SupportLvl     string   `json:"support_level"`
+	DefaultGroup   string   `json:"default_group"`
+	IsOnline       string   `json:"is_online"`
+	IsActive       string   `json:"is_active"`
+	IsDeleted      string   `json:"is_deleted"`
+	IsNat          string   `json:"is_nat"`
+	IsModerator    string   `json:"is_moderator"`
+	IsBot          string   `json:"is_bot"`
+	IsSilenced     string   `json:"is_silenced"`
+	IsRestricted   string   `json:"is_restricted"`
+	IsLimitedBn    string   `json:"is_limited_bn"`
+	IsSupporter    string   `json:"is_supporter"`
+	ProfileColor   string   `json:"profile_color"`
+	PmFriendsOnly  string   `json:"pm_friends_only"`
+	PostCount      string   `json:"post_count"`
+	FollowersCount string   `json:"follower_count"`
 }
 
 type OsuBadge struct {
@@ -543,6 +544,10 @@ func SendOsuInfo(botUrl string, update Update, username string) {
 
 	if user.PostCount != "0" {
 		responseText += "Постов на форуме " + user.PostCount + "\n"
+	}
+
+	if user.FollowersCount != "0" {
+		responseText += "Подписчиков " + user.FollowersCount + "\n"
 	}
 
 	if user.IsOnline == "true" {
