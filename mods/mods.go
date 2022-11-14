@@ -397,10 +397,11 @@ func SendInfo(botUrl string, update Update, username string) {
 	var user = new(InfoResponse)
 	json.Unmarshal(body, &user)
 
-	// Проверка на ошибки со стороны API
+	// Проверка респонса
 	if user.Username == "" {
 		fmt.Println("GithubGoAPI error: ", err)
 		SendMsg(botUrl, update, user.Error)
+		SendErrorMessage(botUrl, update, 1)
 		return
 	}
 
@@ -444,8 +445,10 @@ func SendCommits(botUrl string, update Update, username, date string) {
 	var user = new(CommitsResponse)
 	json.Unmarshal(body, &user)
 
+	// Проверка на респонс
 	if user.Date == "" {
 		fmt.Println("GithubStatsAPI error: ", err)
+		SendMsg(botUrl, update, user.Error)
 		SendErrorMessage(botUrl, update, 1)
 		return
 	}
@@ -499,10 +502,10 @@ func SendOsuInfo(botUrl string, update Update, username string) {
 	var user = new(OsuUserInfo)
 	json.Unmarshal(body, &user)
 
-	// Проверка на результат
+	// Проверка респонса
 	if user.Username == "" {
-		fmt.Println("OsuStatsAPI error: ", err)
 		SendMsg(botUrl, update, user.Error)
+		SendErrorMessage(botUrl, update, 1)
 		return
 	}
 
@@ -598,9 +601,9 @@ func Check(botUrl string, update Update) {
 		SendFromReddit(botUrl, update, "parrots")
 
 		// Отправка ошибок
-		for i := 1; i < 7; i++ {
+		/*for i := 1; i < 7; i++ {
 			SendErrorMessage(botUrl, update, i)
-		}
+		}*/
 
 		// Отправка результата
 		SendMsg(botUrl, update, "Проверка заняла "+time.Since(start).String())
