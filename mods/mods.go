@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"math"
 	"math/rand"
 	"net/http"
 	"strconv"
@@ -655,7 +656,7 @@ func SendOsuSmartInfo(botUrl string, update Update, username string) {
 	}
 
 	// Отправка запроса моему API
-	resp, err := http.Get("https://osustatsapi.vercel.app/api/user?id=" + username)
+	resp, err := http.Get("https://osustatsapi.vercel.app/api/userString?id=" + username)
 
 	// Проверка на ошибку
 	if err != nil {
@@ -667,7 +668,7 @@ func SendOsuSmartInfo(botUrl string, update Update, username string) {
 	// Запись респонса
 	defer resp.Body.Close()
 	body, _ := ioutil.ReadAll(resp.Body)
-	var user = new(OsuSmartInfo)
+	var user = new(OsuUserInfo)
 	json.Unmarshal(body, &user)
 
 	// Проверка респонса
@@ -677,7 +678,33 @@ func SendOsuSmartInfo(botUrl string, update Update, username string) {
 		return
 	}
 
+	// Отправка запроса моему API
+	resp, err = http.Get("https://osustatsapi.vercel.app/api/user?id=" + username)
+
+	// Проверка на ошибку
+	if err != nil {
+		fmt.Println("OsuStatsAPI error: ", err)
+		SendErrorMessage(botUrl, update, 1)
+		return
+	}
+
+	// Запись респонса
+	defer resp.Body.Close()
+	body, _ = ioutil.ReadAll(resp.Body)
+	var userSmart = new(OsuSmartInfo)
+	json.Unmarshal(body, &userSmart)
+
 	// Формирование текста респонса
+
+	var avgRank int
+	var kfe float64
+
+	for _, r := range userSmart.RankHistory.Data {
+		avgRank += r
+	}
+	avgRank = avgRank / len(userSmart.RankHistory.Data)
+
+	kfe = math.Floor(float64(userSmart.TotalHits)/float64(userSmart.PlayCount)*userSmart.Accuracy/100*100) / 100
 
 	responseText := "Информация о " + user.Username + "\n"
 
@@ -686,61 +713,63 @@ func SendOsuSmartInfo(botUrl string, update Update, username string) {
 	}
 
 	responseText += "Код страны " + user.CountryCode + "\n" +
-		"Рейтинг в мире " + string(rune(user.GlobalRank)) + "\n" +
-		"Рейтинг в стране " + string(rune(user.CountryRank)) + "\n" +
-		"Точность попаданий " + strconv.FormatFloat(user.Accuracy, 'E', -1, 64) + "%\n" +
-		"PP " + strconv.FormatFloat(user.PP, 'E', -1, 64) + "\n" +
+		"Рейтинг в мире " + user.GlobalRank + "\n" +
+		"Рейтинг в среднем " + fmt.Sprint(avgRank) + "\n" +
+		"Рейтинг в стране " + user.CountryRank + "\n" +
+		"Точность попаданий " + user.Accuracy + "%\n" +
+		"Коэффициент Егорова " + fmt.Sprint(kfe) + "\n" +
+		"PP " + user.PP + "\n" +
 		"-------карты---------\n" +
-		"SSH: " + string(rune(user.SSH)) + "\n" +
-		"SH: " + string(rune(user.SH)) + "\n" +
-		"SS: " + string(rune(user.SS)) + "\n" +
-		"S: " + string(rune(user.S)) + "\n" +
-		"A: " + string(rune(user.A)) + "\n" +
+		"SSH: " + user.SSH + "\n" +
+		"SH: " + user.SH + "\n" +
+		"SS: " + user.SS + "\n" +
+		"S: " + user.S + "\n" +
+		"A: " + user.A + "\n" +
 		"---------------------------\n" +
-		"Рейтинговые очки " + string(rune(user.RankedScore)) + "\n" +
-		"Количество игр " + string(rune(user.PlayCount)) + "\n" +
-		"Всего очков " + string(rune(user.TotalScore)) + "\n" +
-		"Всего попаданий " + string(rune(user.TotalHits)) + "\n" +
-		"Максимальное комбо " + string(rune(user.MaximumCombo)) + "\n" +
-		"Реплеев просмотрено другими " + string(rune(user.Replays)) + "\n" +
-		"Уровень " + string(rune(user.Level)) + "\n" +
+		"Рейтинговые очки " + user.RankedScore + "\n" +
+		"Количество игр " + user.PlayCount + "\n" +
+		"Всего очков " + user.TotalScore + "\n" +
+		"Всего попаданий " + user.TotalHits + "\n" +
+		"Максимальное комбо " + user.MaximumCombo + "\n" +
+		"Реплеев просмотрено другими " + user.Replays + "\n" +
+		"Уровень " + user.Level + "\n" +
 		"---------------------------\n" +
 		"Время в игре " + user.PlayTime + "\n" +
-		"Уровень подписки " + string(rune(user.SupportLvl)) + "\n"
+		"Уровень подписки " + user.SupportLvl + "\n"
 
-	if user.PostCount != 0 {
-		responseText += "Постов на форуме " + string(rune(user.PostCount)) + "\n"
+	if user.PostCount != "0" {
+		responseText += "Постов на форуме " + user.PostCount + "\n"
 	}
 
-	if user.FollowerCount != 0 {
-		responseText += "Подписчиков " + string(rune(user.FollowerCount)) + "\n"
+	if user.FollowersCount != "0" {
+		responseText += "Подписчиков " + user.FollowersCount + "\n"
 	}
 
-	if user.IsOnline {
+	if user.IsOnline == "true" {
 		responseText += "Сейчас онлайн \n"
 	} else {
 		responseText += "Сейчас не в сети \n"
 	}
 
-	if user.IsActive {
+	if user.IsActive == "true" {
 		responseText += "Аккаунт активен \n"
 	} else {
 		responseText += "Аккаунт не активен \n"
 	}
 
-	if user.IsDeleted {
+	if user.IsDeleted == "true" {
 		responseText += "Аккаунт удалён \n"
 	}
 
-	if user.IsBot {
+	if user.IsBot == "true" {
 		responseText += "Это аккаунт бота \n"
 	}
 
-	if user.IsNat {
+	if user.IsNat == "true" {
 		responseText += "Это аккаунт члена команды оценки номинаций \n"
 	}
 
-	if user.IsModerator {
+	if user.IsModerator == "true" {
 		responseText += "Это аккаунт модератора \n"
 	}
 
