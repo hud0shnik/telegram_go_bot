@@ -82,6 +82,9 @@ func respond(botUrl string, update mods.Update) error {
 		case "/osu":
 			mods.SendOsuInfo(botUrl, update, request[1])
 			return nil
+		case "/osu_smart":
+			mods.SendOsuSmartInfo(botUrl, update, request[1])
+			return nil
 		case "/commits":
 			mods.SendCommits(botUrl, update, request[1], request[2])
 			return nil
