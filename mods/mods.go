@@ -661,7 +661,7 @@ func SendOsuSmartInfo(botUrl string, update Update, username string) {
 		return
 	}
 
-	// Отправка запроса моему API
+	// Отправка второго запроса моему API (для вычислений)
 	resp, err = http.Get("https://osustatsapi.vercel.app/api/user?id=" + username)
 
 	// Проверка на ошибку
@@ -677,8 +677,7 @@ func SendOsuSmartInfo(botUrl string, update Update, username string) {
 	var userSmart = new(OsuSmartInfo)
 	json.Unmarshal(body, &userSmart)
 
-	// Формирование текста респонса
-
+	// Вычисление среднего ранга и коэффициента Егорова
 	var avgRank int
 	var kfe float64
 
@@ -689,6 +688,7 @@ func SendOsuSmartInfo(botUrl string, update Update, username string) {
 
 	kfe = math.Floor(float64(userSmart.TotalHits)/float64(userSmart.PlayCount)*userSmart.Accuracy/100*100) / 100
 
+	// Формирование текста респонса
 	responseText := "Информация о " + user.Username + "\n"
 
 	if user.Names[0] != "" {
