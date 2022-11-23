@@ -671,6 +671,116 @@ func SendOsuInfo(botUrl string, update Update, username string) {
 	})
 }
 
+// Функция вывода информации о пользователе Osu!
+func SendOsuSmartInfo(botUrl string, update Update, username string) {
+
+	// Значение по дефолту
+	if username == "" {
+		username = "hud0shnik"
+	}
+
+	// Отправка запроса моему API
+	resp, err := http.Get("https://osustatsapi.vercel.app/api/user?id=" + username)
+
+	// Проверка на ошибку
+	if err != nil {
+		fmt.Println("OsuStatsAPI error: ", err)
+		SendErrorMessage(botUrl, update, 1)
+		return
+	}
+
+	// Запись респонса
+	defer resp.Body.Close()
+	body, _ := ioutil.ReadAll(resp.Body)
+	var user = new(OsuSmartInfo)
+	json.Unmarshal(body, &user)
+
+	// Проверка респонса
+	if user.Username == "" {
+		SendMsg(botUrl, update, user.Error)
+		SendErrorMessage(botUrl, update, 1)
+		return
+	}
+
+	// Формирование текста респонса
+
+	responseText := "Информация о " + user.Username + "\n"
+
+	if user.Names[0] != "" {
+		responseText += "Aka " + user.Names[0] + "\n"
+	}
+
+	responseText += "Код страны " + user.CountryCode + "\n" +
+		"Рейтинг в мире " + string(user.GlobalRank) + "\n" +
+		"Рейтинг в стране " + string(user.CountryRank) + "\n" +
+		"Точность попаданий " + strconv.FormatFloat(user.Accuracy, 'E', -1, 64) + "%\n" +
+		"PP " + strconv.FormatFloat(user.PP, 'E', -1, 64) + "\n" +
+		"-------карты---------\n" +
+		"SSH: " + string(user.SSH) + "\n" +
+		"SH: " + string(user.SH) + "\n" +
+		"SS: " + string(user.SS) + "\n" +
+		"S: " + string(user.S) + "\n" +
+		"A: " + string(user.A) + "\n" +
+		"---------------------------\n" +
+		"Рейтинговые очки " + string(user.RankedScore) + "\n" +
+		"Количество игр " + string(user.PlayCount) + "\n" +
+		"Всего очков " + string(user.TotalScore) + "\n" +
+		"Всего попаданий " + string(user.TotalHits) + "\n" +
+		"Максимальное комбо " + string(user.MaximumCombo) + "\n" +
+		"Реплеев просмотрено другими " + string(user.Replays) + "\n" +
+		"Уровень " + string(user.Level) + "\n" +
+		"---------------------------\n" +
+		"Время в игре " + user.PlayTime + "\n" +
+		"Уровень подписки " + string(user.SupportLvl) + "\n"
+
+	if user.PostCount != 0 {
+		responseText += "Постов на форуме " + string(user.PostCount) + "\n"
+	}
+
+	if user.FollowerCount != 0 {
+		responseText += "Подписчиков " + string(user.FollowerCount) + "\n"
+	}
+
+	if user.IsOnline {
+		responseText += "Сейчас онлайн \n"
+	} else {
+		responseText += "Сейчас не в сети \n"
+	}
+
+	if user.IsActive {
+		responseText += "Аккаунт активен \n"
+	} else {
+		responseText += "Аккаунт не активен \n"
+	}
+
+	if user.IsDeleted {
+		responseText += "Аккаунт удалён \n"
+	}
+
+	if user.IsBot {
+		responseText += "Это аккаунт бота \n"
+	}
+
+	if user.IsNat {
+		responseText += "Это аккаунт члена команды оценки номинаций \n"
+	}
+
+	if user.IsModerator {
+		responseText += "Это аккаунт модератора \n"
+	}
+
+	if user.ProfileColor != "" {
+		responseText += "Цвет профиля" + user.ProfileColor + "\n"
+	}
+
+	// Отправка данных пользователю
+	SendPict(botUrl, update, SendPhoto{
+		PhotoUrl: user.AvatarUrl,
+		ChatId:   update.Message.Chat.ChatId,
+		Caption:  responseText,
+	})
+}
+
 // Функция проверки всех команд
 func Check(botUrl string, update Update) {
 
