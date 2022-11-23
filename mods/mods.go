@@ -711,34 +711,34 @@ func SendOsuSmartInfo(botUrl string, update Update, username string) {
 	}
 
 	responseText += "Код страны " + user.CountryCode + "\n" +
-		"Рейтинг в мире " + string(user.GlobalRank) + "\n" +
-		"Рейтинг в стране " + string(user.CountryRank) + "\n" +
+		"Рейтинг в мире " + string(rune(user.GlobalRank)) + "\n" +
+		"Рейтинг в стране " + string(rune(user.CountryRank)) + "\n" +
 		"Точность попаданий " + strconv.FormatFloat(user.Accuracy, 'E', -1, 64) + "%\n" +
 		"PP " + strconv.FormatFloat(user.PP, 'E', -1, 64) + "\n" +
 		"-------карты---------\n" +
-		"SSH: " + string(user.SSH) + "\n" +
-		"SH: " + string(user.SH) + "\n" +
-		"SS: " + string(user.SS) + "\n" +
-		"S: " + string(user.S) + "\n" +
-		"A: " + string(user.A) + "\n" +
+		"SSH: " + string(rune(user.SSH)) + "\n" +
+		"SH: " + string(rune(user.SH)) + "\n" +
+		"SS: " + string(rune(user.SS)) + "\n" +
+		"S: " + string(rune(user.S)) + "\n" +
+		"A: " + string(rune(user.A)) + "\n" +
 		"---------------------------\n" +
-		"Рейтинговые очки " + string(user.RankedScore) + "\n" +
-		"Количество игр " + string(user.PlayCount) + "\n" +
-		"Всего очков " + string(user.TotalScore) + "\n" +
-		"Всего попаданий " + string(user.TotalHits) + "\n" +
-		"Максимальное комбо " + string(user.MaximumCombo) + "\n" +
-		"Реплеев просмотрено другими " + string(user.Replays) + "\n" +
-		"Уровень " + string(user.Level) + "\n" +
+		"Рейтинговые очки " + string(rune(user.RankedScore)) + "\n" +
+		"Количество игр " + string(rune(user.PlayCount)) + "\n" +
+		"Всего очков " + string(rune(user.TotalScore)) + "\n" +
+		"Всего попаданий " + string(rune(user.TotalHits)) + "\n" +
+		"Максимальное комбо " + string(rune(user.MaximumCombo)) + "\n" +
+		"Реплеев просмотрено другими " + string(rune(user.Replays)) + "\n" +
+		"Уровень " + string(rune(user.Level)) + "\n" +
 		"---------------------------\n" +
 		"Время в игре " + user.PlayTime + "\n" +
-		"Уровень подписки " + string(user.SupportLvl) + "\n"
+		"Уровень подписки " + string(rune(user.SupportLvl)) + "\n"
 
 	if user.PostCount != 0 {
-		responseText += "Постов на форуме " + string(user.PostCount) + "\n"
+		responseText += "Постов на форуме " + string(rune(user.PostCount)) + "\n"
 	}
 
 	if user.FollowerCount != 0 {
-		responseText += "Подписчиков " + string(user.FollowerCount) + "\n"
+		responseText += "Подписчиков " + string(rune(user.FollowerCount)) + "\n"
 	}
 
 	if user.IsOnline {
