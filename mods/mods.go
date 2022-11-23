@@ -135,26 +135,10 @@ type OsuBadge struct {
 
 type OsuSmartInfo struct {
 	UserID                  int     `json:"id"`
-	IsActive                bool    `json:"is_active"`
-	IsBot                   bool    `json:"is_bot"`
-	IsDeleted               bool    `json:"is_deleted"`
-	IsOnline                bool    `json:"is_online"`
-	IsSupporter             bool    `json:"is_supporter"`
-	PmFriendsOnly           bool    `json:"pm_friends_only"`
-	HasSupported            bool    `json:"has_supported"`
 	Kudosu                  int     `json:"kudosu"`
 	MaxFriends              int     `json:"max_friends"`
 	MaxBLock                int     `json:"max_block"`
 	PostCount               int     `json:"post_count"`
-	IsAdmin                 bool    `json:"is_admin"`
-	IsBng                   bool    `json:"is_bng"`
-	IsFullBan               bool    `json:"is_full_bn"`
-	IsGmt                   bool    `json:"is_gmt"`
-	IsLimitedBan            bool    `json:"is_limited_bn"`
-	IsModerator             bool    `json:"is_moderator"`
-	IsNat                   bool    `json:"is_nat"`
-	IsRestricted            bool    `json:"is_restricted"`
-	IsSilenced              bool    `json:"is_silenced"`
 	CommentsCount           int     `json:"comments_count"`
 	FollowerCount           int     `json:"follower_count"`
 	MappingFollowerCount    int     `json:"mapping_follower_count"`
@@ -171,7 +155,6 @@ type OsuSmartInfo struct {
 	TotalHits               int64   `json:"total_hits"`
 	MaximumCombo            int     `json:"maximum_combo"`
 	Replays                 int     `json:"replays"`
-	IsRanked                bool    `json:"is_ranked"`
 	SS                      int     `json:"ss"`
 	SSH                     int     `json:"ssh"`
 	S                       int     `json:"s"`
