@@ -178,6 +178,7 @@ func Help(botUrl string, update Update) {
 		"/commits username date - коммиты пользователя за день"+"\n\n"+
 		"/github username - информация о пользователе GitHub"+"\n\n"+
 		"/osu username - информация о пользователе Osu"+"\n\n"+
+		"/osu_smart username - статистика пользователя Osu"+"\n\n"+
 		"/ip 67.77.77.7 - узнать страну по ip"+"\n\n"+
 		"/crypto - узнать текущий курс криптовалюты SHIB"+"\n\n"+
 		"/d 20 - кинуть д20, вместо 20 можно поставить любое число"+"\n\n"+
