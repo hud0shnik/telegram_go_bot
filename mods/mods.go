@@ -682,8 +682,19 @@ func SendOsuSmartInfo(botUrl string, update Update, username string) {
 	var avgRank int
 	var kfe float64
 
+	// Минимальный и максимальный рейтинг
+	minRank, maxRank := userSmart.RankHistory.Data[0], userSmart.RankHistory.Data[0]
+
 	for _, r := range userSmart.RankHistory.Data {
 		avgRank += r
+
+		if r > maxRank {
+			maxRank = r
+		}
+
+		if r < minRank {
+			minRank = r
+		}
 	}
 	avgRank = avgRank / len(userSmart.RankHistory.Data)
 
@@ -699,6 +710,8 @@ func SendOsuSmartInfo(botUrl string, update Update, username string) {
 	responseText += "Код страны " + user.CountryCode + "\n" +
 		"Рейтинг в мире " + user.GlobalRank + "\n" +
 		"Рейтинг в среднем " + fmt.Sprint(avgRank) + "\n" +
+		"Минимальный рейтинг " + fmt.Sprint(minRank) + "\n" +
+		"Максимальный рейтинг " + fmt.Sprint(maxRank) + "\n" +
 		"Рейтинг в стране " + user.CountryRank + "\n" +
 		"Точность попаданий " + user.Accuracy + "%\n" +
 		"Производительность " + fmt.Sprint(kfe) + "\n" +
