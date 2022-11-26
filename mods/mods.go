@@ -677,7 +677,7 @@ func SendOsuSmartInfo(botUrl string, update Update, username string) {
 	var userSmart = new(OsuSmartInfo)
 	json.Unmarshal(body, &userSmart)
 
-	// Вычисление среднего ранга и коэффициента Егорова
+	// Вычисление среднего ранга и очки производительности
 	var avgRank int
 	var kfe float64
 
@@ -700,7 +700,7 @@ func SendOsuSmartInfo(botUrl string, update Update, username string) {
 		"Рейтинг в среднем " + fmt.Sprint(avgRank) + "\n" +
 		"Рейтинг в стране " + user.CountryRank + "\n" +
 		"Точность попаданий " + user.Accuracy + "%\n" +
-		"Коэффициент Егорова " + fmt.Sprint(kfe) + "\n" +
+		"Производительность " + fmt.Sprint(kfe) + "\n" +
 		"PP " + user.PP + "\n" +
 		"-------карты---------\n" +
 		"SSH: " + user.SSH + "\n" +
