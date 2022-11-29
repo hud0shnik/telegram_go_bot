@@ -308,16 +308,17 @@ func SendFromReddit(botUrl string, update Update, board string) error {
 
 	// Проверка на запрещёнку
 	if response.Nsfw || response.Spoiler {
-		response.Url = "https://belikebill.ga/billgen-API.php?default=1"
-		response.Title = "Картинка оказалась со спойлером или nsfw-контентом, поэтому я заменил её на это"
-	}
+		SendMsg(botUrl, update, "Картинка оказалась спойлером, так что показывать я её не буду.")
+		SendStck(botUrl, update, "CAACAgIAAxkBAAIgQmOGVG-_a7Mfnn7IlmedgMHOY5f8AAJXAAOtZbwUZ0fPMqXZ_GcrBA")
+	} else {
 
-	// Отправка результата
-	SendPict(botUrl, update, SendPhoto{
-		ChatId:   update.Message.Chat.ChatId,
-		PhotoUrl: response.Url,
-		Caption:  response.Title,
-	})
+		// Отправка результата
+		SendPict(botUrl, update, SendPhoto{
+			ChatId:   update.Message.Chat.ChatId,
+			PhotoUrl: response.Url,
+			Caption:  response.Title,
+		})
+	}
 
 	return nil
 }
