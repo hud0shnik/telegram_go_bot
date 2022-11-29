@@ -76,7 +76,9 @@ func respond(botUrl string, update mods.Update) error {
 	if update.Message.Text != "" {
 
 		request := append(strings.Split(update.Message.Text, " "), "", "")
-		fmt.Println("request: \t", request)
+
+		// Вывод реквеста для тестов
+		// fmt.Println("request: \t", request)
 
 		switch request[0] {
 		case "/osu":
@@ -130,11 +132,13 @@ func respond(botUrl string, update mods.Update) error {
 			return nil
 		}
 
+		// Обработчик вопросов
 		if update.Message.Text[len(update.Message.Text)-1] == '?' {
 			mods.Ball8(botUrl, update)
 			return nil
 		}
 
+		// Дефолтный ответ
 		mods.SendMsg(botUrl, update, "OwO")
 		return nil
 
