@@ -714,7 +714,13 @@ func SendOsuSmartInfo(botUrl string, update Update, username string) {
 	// Минимальный и максимальный рейтинг
 	minRank, maxRank := userSmart.RankHistory.Data[0], userSmart.RankHistory.Data[0]
 
-	for _, r := range userSmart.RankHistory.Data {
+	// Рейтинг в виде слайса точек
+	points := make([]Point, 0)
+
+	for i, r := range userSmart.RankHistory.Data {
+
+		points = append(points, Point{x: i + 1, y: r})
+
 		avgRank += r
 
 		if r > maxRank {
@@ -726,6 +732,9 @@ func SendOsuSmartInfo(botUrl string, update Update, username string) {
 		}
 	}
 	avgRank = avgRank / len(userSmart.RankHistory.Data)
+
+	// Вычисление предполагаемого рейтинга методом наименьших квадратов
+	a, b := LeastSquaresMethod(points)
 
 	kfe = math.Floor(float64(userSmart.TotalHits)/float64(userSmart.PlayCount)*userSmart.Accuracy/100*100) / 100
 
@@ -739,11 +748,12 @@ func SendOsuSmartInfo(botUrl string, update Update, username string) {
 	responseText += "Код страны " + user.CountryCode + "\n" +
 		"Рейтинг в мире " + user.GlobalRank + "\n" +
 		"Рейтинг в среднем " + fmt.Sprint(avgRank) + "\n" +
+		"Предполагаемый рейтинг " + fmt.Sprint(a*len(userSmart.RankHistory.Data)+b) +
 		"Минимальный рейтинг " + fmt.Sprint(minRank) + "\n" +
 		"Максимальный рейтинг " + fmt.Sprint(maxRank) + "\n" +
-		"Рейтинг в стране " + user.CountryRank + "\n" +
 		"Точность попаданий " + user.Accuracy + "%\n" +
 		"Производительность " + fmt.Sprint(kfe) + "\n" +
+		"Рейтинг в стране " + user.CountryRank + "\n" +
 		"PP " + user.PP + "\n" +
 		"-------карты---------\n" +
 		"SSH: " + user.SSH + "\n" +
