@@ -717,25 +717,32 @@ func SendOsuSmartInfo(botUrl string, update Update, username string) {
 	// Рейтинг в виде слайса точек
 	points := make([]Point, 0)
 
+	// Прохождение по статистике рейтинга
 	for i, r := range userSmart.RankHistory.Data {
 
+		// Добавление данных в слайс точек
 		points = append(points, Point{x: i + 1, y: r})
 
 		avgRank += r
 
+		// Нахождение максимального рейтинга
 		if r > maxRank {
 			maxRank = r
 		}
 
+		// Нахождение минимального рейтинга
 		if r < minRank {
 			minRank = r
 		}
 	}
+
+	// Нахождение среднего рейтинга
 	avgRank = avgRank / len(userSmart.RankHistory.Data)
 
 	// Вычисление предполагаемого рейтинга методом наименьших квадратов
 	a, b := LeastSquaresMethod(points)
 
+	// Вычисление производительности
 	kfe = math.Floor(float64(userSmart.TotalHits)/float64(userSmart.PlayCount)*userSmart.Accuracy/100*100) / 100
 
 	// Формирование текста респонса
