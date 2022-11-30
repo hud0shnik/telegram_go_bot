@@ -709,7 +709,7 @@ func SendOsuSmartInfo(botUrl string, update Update, username string) {
 
 	// Вычисление среднего ранга и очки производительности
 	var avgRank int
-	var kfe float64
+	var performance float64
 
 	// Минимальный и максимальный рейтинг
 	minRank, maxRank := userSmart.RankHistory.Data[0], userSmart.RankHistory.Data[0]
@@ -743,9 +743,10 @@ func SendOsuSmartInfo(botUrl string, update Update, username string) {
 	a, b := LeastSquaresMethod(points)
 
 	// Вычисление производительности
-	kfe = math.Floor(float64(userSmart.TotalHits)/float64(userSmart.PlayCount)*userSmart.Accuracy/100*100) / 100
+	performance = math.Floor(float64(userSmart.TotalHits)/float64(userSmart.PlayCount)*userSmart.Accuracy/100*100) / 100
 
 	// Формирование текста респонса
+
 	responseText := "Информация о " + user.Username + "\n"
 
 	if user.Names[0] != "" {
@@ -759,7 +760,7 @@ func SendOsuSmartInfo(botUrl string, update Update, username string) {
 		"Минимальный рейтинг " + fmt.Sprint(minRank) + "\n" +
 		"Максимальный рейтинг " + fmt.Sprint(maxRank) + "\n" +
 		"Точность попаданий " + user.Accuracy + "%\n" +
-		"Производительность " + fmt.Sprint(kfe) + "\n" +
+		"Производительность " + fmt.Sprint(performance) + "\n" +
 		"Рейтинг в стране " + user.CountryRank + "\n" +
 		"PP " + user.PP + "\n" +
 		"-------карты---------\n" +
