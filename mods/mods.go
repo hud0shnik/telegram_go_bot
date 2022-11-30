@@ -756,7 +756,7 @@ func SendOsuSmartInfo(botUrl string, update Update, username string) {
 	responseText += "Код страны " + user.CountryCode + "\n" +
 		"Рейтинг в мире " + user.GlobalRank + "\n" +
 		"Рейтинг в среднем " + fmt.Sprint(avgRank) + "\n" +
-		"Предполагаемый рейтинг " + fmt.Sprint(a*len(userSmart.RankHistory.Data)+b) +
+		"Предполагаемый рейтинг " + fmt.Sprint(a*len(userSmart.RankHistory.Data)+b) + "\n" +
 		"Минимальный рейтинг " + fmt.Sprint(minRank) + "\n" +
 		"Максимальный рейтинг " + fmt.Sprint(maxRank) + "\n" +
 		"Точность попаданий " + user.Accuracy + "%\n" +
