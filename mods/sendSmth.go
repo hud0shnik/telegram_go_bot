@@ -26,6 +26,7 @@ type SendPhoto struct {
 }
 
 // Функции отправки сообщений, стикеров и картинок
+
 // Отправка сообщения
 func SendMsg(botUrl string, update Update, msg string) error {
 
