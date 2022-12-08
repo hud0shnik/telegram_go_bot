@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"math"
 	"math/rand"
 	"net/http"
 	"strconv"
@@ -86,42 +87,44 @@ type CommitsResponse struct {
 }
 
 type OsuUserInfo struct {
-	Error         string   `json:"error"`
-	Username      string   `json:"username"`
-	Names         []string `json:"previous_usernames"`
-	AvatarUrl     string   `json:"avatar_url"`
-	CountryCode   string   `json:"country_code"`
-	GlobalRank    string   `json:"global_rank"`
-	CountryRank   string   `json:"country_rank"`
-	PP            string   `json:"pp"`
-	PlayTime      string   `json:"play_time"`
-	SSH           string   `json:"ssh"`
-	SS            string   `json:"ss"`
-	SH            string   `json:"sh"`
-	S             string   `json:"s"`
-	A             string   `json:"a"`
-	RankedScore   string   `json:"ranked_score"`
-	Accuracy      string   `json:"accuracy"`
-	PlayCount     string   `json:"play_count"`
-	TotalScore    string   `json:"total_score"`
-	TotalHits     string   `json:"total_hits"`
-	MaximumCombo  string   `json:"maximum_combo"`
-	Replays       string   `json:"replays"`
-	Level         string   `json:"level"`
-	SupportLvl    string   `json:"support_level"`
-	DefaultGroup  string   `json:"default_group"`
-	IsOnline      string   `json:"is_online"`
-	IsActive      string   `json:"is_active"`
-	IsDeleted     string   `json:"is_deleted"`
-	IsNat         string   `json:"is_nat"`
-	IsModerator   string   `json:"is_moderator"`
-	IsBot         string   `json:"is_bot"`
-	IsSilenced    string   `json:"is_silenced"`
-	IsRestricted  string   `json:"is_restricted"`
-	IsLimitedBn   string   `json:"is_limited_bn"`
-	IsSupporter   string   `json:"is_supporter"`
-	ProfileColor  string   `json:"profile_color"`
-	PmFriendsOnly string   `json:"pm_friends_only"`
+	Error          string   `json:"error"`
+	Username       string   `json:"username"`
+	Names          []string `json:"previous_usernames"`
+	AvatarUrl      string   `json:"avatar_url"`
+	CountryCode    string   `json:"country_code"`
+	GlobalRank     string   `json:"global_rank"`
+	CountryRank    string   `json:"country_rank"`
+	PP             string   `json:"pp"`
+	PlayTime       string   `json:"play_time"`
+	SSH            string   `json:"ssh"`
+	SS             string   `json:"ss"`
+	SH             string   `json:"sh"`
+	S              string   `json:"s"`
+	A              string   `json:"a"`
+	RankedScore    string   `json:"ranked_score"`
+	Accuracy       string   `json:"accuracy"`
+	PlayCount      string   `json:"play_count"`
+	TotalScore     string   `json:"total_score"`
+	TotalHits      string   `json:"total_hits"`
+	MaximumCombo   string   `json:"maximum_combo"`
+	Replays        string   `json:"replays"`
+	Level          string   `json:"level"`
+	SupportLvl     string   `json:"support_level"`
+	DefaultGroup   string   `json:"default_group"`
+	IsOnline       string   `json:"is_online"`
+	IsActive       string   `json:"is_active"`
+	IsDeleted      string   `json:"is_deleted"`
+	IsNat          string   `json:"is_nat"`
+	IsModerator    string   `json:"is_moderator"`
+	IsBot          string   `json:"is_bot"`
+	IsSilenced     string   `json:"is_silenced"`
+	IsRestricted   string   `json:"is_restricted"`
+	IsLimitedBn    string   `json:"is_limited_bn"`
+	IsSupporter    string   `json:"is_supporter"`
+	ProfileColor   string   `json:"profile_color"`
+	PmFriendsOnly  string   `json:"pm_friends_only"`
+	PostCount      string   `json:"post_count"`
+	FollowersCount string   `json:"follower_count"`
 }
 
 type OsuBadge struct {
@@ -130,12 +133,80 @@ type OsuBadge struct {
 	ImageUrl    string `json:"image_url"`
 }
 
+type OsuSmartInfo struct {
+	UserID                  int     `json:"id"`
+	Kudosu                  int     `json:"kudosu"`
+	MaxFriends              int     `json:"max_friends"`
+	MaxBLock                int     `json:"max_block"`
+	PostCount               int     `json:"post_count"`
+	CommentsCount           int     `json:"comments_count"`
+	FollowerCount           int     `json:"follower_count"`
+	MappingFollowerCount    int     `json:"mapping_follower_count"`
+	PendingBeatmapsetCount  int     `json:"pending_beatmapset_count"`
+	Level                   int     `json:"level"`
+	GlobalRank              int64   `json:"global_rank"`
+	PP                      float64 `json:"pp"`
+	RankedScore             int     `json:"ranked_score"`
+	Accuracy                float64 `json:"accuracy"`
+	PlayCount               int     `json:"play_count"`
+	PlayTime                string  `json:"play_time"`
+	PlayTimeSeconds         int64   `json:"play_time_seconds"`
+	TotalScore              int64   `json:"total_score"`
+	TotalHits               int64   `json:"total_hits"`
+	MaximumCombo            int     `json:"maximum_combo"`
+	Replays                 int     `json:"replays"`
+	SS                      int     `json:"ss"`
+	SSH                     int     `json:"ssh"`
+	S                       int     `json:"s"`
+	SH                      int     `json:"sh"`
+	A                       int     `json:"a"`
+	CountryRank             int     `json:"country_rank"`
+	SupportLvl              int     `json:"support_level"`
+	Medals                  int     `json:"medals"`
+	RankHistory             History `json:"rank_history"`
+	UnrankedBeatmapsetCount int     `json:"unranked_beatmapset_count"`
+}
+
+type History struct {
+	Mode string `json:"mode"`
+	Data []int  `json:"data"`
+}
+
+type Point struct {
+	x int
+	y int
+}
+
+func LeastSquaresMethod(points []Point) (a int, b int) {
+
+	n := float64(len(points))
+
+	sumX := 0.0
+	sumY := 0.0
+	sumXY := 0.0
+	sumXX := 0.0
+
+	for _, p := range points {
+		sumX += float64(p.x)
+		sumY += float64(p.y)
+		sumXY += float64(p.x * p.y)
+		sumXX += float64(p.x * p.x)
+	}
+
+	base := (n*sumXX - sumX*sumX)
+	a = int((n*sumXY - sumX*sumY) / base)
+	b = int((sumXX*sumY - sumXY*sumX) / base)
+
+	return a, b
+}
+
 // Функция вывода списка всех команд
 func Help(botUrl string, update Update) {
 	SendMsg(botUrl, update, "Привет👋🏻, вот список команд:"+"\n\n"+
 		"/commits username date - коммиты пользователя за день"+"\n\n"+
 		"/github username - информация о пользователе GitHub"+"\n\n"+
 		"/osu username - информация о пользователе Osu"+"\n\n"+
+		"/osu_smart username - статистика пользователя Osu"+"\n\n"+
 		"/ip 67.77.77.7 - узнать страну по ip"+"\n\n"+
 		"/crypto - узнать текущий курс криптовалюты SHIB"+"\n\n"+
 		"/d 20 - кинуть д20, вместо 20 можно поставить любое число"+"\n\n"+
@@ -265,16 +336,17 @@ func SendFromReddit(botUrl string, update Update, board string) error {
 
 	// Проверка на запрещёнку
 	if response.Nsfw || response.Spoiler {
-		response.Url = "https://belikebill.ga/billgen-API.php?default=1"
-		response.Title = "Картинка оказалась со спойлером или nsfw-контентом, поэтому я заменил её на это"
-	}
+		SendMsg(botUrl, update, "Картинка оказалась спойлером, так что показывать я её не буду.")
+		SendStck(botUrl, update, "CAACAgIAAxkBAAIgQmOGVG-_a7Mfnn7IlmedgMHOY5f8AAJXAAOtZbwUZ0fPMqXZ_GcrBA")
+	} else {
 
-	// Отправка результата
-	SendPict(botUrl, update, SendPhoto{
-		ChatId:   update.Message.Chat.ChatId,
-		PhotoUrl: response.Url,
-		Caption:  response.Title,
-	})
+		// Отправка результата
+		SendPict(botUrl, update, SendPhoto{
+			ChatId:   update.Message.Chat.ChatId,
+			PhotoUrl: response.Url,
+			Caption:  response.Title,
+		})
+	}
 
 	return nil
 }
@@ -397,10 +469,11 @@ func SendInfo(botUrl string, update Update, username string) {
 	var user = new(InfoResponse)
 	json.Unmarshal(body, &user)
 
-	// Проверка на ошибки со стороны API
+	// Проверка респонса
 	if user.Username == "" {
 		fmt.Println("GithubGoAPI error: ", err)
 		SendMsg(botUrl, update, user.Error)
+		SendErrorMessage(botUrl, update, 1)
 		return
 	}
 
@@ -444,8 +517,10 @@ func SendCommits(botUrl string, update Update, username, date string) {
 	var user = new(CommitsResponse)
 	json.Unmarshal(body, &user)
 
+	// Проверка на респонс
 	if user.Date == "" {
 		fmt.Println("GithubStatsAPI error: ", err)
+		SendMsg(botUrl, update, user.Error)
 		SendErrorMessage(botUrl, update, 1)
 		return
 	}
@@ -499,10 +574,10 @@ func SendOsuInfo(botUrl string, update Update, username string) {
 	var user = new(OsuUserInfo)
 	json.Unmarshal(body, &user)
 
-	// Проверка на результат
+	// Проверка респонса
 	if user.Username == "" {
-		fmt.Println("OsuStatsAPI error: ", err)
 		SendMsg(botUrl, update, user.Error)
+		SendErrorMessage(botUrl, update, 1)
 		return
 	}
 
@@ -536,6 +611,183 @@ func SendOsuInfo(botUrl string, update Update, username string) {
 		"---------------------------\n" +
 		"Время в игре " + user.PlayTime + "\n" +
 		"Уровень подписки " + user.SupportLvl + "\n"
+
+	if user.PostCount != "0" {
+		responseText += "Постов на форуме " + user.PostCount + "\n"
+	}
+
+	if user.FollowersCount != "0" {
+		responseText += "Подписчиков " + user.FollowersCount + "\n"
+	}
+
+	if user.IsOnline == "true" {
+		responseText += "Сейчас онлайн \n"
+	} else {
+		responseText += "Сейчас не в сети \n"
+	}
+
+	if user.IsActive == "true" {
+		responseText += "Аккаунт активен \n"
+	} else {
+		responseText += "Аккаунт не активен \n"
+	}
+
+	if user.IsDeleted == "true" {
+		responseText += "Аккаунт удалён \n"
+	}
+
+	if user.IsBot == "true" {
+		responseText += "Это аккаунт бота \n"
+	}
+
+	if user.IsNat == "true" {
+		responseText += "Это аккаунт члена команды оценки номинаций \n"
+	}
+
+	if user.IsModerator == "true" {
+		responseText += "Это аккаунт модератора \n"
+	}
+
+	if user.ProfileColor != "" {
+		responseText += "Цвет профиля" + user.ProfileColor + "\n"
+	}
+
+	// Отправка данных пользователю
+	SendPict(botUrl, update, SendPhoto{
+		PhotoUrl: user.AvatarUrl,
+		ChatId:   update.Message.Chat.ChatId,
+		Caption:  responseText,
+	})
+}
+
+// Функция вывода информации о пользователе Osu!
+func SendOsuSmartInfo(botUrl string, update Update, username string) {
+
+	// Значение по дефолту
+	if username == "" {
+		username = "hud0shnik"
+	}
+
+	// Отправка запроса моему API
+	resp, err := http.Get("https://osustatsapi.vercel.app/api/userString?id=" + username)
+
+	// Проверка на ошибку
+	if err != nil {
+		fmt.Println("OsuStatsAPI error: ", err)
+		SendErrorMessage(botUrl, update, 1)
+		return
+	}
+
+	// Запись респонса
+	defer resp.Body.Close()
+	body, _ := ioutil.ReadAll(resp.Body)
+	var user = new(OsuUserInfo)
+	json.Unmarshal(body, &user)
+
+	// Проверка респонса
+	if user.Username == "" {
+		SendMsg(botUrl, update, user.Error)
+		SendErrorMessage(botUrl, update, 1)
+		return
+	}
+
+	// Отправка второго запроса моему API (для вычислений)
+	resp, err = http.Get("https://osustatsapi.vercel.app/api/user?id=" + username)
+
+	// Проверка на ошибку
+	if err != nil {
+		fmt.Println("OsuStatsAPI error: ", err)
+		SendErrorMessage(botUrl, update, 1)
+		return
+	}
+
+	// Запись респонса
+	defer resp.Body.Close()
+	body, _ = ioutil.ReadAll(resp.Body)
+	var userSmart = new(OsuSmartInfo)
+	json.Unmarshal(body, &userSmart)
+
+	// Вычисление среднего ранга и очки производительности
+	var avgRank int
+	var performance float64
+
+	// Минимальный и максимальный рейтинг
+	minRank, maxRank := userSmart.RankHistory.Data[0], userSmart.RankHistory.Data[0]
+
+	// Рейтинг в виде слайса точек
+	points := make([]Point, 0)
+
+	// Прохождение по статистике рейтинга
+	for i, r := range userSmart.RankHistory.Data {
+
+		// Добавление данных в слайс точек
+		points = append(points, Point{x: i + 1, y: r})
+
+		avgRank += r
+
+		// Нахождение максимального рейтинга
+		if r > maxRank {
+			maxRank = r
+		}
+
+		// Нахождение минимального рейтинга
+		if r < minRank {
+			minRank = r
+		}
+	}
+
+	// Нахождение среднего рейтинга
+	avgRank = avgRank / len(userSmart.RankHistory.Data)
+
+	// Вычисление предполагаемого рейтинга методом наименьших квадратов
+	a, b := LeastSquaresMethod(points)
+
+	// Вычисление производительности
+	performance = math.Floor(float64(userSmart.TotalHits)/float64(userSmart.PlayCount)*userSmart.Accuracy/100*100) / 100
+
+	// Формирование текста респонса
+
+	responseText := "Информация о " + user.Username + "\n"
+
+	if user.Names[0] != "" {
+		responseText += "Aka " + user.Names[0] + "\n"
+	}
+
+	responseText += "Код страны " + user.CountryCode + "\n" +
+		"Рейтинг в мире " + user.GlobalRank + "\n" +
+		"Рейтинг в среднем " + fmt.Sprint(avgRank) + "\n" +
+		"Предполагаемый рейтинг " + fmt.Sprint(a*len(userSmart.RankHistory.Data)+b) + "\n" +
+		"Минимальный рейтинг " + fmt.Sprint(minRank) + "\n" +
+		"Максимальный рейтинг " + fmt.Sprint(maxRank) + "\n" +
+		"Точность попаданий " + user.Accuracy + "%\n" +
+		"Производительность " + fmt.Sprint(performance) + "\n" +
+		"Рейтинг в стране " + user.CountryRank + "\n" +
+		"PP " + user.PP + "\n" +
+		"-------карты---------\n" +
+		"SSH: " + user.SSH + "\n" +
+		"SH: " + user.SH + "\n" +
+		"SS: " + user.SS + "\n" +
+		"S: " + user.S + "\n" +
+		"A: " + user.A + "\n" +
+		"---------------------------\n" +
+		"Рейтинговые очки " + user.RankedScore + "\n" +
+		"Количество игр " + user.PlayCount + "\n" +
+		"Всего очков " + user.TotalScore + "\n" +
+		"Всего попаданий " + user.TotalHits + "\n" +
+		"Максимальное комбо " + user.MaximumCombo + "\n" +
+		"Реплеев просмотрено другими " + user.Replays + "\n" +
+		"Уровень " + user.Level + "\n" +
+		"---------------------------\n" +
+		"Время в игре " + user.PlayTime + "\n" +
+		"Уровень подписки " + user.SupportLvl + "\n"
+
+	if user.PostCount != "0" {
+		responseText += "Постов на форуме " + user.PostCount + "\n"
+	}
+
+	if user.FollowersCount != "0" {
+		responseText += "Подписчиков " + user.FollowersCount + "\n"
+	}
 
 	if user.IsOnline == "true" {
 		responseText += "Сейчас онлайн \n"
@@ -598,9 +850,9 @@ func Check(botUrl string, update Update) {
 		SendFromReddit(botUrl, update, "parrots")
 
 		// Отправка ошибок
-		for i := 1; i < 7; i++ {
+		/*for i := 1; i < 7; i++ {
 			SendErrorMessage(botUrl, update, i)
-		}
+		}*/
 
 		// Отправка результата
 		SendMsg(botUrl, update, "Проверка заняла "+time.Since(start).String())
