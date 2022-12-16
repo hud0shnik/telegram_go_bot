@@ -279,7 +279,7 @@ func SendErrorMessage(botUrl string, update Update, errorCode int) {
 	SendMsg(botUrl, updateDanya, "Дань, тут у одного из пользователей "+result+", надеюсь он скоро тебе о ней напишет.")
 
 	// Вывод ошибки пользователю с просьбой связаться со мной для её устранения
-	result += ", пожалуйста свяжитесь с моим создателем для устранения проблемы \n\nhttps://vk.com/hud0shnik\nhttps://vk.com/hud0shnik\nhttps://vk.com/hud0shnik"
+	result += ", пожалуйста свяжитесь с моим создателем для устранения проблемы\n\nhttps://vk.com/hud0shnik\nhttps://vk.com/hud0shnik\nhttps://vk.com/hud0shnik"
 	SendMsg(botUrl, update, result)
 }
 
@@ -319,7 +319,7 @@ func CheckIPAdress(botUrl string, update Update, IP string) {
 
 	// Проверка на пустой IP
 	if IP == "" {
-		SendMsg(botUrl, update, "Чтобы узнать страну по ip, отправьте: \n\n/ip 67.77.77.7")
+		SendMsg(botUrl, update, "Чтобы узнать страну по ip, отправьте:\n\n/ip 67.77.77.7")
 		return
 	}
 
@@ -553,31 +553,31 @@ func SendOsuInfo(botUrl string, update Update, username string) {
 	}
 
 	if user.IsOnline == "true" {
-		responseText += "Сейчас онлайн \n"
+		responseText += "Сейчас онлайн\n"
 	} else {
-		responseText += "Сейчас не в сети \n"
+		responseText += "Сейчас не в сети\n"
 	}
 
 	if user.IsActive == "true" {
-		responseText += "Аккаунт активен \n"
+		responseText += "Аккаунт активен\n"
 	} else {
-		responseText += "Аккаунт не активен \n"
+		responseText += "Аккаунт не активен\n"
 	}
 
 	if user.IsDeleted == "true" {
-		responseText += "Аккаунт удалён \n"
+		responseText += "Аккаунт удалён\n"
 	}
 
 	if user.IsBot == "true" {
-		responseText += "Это аккаунт бота \n"
+		responseText += "Это аккаунт бота\n"
 	}
 
 	if user.IsNat == "true" {
-		responseText += "Это аккаунт члена команды оценки номинаций \n"
+		responseText += "Это аккаунт члена команды оценки номинаций\n"
 	}
 
 	if user.IsModerator == "true" {
-		responseText += "Это аккаунт модератора \n"
+		responseText += "Это аккаунт модератора\n"
 	}
 
 	if user.ProfileColor != "" {
@@ -746,31 +746,31 @@ func SendOsuSmartInfo(botUrl string, update Update, username string) {
 	}
 
 	if user.IsOnline == "true" {
-		responseText += "Сейчас онлайн \n"
+		responseText += "Сейчас онлайн\n"
 	} else {
-		responseText += "Сейчас не в сети \n"
+		responseText += "Сейчас не в сети\n"
 	}
 
 	if user.IsActive == "true" {
-		responseText += "Аккаунт активен \n"
+		responseText += "Аккаунт активен\n"
 	} else {
-		responseText += "Аккаунт не активен \n"
+		responseText += "Аккаунт не активен\n"
 	}
 
 	if user.IsDeleted == "true" {
-		responseText += "Аккаунт удалён \n"
+		responseText += "Аккаунт удалён\n"
 	}
 
 	if user.IsBot == "true" {
-		responseText += "Это аккаунт бота \n"
+		responseText += "Это аккаунт бота\n"
 	}
 
 	if user.IsNat == "true" {
-		responseText += "Это аккаунт члена команды оценки номинаций \n"
+		responseText += "Это аккаунт члена команды оценки номинаций\n"
 	}
 
 	if user.IsModerator == "true" {
-		responseText += "Это аккаунт модератора \n"
+		responseText += "Это аккаунт модератора\n"
 	}
 
 	if user.ProfileColor != "" {
