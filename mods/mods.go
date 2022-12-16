@@ -319,7 +319,7 @@ func SendErrorMessage(botUrl string, update Update, errorCode int) {
 func SendFromReddit(botUrl string, update Update, board string) error {
 
 	// Отправка запроса
-	resp, err := http.Get("https://meme-api.herokuapp.com/gimme/" + board)
+	resp, err := http.Get("https://meme-api.com/gimme/" + board)
 
 	// Проверка на ошибку
 	if err != nil {
@@ -393,7 +393,7 @@ func CheckIPAdress(botUrl string, update Update, IP string) {
 
 	// Проверка на localhost
 	if IP == "127.0.0.1" {
-		SendMsg(botUrl, update, "Айпишник локалхоста, ага")
+		SendMsg(botUrl, update, "Айпишник локалхоста")
 		SendStck(botUrl, update, "CAACAgIAAxkBAAIYLGGzR7310Hqf8K2sljgcQF8kgOpYAAJTAAOtZbwUo9c59oswVBQjBA")
 		return
 	}
