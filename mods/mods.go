@@ -177,29 +177,6 @@ type Point struct {
 	y int
 }
 
-func LeastSquaresMethod(points []Point) (a int, b int) {
-
-	n := float64(len(points))
-
-	sumX := 0.0
-	sumY := 0.0
-	sumXY := 0.0
-	sumXX := 0.0
-
-	for _, p := range points {
-		sumX += float64(p.x)
-		sumY += float64(p.y)
-		sumXY += float64(p.x * p.y)
-		sumXX += float64(p.x * p.x)
-	}
-
-	base := (n*sumXX - sumX*sumX)
-	a = int((n*sumXY - sumX*sumY) / base)
-	b = int((sumXX*sumY - sumXY*sumX) / base)
-
-	return a, b
-}
-
 // Функция вывода списка всех команд
 func Help(botUrl string, update Update) {
 	SendMsg(botUrl, update, "Привет👋🏻, вот список команд:"+"\n\n"+
@@ -658,6 +635,30 @@ func SendOsuInfo(botUrl string, update Update, username string) {
 		ChatId:   update.Message.Chat.ChatId,
 		Caption:  responseText,
 	})
+}
+
+// Функция вычисления прямой методом наименьших квадратов
+func LeastSquaresMethod(points []Point) (a int, b int) {
+
+	n := float64(len(points))
+
+	sumX := 0.0
+	sumY := 0.0
+	sumXY := 0.0
+	sumXX := 0.0
+
+	for _, p := range points {
+		sumX += float64(p.x)
+		sumY += float64(p.y)
+		sumXY += float64(p.x * p.y)
+		sumXX += float64(p.x * p.x)
+	}
+
+	base := (n*sumXX - sumX*sumX)
+	a = int((n*sumXY - sumX*sumY) / base)
+	b = int((sumXX*sumY - sumXY*sumX) / base)
+
+	return a, b
 }
 
 // Функция вывода информации о пользователе Osu!
