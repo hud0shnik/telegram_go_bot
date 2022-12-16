@@ -805,14 +805,12 @@ func Check(botUrl string, update Update) {
 
 		// Вызов всех команд
 		SendCryptoData(botUrl, update)
-		SendFromReddit(botUrl, update, "")
 		Coin(botUrl, update)
 		Help(botUrl, update)
 		SendCommits(botUrl, update, "hud0shnik", "")
 		SendMsg(botUrl, update, Dice("/d20"))
 		Ball8(botUrl, update)
 		SendRandomSticker(botUrl, update)
-		SendFromReddit(botUrl, update, "parrots")
 
 		// Отправка ошибок
 		/*for i := 1; i < 7; i++ {
