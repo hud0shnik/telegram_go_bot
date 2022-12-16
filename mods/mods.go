@@ -292,42 +292,6 @@ func SendErrorMessage(botUrl string, update Update, errorCode int) {
 	SendMsg(botUrl, update, result)
 }
 
-// Функция отправки случайного поста с Reddit
-func SendFromReddit(botUrl string, update Update, board string) error {
-
-	// Отправка запроса
-	resp, err := http.Get("https://meme-api.com/gimme/" + board)
-
-	// Проверка на ошибку
-	if err != nil {
-		fmt.Println("Meme API error: ", err)
-		SendErrorMessage(botUrl, update, 1)
-		return err
-	}
-
-	// Запись респонса
-	defer resp.Body.Close()
-	body, _ := ioutil.ReadAll(resp.Body)
-	var response = new(RedditResponse)
-	json.Unmarshal(body, &response)
-
-	// Проверка на запрещёнку
-	if response.Nsfw || response.Spoiler {
-		SendMsg(botUrl, update, "Картинка оказалась спойлером, так что показывать я её не буду.")
-		SendStck(botUrl, update, "CAACAgIAAxkBAAIgQmOGVG-_a7Mfnn7IlmedgMHOY5f8AAJXAAOtZbwUZ0fPMqXZ_GcrBA")
-	} else {
-
-		// Отправка результата
-		SendPict(botUrl, update, SendPhoto{
-			ChatId:   update.Message.Chat.ChatId,
-			PhotoUrl: response.Url,
-			Caption:  response.Title,
-		})
-	}
-
-	return nil
-}
-
 // Функция вывода курса криптовалюты SHIB
 func SendCryptoData(botUrl string, update Update) {
 
