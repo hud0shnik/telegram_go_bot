@@ -41,13 +41,6 @@ type Sticker struct {
 
 // Структуры для работы с другими API
 
-type RedditResponse struct {
-	Title   string `json:"title"`
-	Url     string `json:"url"`
-	Nsfw    bool   `json:"nsfw"`
-	Spoiler bool   `json:"spoiler"`
-}
-
 type CryptoResponse struct {
 	Symbol        string `json:"symbol"`
 	ChangePercent string `json:"priceChangePercent"`
@@ -188,8 +181,6 @@ func Help(botUrl string, update Update) {
 		"/crypto - узнать текущий курс криптовалюты SHIB"+"\n\n"+
 		"/d 20 - кинуть д20, вместо 20 можно поставить любое число"+"\n\n"+
 		"/coin - подбросить монетку"+"\n\n"+
-		"/meme - мем с Reddit"+"\n\n"+
-		"/cat и /parrot - картинка кота или попугая "+"\n\n"+
 		"Также можешь позадавать вопросы, я на них отвечу 🙃")
 }
 
