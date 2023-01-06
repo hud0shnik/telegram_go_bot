@@ -482,7 +482,7 @@ func SendCommits(botUrl string, update Update, username, date string) {
 	}
 }
 
-// Функция вывода информации о пользователе Osu!
+// Функция вывода информации о пользователе Osu
 func SendOsuInfo(botUrl string, update Update, username string) {
 
 	// Значение по дефолту
@@ -491,7 +491,7 @@ func SendOsuInfo(botUrl string, update Update, username string) {
 	}
 
 	// Отправка запроса моему API
-	resp, err := http.Get("https://osustatsapi.vercel.app/api/userString?id=" + username)
+	resp, err := http.Get("https://osustatsapi.vercel.app/api/user?type=string&id=" + username)
 
 	// Проверка на ошибку
 	if err != nil {
@@ -616,7 +616,7 @@ func LeastSquaresMethod(points []Point) (a int, b int) {
 	return a, b
 }
 
-// Функция вывода информации о пользователе Osu!
+// Функция вывода информации о пользователе Osu
 func SendOsuSmartInfo(botUrl string, update Update, username string) {
 
 	// Значение по дефолту
@@ -625,7 +625,7 @@ func SendOsuSmartInfo(botUrl string, update Update, username string) {
 	}
 
 	// Отправка запроса моему API
-	resp, err := http.Get("https://osustatsapi.vercel.app/api/userString?id=" + username)
+	resp, err := http.Get("https://osustatsapi.vercel.app/api/user?type=string&id=" + username)
 
 	// Проверка на ошибку
 	if err != nil {
