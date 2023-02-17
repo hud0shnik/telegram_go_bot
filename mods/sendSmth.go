@@ -11,8 +11,9 @@ import (
 
 // Структуры для отправки сообщений, стикеров и картинок
 type SendMessage struct {
-	ChatId int    `json:"chat_id"`
-	Text   string `json:"text"`
+	ChatId    int    `json:"chat_id"`
+	Text      string `json:"text"`
+	ParseMode string `json:"parse_mode"`
 }
 
 type SendSticker struct {
@@ -31,8 +32,9 @@ func SendMsg(botUrl string, update Update, msg string) error {
 
 	// Формирование сообщения
 	botMessage := SendMessage{
-		ChatId: update.Message.Chat.ChatId,
-		Text:   msg,
+		ChatId:    update.Message.Chat.ChatId,
+		Text:      msg,
+		ParseMode: "HTML",
 	}
 	buf, err := json.Marshal(botMessage)
 	if err != nil {
