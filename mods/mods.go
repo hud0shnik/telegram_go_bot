@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
-	"math"
 	"math/rand"
 	"net/http"
 	"strconv"
@@ -127,57 +126,12 @@ type OsuBadge struct {
 	ImageUrl    string `json:"image_url"`
 }
 
-type OsuSmartInfo struct {
-	UserID                  int     `json:"id"`
-	Kudosu                  int     `json:"kudosu"`
-	MaxFriends              int     `json:"max_friends"`
-	MaxBLock                int     `json:"max_block"`
-	PostCount               int     `json:"post_count"`
-	CommentsCount           int     `json:"comments_count"`
-	FollowerCount           int     `json:"follower_count"`
-	MappingFollowerCount    int     `json:"mapping_follower_count"`
-	PendingBeatmapsetCount  int     `json:"pending_beatmapset_count"`
-	Level                   int     `json:"level"`
-	GlobalRank              int64   `json:"global_rank"`
-	PP                      float64 `json:"pp"`
-	RankedScore             int     `json:"ranked_score"`
-	Accuracy                float64 `json:"accuracy"`
-	PlayCount               int     `json:"play_count"`
-	PlayTime                string  `json:"play_time"`
-	PlayTimeSeconds         int64   `json:"play_time_seconds"`
-	TotalScore              int64   `json:"total_score"`
-	TotalHits               int64   `json:"total_hits"`
-	MaximumCombo            int     `json:"maximum_combo"`
-	Replays                 int     `json:"replays"`
-	SS                      int     `json:"ss"`
-	SSH                     int     `json:"ssh"`
-	S                       int     `json:"s"`
-	SH                      int     `json:"sh"`
-	A                       int     `json:"a"`
-	CountryRank             int     `json:"country_rank"`
-	SupportLvl              int     `json:"support_level"`
-	Medals                  int     `json:"medals"`
-	RankHistory             History `json:"rank_history"`
-	UnrankedBeatmapsetCount int     `json:"unranked_beatmapset_count"`
-}
-
-type History struct {
-	Mode string `json:"mode"`
-	Data []int  `json:"data"`
-}
-
-type Point struct {
-	x int
-	y int
-}
-
 // Функция вывода списка всех команд
 func Help(botUrl string, update Update) {
 	SendMsg(botUrl, update, "Привет👋🏻, вот список команд:"+"\n\n"+
 		"/commits username date - коммиты пользователя за день"+"\n\n"+
 		"/github username - информация о пользователе GitHub"+"\n\n"+
 		"/osu username - информация о пользователе Osu"+"\n\n"+
-		"/osu_smart username - статистика пользователя Osu"+"\n\n"+
 		"/ip 67.77.77.7 - узнать страну по ip"+"\n\n"+
 		"/crypto - узнать текущий курс криптовалюты SHIB"+"\n\n"+
 		"/d 20 - кинуть д20, вместо 20 можно поставить любое число"+"\n\n"+
@@ -250,38 +204,6 @@ func InitConfig() error {
 	viper.SetConfigName("config")
 
 	return viper.ReadInConfig()
-}
-
-// Функция отправки сообщений об ошибках
-func SendErrorMessage(botUrl string, update Update, errorCode int) {
-
-	// Генерация текста ошибки по коду
-	var result string
-	switch errorCode {
-	case 1:
-		result = "Ошибка работы API"
-	case 2:
-		result = "Ошибка работы json.Marshal()"
-	case 3:
-		result = "Ошибка работы метода SendSticker"
-	case 4:
-		result = "Ошибка работы метода SendPhoto"
-	case 5:
-		result = "Ошибка работы метода SendMessage"
-	case 6:
-		result = "Ошибка работы stickers.json"
-	default:
-		result = "Неизвестная ошибка"
-	}
-
-	// Анонимное оповещение меня
-	var updateDanya Update
-	updateDanya.Message.Chat.ChatId = viper.GetInt("DanyaChatId")
-	SendMsg(botUrl, updateDanya, "Дань, тут у одного из пользователей "+result+", надеюсь он скоро тебе о ней напишет.")
-
-	// Вывод ошибки пользователю с просьбой связаться со мной для её устранения
-	result += ", пожалуйста свяжитесь с моим создателем для устранения проблемы\n\nhttps://vk.com/hud0shnik\nhttps://vk.com/hud0shnik\nhttps://vk.com/hud0shnik"
-	SendMsg(botUrl, update, result)
 }
 
 // Функция вывода курса криптовалюты SHIB
@@ -516,196 +438,6 @@ func SendOsuInfo(botUrl string, update Update, username string) {
 		"Рейтинг в мире " + user.GlobalRank + "\n" +
 		"Рейтинг в стране " + user.CountryRank + "\n" +
 		"Точность попаданий " + user.Accuracy + "%\n" +
-		"PP " + user.PP + "\n" +
-		"-------карты---------\n" +
-		"SSH: " + user.SSH + "\n" +
-		"SH: " + user.SH + "\n" +
-		"SS: " + user.SS + "\n" +
-		"S: " + user.S + "\n" +
-		"A: " + user.A + "\n" +
-		"---------------------------\n" +
-		"Рейтинговые очки " + user.RankedScore + "\n" +
-		"Количество игр " + user.PlayCount + "\n" +
-		"Всего очков " + user.TotalScore + "\n" +
-		"Всего попаданий " + user.TotalHits + "\n" +
-		"Максимальное комбо " + user.MaximumCombo + "\n" +
-		"Реплеев просмотрено другими " + user.Replays + "\n" +
-		"Уровень " + user.Level + "\n" +
-		"---------------------------\n" +
-		"Время в игре " + user.PlayTime + "\n" +
-		"Уровень подписки " + user.SupportLvl + "\n"
-
-	if user.PostCount != "0" {
-		responseText += "Постов на форуме " + user.PostCount + "\n"
-	}
-
-	if user.FollowersCount != "0" {
-		responseText += "Подписчиков " + user.FollowersCount + "\n"
-	}
-
-	if user.IsOnline == "true" {
-		responseText += "Сейчас онлайн\n"
-	} else {
-		responseText += "Сейчас не в сети\n"
-	}
-
-	if user.IsActive == "true" {
-		responseText += "Аккаунт активен\n"
-	} else {
-		responseText += "Аккаунт не активен\n"
-	}
-
-	if user.IsDeleted == "true" {
-		responseText += "Аккаунт удалён\n"
-	}
-
-	if user.IsBot == "true" {
-		responseText += "Это аккаунт бота\n"
-	}
-
-	if user.IsNat == "true" {
-		responseText += "Это аккаунт члена команды оценки номинаций\n"
-	}
-
-	if user.IsModerator == "true" {
-		responseText += "Это аккаунт модератора\n"
-	}
-
-	if user.ProfileColor != "" {
-		responseText += "Цвет профиля" + user.ProfileColor + "\n"
-	}
-
-	// Отправка данных пользователю
-	SendPict(botUrl, update, SendPhoto{
-		PhotoUrl: user.AvatarUrl,
-		ChatId:   update.Message.Chat.ChatId,
-		Caption:  responseText,
-	})
-}
-
-// Функция вычисления прямой методом наименьших квадратов
-func LeastSquaresMethod(points []Point) (a int, b int) {
-
-	n := float64(len(points))
-
-	sumX := 0.0
-	sumY := 0.0
-	sumXY := 0.0
-	sumXX := 0.0
-
-	for _, p := range points {
-		sumX += float64(p.x)
-		sumY += float64(p.y)
-		sumXY += float64(p.x * p.y)
-		sumXX += float64(p.x * p.x)
-	}
-
-	base := (n*sumXX - sumX*sumX)
-	a = int((n*sumXY - sumX*sumY) / base)
-	b = int((sumXX*sumY - sumXY*sumX) / base)
-
-	return a, b
-}
-
-// Функция вывода информации о пользователе Osu
-func SendOsuSmartInfo(botUrl string, update Update, username string) {
-
-	// Значение по дефолту
-	if username == "" {
-		username = "hud0shnik"
-	}
-
-	// Отправка запроса
-	resp, err := http.Get("https://osustatsapi.vercel.app/api/user?type=string&id=" + username)
-
-	// Проверка на ошибку
-	if err != nil {
-		log.Printf("http.Get error: %s", err)
-		return
-	}
-
-	// Запись респонса
-	defer resp.Body.Close()
-	body, _ := ioutil.ReadAll(resp.Body)
-	var user = new(OsuUserInfo)
-	json.Unmarshal(body, &user)
-
-	// Проверка респонса
-	if user.Username == "" {
-		SendMsg(botUrl, update, user.Error)
-		return
-	}
-
-	// Отправка второго запроса моему API (для вычислений)
-	resp, err = http.Get("https://osustatsapi.vercel.app/api/user?id=" + username)
-
-	// Проверка на ошибку
-	if err != nil {
-		log.Printf("http.Get error: %s", err)
-		return
-	}
-
-	// Запись респонса
-	defer resp.Body.Close()
-	body, _ = ioutil.ReadAll(resp.Body)
-	var userSmart = new(OsuSmartInfo)
-	json.Unmarshal(body, &userSmart)
-
-	// Вычисление среднего ранга и очки производительности
-	var avgRank int
-	var performance float64
-
-	// Минимальный и максимальный рейтинг
-	minRank, maxRank := userSmart.RankHistory.Data[0], userSmart.RankHistory.Data[0]
-
-	// Рейтинг в виде слайса точек
-	points := make([]Point, 0)
-
-	// Прохождение по статистике рейтинга
-	for i, r := range userSmart.RankHistory.Data {
-
-		// Добавление данных в слайс точек
-		points = append(points, Point{x: i + 1, y: r})
-
-		avgRank += r
-
-		// Нахождение максимального рейтинга
-		if r > maxRank {
-			maxRank = r
-		}
-
-		// Нахождение минимального рейтинга
-		if r < minRank {
-			minRank = r
-		}
-	}
-
-	// Нахождение среднего рейтинга
-	avgRank = avgRank / len(userSmart.RankHistory.Data)
-
-	// Вычисление предполагаемого рейтинга методом наименьших квадратов
-	a, b := LeastSquaresMethod(points)
-
-	// Вычисление производительности
-	performance = math.Floor(float64(userSmart.TotalHits)/float64(userSmart.PlayCount)*userSmart.Accuracy/100*100) / 100
-
-	// Формирование текста респонса
-
-	responseText := "Информация о " + user.Username + "\n"
-
-	if user.Names[0] != "" {
-		responseText += "Aka " + user.Names[0] + "\n"
-	}
-
-	responseText += "Код страны " + user.CountryCode + "\n" +
-		"Рейтинг в мире " + user.GlobalRank + "\n" +
-		"Рейтинг в среднем " + fmt.Sprint(avgRank) + "\n" +
-		"Предполагаемый рейтинг " + fmt.Sprint(a*len(userSmart.RankHistory.Data)+b) + "\n" +
-		"Минимальный рейтинг " + fmt.Sprint(minRank) + "\n" +
-		"Максимальный рейтинг " + fmt.Sprint(maxRank) + "\n" +
-		"Точность попаданий " + user.Accuracy + "%\n" +
-		"Производительность " + fmt.Sprint(performance) + "\n" +
-		"Рейтинг в стране " + user.CountryRank + "\n" +
 		"PP " + user.PP + "\n" +
 		"-------карты---------\n" +
 		"SSH: " + user.SSH + "\n" +
