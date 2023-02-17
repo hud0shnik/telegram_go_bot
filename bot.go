@@ -2,8 +2,8 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -17,7 +17,7 @@ func main() {
 	// Инициализация конфига (токенов)
 	err := mods.InitConfig()
 	if err != nil {
-		fmt.Println("Config error: ", err)
+		log.Fatalf("initConfig error: %s", err)
 		return
 	}
 
@@ -31,7 +31,7 @@ func main() {
 		// Получение апдейтов
 		updates, err := getUpdates(botUrl, offSet)
 		if err != nil {
-			fmt.Println("Something went wrong: ", err)
+			log.Fatalf("getUpdates error: %s", err)
 		}
 
 		// Обработка апдейтов
@@ -70,7 +70,7 @@ func getUpdates(botUrl string, offset int) ([]mods.Update, error) {
 }
 
 // Функция генерации и отправки ответа
-func respond(botUrl string, update mods.Update) error {
+func respond(botUrl string, update mods.Update) {
 
 	// Обработчик команд
 	if update.Message.Text != "" {
@@ -83,65 +83,49 @@ func respond(botUrl string, update mods.Update) error {
 		switch request[0] {
 		case "/osu":
 			mods.SendOsuInfo(botUrl, update, request[1])
-			return nil
 		case "/commits":
 			mods.SendCommits(botUrl, update, request[1], request[2])
-			return nil
 		case "/github":
 			mods.SendInfo(botUrl, update, request[1])
-			return nil
 		case "/crypto":
 			mods.SendCryptoData(botUrl, update)
-			return nil
 		case "/ip":
 			mods.CheckIPAdress(botUrl, update, request[1])
-			return nil
 		case "/coin":
 			mods.Coin(botUrl, update)
-			return nil
 		case "/start", "/help":
 			mods.Help(botUrl, update)
-			return nil
 		case "OwO":
 			mods.SendMsg(botUrl, update, "UwU")
-			return nil
 		case "Молодец", "молодец":
 			mods.SendMsg(botUrl, update, "Стараюсь UwU")
-			return nil
 		case "Живой?", "живой?":
 			mods.SendMsg(botUrl, update, "Живой")
 			mods.SendStck(botUrl, update, "CAACAgIAAxkBAAIdGWKu5rpWxb4gn4dmYi_rRJ9OHM9xAAJ-FgACsS8ISQjT6d1ChY7VJAQ")
-			return nil
 		case "/check":
 			mods.Check(botUrl, update)
-			return nil
 		case "/d":
 			mods.SendMsg(botUrl, update, mods.Dice(request[1]))
-			return nil
+		default:
+			// Обработчик вопросов
+			if update.Message.Text[len(update.Message.Text)-1] == '?' {
+				mods.Ball8(botUrl, update)
+			} else {
+				// Дефолтный ответ
+				mods.SendMsg(botUrl, update, "OwO")
+			}
 		}
-
-		// Обработчик вопросов
-		if update.Message.Text[len(update.Message.Text)-1] == '?' {
-			mods.Ball8(botUrl, update)
-			return nil
-		}
-
-		// Дефолтный ответ
-		mods.SendMsg(botUrl, update, "OwO")
-		return nil
 
 	} else {
 
 		// Проверка на стикер
 		if update.Message.Sticker.File_id != "" {
 			mods.SendRandomSticker(botUrl, update)
-			return nil
+		} else {
+			// Если пользователь отправил не сообщение и не стикер:
+			mods.SendMsg(botUrl, update, "Пока я воспринимаю только текст и стикеры")
+			mods.SendStck(botUrl, update, "CAACAgIAAxkBAAIaImHkPqF8-PQVOwh_Kv1qQxIFpPyfAAJXAAOtZbwUZ0fPMqXZ_GcjBA")
 		}
-
-		// Если пользователь отправил не сообщение и не стикер:
-		mods.SendMsg(botUrl, update, "Пока я воспринимаю только текст и стикеры")
-		mods.SendStck(botUrl, update, "CAACAgIAAxkBAAIaImHkPqF8-PQVOwh_Kv1qQxIFpPyfAAJXAAOtZbwUZ0fPMqXZ_GcjBA")
-		return nil
 
 	}
 }
