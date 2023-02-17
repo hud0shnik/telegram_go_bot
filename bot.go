@@ -86,15 +86,17 @@ func respond(botUrl string, update mods.Update) {
 		case "/commits":
 			mods.SendCommits(botUrl, update, request[1], request[2])
 		case "/github":
-			mods.SendInfo(botUrl, update, request[1])
+			mods.SendGithubInfo(botUrl, update, request[1])
 		case "/crypto":
-			mods.SendCryptoData(botUrl, update)
+			mods.SendCryptoInfo(botUrl, update)
 		case "/ip":
-			mods.CheckIPAdress(botUrl, update, request[1])
+			mods.SendIPInfo(botUrl, update, request[1])
 		case "/coin":
-			mods.Coin(botUrl, update)
+			mods.FlipCoin(botUrl, update)
 		case "/start", "/help":
 			mods.Help(botUrl, update)
+		case "/d":
+			mods.SendMsg(botUrl, update, mods.Dice(request[1]))
 		case "OwO":
 			mods.SendMsg(botUrl, update, "UwU")
 		case "Молодец", "молодец":
@@ -104,8 +106,6 @@ func respond(botUrl string, update mods.Update) {
 			mods.SendStck(botUrl, update, "CAACAgIAAxkBAAIdGWKu5rpWxb4gn4dmYi_rRJ9OHM9xAAJ-FgACsS8ISQjT6d1ChY7VJAQ")
 		case "/check":
 			mods.Check(botUrl, update)
-		case "/d":
-			mods.SendMsg(botUrl, update, mods.Dice(request[1]))
 		default:
 			// Обработчик вопросов
 			if update.Message.Text[len(update.Message.Text)-1] == '?' {
