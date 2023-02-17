@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"math"
 	"math/rand"
 	"net/http"
@@ -291,8 +292,7 @@ func SendCryptoData(botUrl string, update Update) {
 
 	// Проверка на ошибку
 	if err != nil {
-		fmt.Println("Binance API error: ", err)
-		SendErrorMessage(botUrl, update, 1)
+		log.Printf("http.Get error: %s", err)
 		return
 	}
 
@@ -351,8 +351,7 @@ func CheckIPAdress(botUrl string, update Update, IP string) {
 
 	// Проверка на ошибку
 	if err != nil {
-		fmt.Println("IP API error: ", err)
-		SendErrorMessage(botUrl, update, 1)
+		log.Printf("http.Get error: %s", err)
 		return
 	}
 
@@ -362,7 +361,7 @@ func CheckIPAdress(botUrl string, update Update, IP string) {
 	var response = new(IPApiResponse)
 	json.Unmarshal(body, &response)
 
-	// Вывод сообщения для айпишников без страны
+	// Вывод сообщения для респонса без страны
 	if response.Status != "success" {
 		SendMsg(botUrl, update, "Не могу найти этот IP")
 		SendStck(botUrl, update, "CAACAgIAAxkBAAIY4mG13Vr0CzGwyXA1eL3esZVCWYFhAAJIAAOtZbwUgHOKzxQtAAHcIwQ")
@@ -385,13 +384,12 @@ func SendInfo(botUrl string, update Update, username string) {
 		username = "hud0shnik"
 	}
 
-	// Отправка запроса моему API
+	// Отправка запроса
 	resp, err := http.Get("https://githubstatsapi.vercel.app/api/user?id=" + username)
 
 	// Проверка на ошибку
 	if err != nil {
-		fmt.Println("GithubGoAPI error: ", err)
-		SendErrorMessage(botUrl, update, 1)
+		log.Printf("http.Get error: %s", err)
 		return
 	}
 
@@ -403,9 +401,7 @@ func SendInfo(botUrl string, update Update, username string) {
 
 	// Проверка респонса
 	if user.Username == "" {
-		fmt.Println("GithubGoAPI error: ", err)
 		SendMsg(botUrl, update, user.Error)
-		SendErrorMessage(botUrl, update, 1)
 		return
 	}
 
@@ -438,8 +434,7 @@ func SendCommits(botUrl string, update Update, username, date string) {
 
 	// Проверка на ошибку
 	if err != nil {
-		fmt.Println("GithubStatsAPI error: ", err)
-		SendErrorMessage(botUrl, update, 1)
+		log.Printf("http.Get error: %s", err)
 		return
 	}
 
@@ -451,9 +446,7 @@ func SendCommits(botUrl string, update Update, username, date string) {
 
 	// Проверка на респонс
 	if user.Date == "" {
-		fmt.Println("GithubStatsAPI error: ", err)
 		SendMsg(botUrl, update, user.Error)
-		SendErrorMessage(botUrl, update, 1)
 		return
 	}
 
@@ -495,8 +488,7 @@ func SendOsuInfo(botUrl string, update Update, username string) {
 
 	// Проверка на ошибку
 	if err != nil {
-		fmt.Println("OsuStatsAPI error: ", err)
-		SendErrorMessage(botUrl, update, 1)
+		log.Printf("http.Get error: %s", err)
 		return
 	}
 
@@ -509,7 +501,6 @@ func SendOsuInfo(botUrl string, update Update, username string) {
 	// Проверка респонса
 	if user.Username == "" {
 		SendMsg(botUrl, update, user.Error)
-		SendErrorMessage(botUrl, update, 1)
 		return
 	}
 
@@ -624,13 +615,12 @@ func SendOsuSmartInfo(botUrl string, update Update, username string) {
 		username = "hud0shnik"
 	}
 
-	// Отправка запроса моему API
+	// Отправка запроса
 	resp, err := http.Get("https://osustatsapi.vercel.app/api/user?type=string&id=" + username)
 
 	// Проверка на ошибку
 	if err != nil {
-		fmt.Println("OsuStatsAPI error: ", err)
-		SendErrorMessage(botUrl, update, 1)
+		log.Printf("http.Get error: %s", err)
 		return
 	}
 
@@ -643,7 +633,6 @@ func SendOsuSmartInfo(botUrl string, update Update, username string) {
 	// Проверка респонса
 	if user.Username == "" {
 		SendMsg(botUrl, update, user.Error)
-		SendErrorMessage(botUrl, update, 1)
 		return
 	}
 
@@ -652,8 +641,7 @@ func SendOsuSmartInfo(botUrl string, update Update, username string) {
 
 	// Проверка на ошибку
 	if err != nil {
-		fmt.Println("OsuStatsAPI error: ", err)
-		SendErrorMessage(botUrl, update, 1)
+		log.Printf("http.Get error: %s", err)
 		return
 	}
 
@@ -802,11 +790,6 @@ func Check(botUrl string, update Update) {
 		SendMsg(botUrl, update, Dice("/d20"))
 		Ball8(botUrl, update)
 		SendRandomSticker(botUrl, update)
-
-		// Отправка ошибок
-		/*for i := 1; i < 7; i++ {
-			SendErrorMessage(botUrl, update, i)
-		}*/
 
 		// Отправка результата
 		SendMsg(botUrl, update, "Проверка заняла "+time.Since(start).String())
