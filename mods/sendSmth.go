@@ -3,8 +3,8 @@ package mods
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
 )
@@ -19,15 +19,14 @@ type SendSticker struct {
 	ChatId     int    `json:"chat_id"`
 	StickerUrl string `json:"sticker"`
 }
+
 type SendPhoto struct {
 	ChatId   int    `json:"chat_id"`
 	PhotoUrl string `json:"photo"`
 	Caption  string `json:"caption"`
 }
 
-// Функции отправки сообщений, стикеров и картинок
-
-// Отправка сообщения
+// Функция отправки сообщения
 func SendMsg(botUrl string, update Update, msg string) error {
 
 	// Формирование сообщения
@@ -37,16 +36,14 @@ func SendMsg(botUrl string, update Update, msg string) error {
 	}
 	buf, err := json.Marshal(botMessage)
 	if err != nil {
-		fmt.Println("Marshal json error: ", err)
-		SendErrorMessage(botUrl, update, 2)
+		log.Printf("json.Marshal error: %s", err)
 		return err
 	}
 
 	// Отправка сообщения
 	_, err = http.Post(botUrl+"/sendMessage", "application/json", bytes.NewBuffer(buf))
 	if err != nil {
-		fmt.Println("SendMessage method error: ", err)
-		SendErrorMessage(botUrl, update, 5)
+		log.Printf("sendMessage error: %s", err)
 		return err
 	}
 	return nil
@@ -62,35 +59,31 @@ func SendStck(botUrl string, update Update, url string) error {
 	}
 	buf, err := json.Marshal(botStickerMessage)
 	if err != nil {
-		fmt.Println("Marshal json error: ", err)
-		SendErrorMessage(botUrl, update, 2)
+		log.Printf("json.Marshal error: %s", err)
 		return err
 	}
 	// Отправка стикера
 	_, err = http.Post(botUrl+"/sendSticker", "application/json", bytes.NewBuffer(buf))
 	if err != nil {
-		fmt.Println("SendSticker method error: ", err)
-		SendErrorMessage(botUrl, update, 3)
+		log.Printf("sendSticker error: %s", err)
 		return err
 	}
 	return nil
 }
 
-// Функция отправки картинок
+// Функция отправки картинки
 func SendPict(botUrl string, update Update, pic SendPhoto) error {
 
 	// Формирование картинки
 	buf, err := json.Marshal(pic)
 	if err != nil {
-		fmt.Println("Marshal json error: ", err)
-		SendErrorMessage(botUrl, update, 2)
+		log.Printf("json.Marshal error: %s", err)
 		return err
 	}
 	// Отправка картинки
 	_, err = http.Post(botUrl+"/sendPhoto", "application/json", bytes.NewBuffer(buf))
 	if err != nil {
-		fmt.Println("SendPhoto method error: ", err)
-		SendErrorMessage(botUrl, update, 4)
+		log.Printf("sendPhoto error: %s", err)
 		return err
 	}
 	return nil
@@ -135,9 +128,7 @@ func SendRandomSticker(botUrl string, update Update) error {
 	// Открытие json файла со стикерами
 	fileU, err := os.Open("mods/stickers.json")
 	if err != nil {
-		fmt.Println(err)
-		SendErrorMessage(botUrl, update, 6)
-		os.Exit(1)
+		log.Fatalf("os.Open error: %s", err)
 	}
 	defer fileU.Close()
 
