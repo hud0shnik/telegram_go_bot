@@ -157,31 +157,31 @@ func SendOsuInfo(botUrl string, update Update, username string) {
 
 	// Формирование текста респонса
 
-	responseText := "Информация о " + user.Username + "\n"
+	responseText := "Информация о <b>" + user.Username + "</b>\n"
 
 	if user.Names[0] != "" {
 		responseText += "Aka " + user.Names[0] + "\n"
 	}
 
 	responseText += "Код страны " + user.CountryCode + "\n" +
-		"Рейтинг в мире " + user.GlobalRank + "\n" +
-		"Рейтинг в стране " + user.CountryRank + "\n" +
-		"Точность попаданий " + user.Accuracy + "%\n" +
-		"PP " + user.PP + "\n" +
+		"Рейтинг в мире <b>" + user.GlobalRank + "</b>\n" +
+		"Рейтинг в стране <b>" + user.CountryRank + "</b>\n" +
+		"Точность попаданий <b>" + user.Accuracy + "%</b>\n" +
+		"PP <b>" + user.PP + "</b>\n" +
 		"-------карты---------\n" +
-		"SSH: " + user.SSH + "\n" +
-		"SH: " + user.SH + "\n" +
-		"SS: " + user.SS + "\n" +
-		"S: " + user.S + "\n" +
-		"A: " + user.A + "\n" +
+		"SSH: <b>" + user.SSH + "</b>\n" +
+		"SH:   <b>" + user.SH + "</b>\n" +
+		"SS:   <b>" + user.SS + "</b>\n" +
+		"S:     <b>" + user.S + "</b>\n" +
+		"A:     <b>" + user.A + "</b>\n" +
 		"---------------------------\n" +
-		"Рейтинговые очки " + user.RankedScore + "\n" +
-		"Количество игр " + user.PlayCount + "\n" +
-		"Всего очков " + user.TotalScore + "\n" +
-		"Всего попаданий " + user.TotalHits + "\n" +
-		"Максимальное комбо " + user.MaximumCombo + "\n" +
-		"Реплеев просмотрено другими " + user.Replays + "\n" +
-		"Уровень " + user.Level + "\n" +
+		"Рейтинговые очки <b>" + user.RankedScore + "</b>\n" +
+		"Количество игр <b>" + user.PlayCount + "</b>\n" +
+		"Всего очков <b>" + user.TotalScore + "</b>\n" +
+		"Всего попаданий <b>" + user.TotalHits + "</b>\n" +
+		"Максимальное комбо <b>" + user.MaximumCombo + "</b>\n" +
+		"Реплеев просмотрено другими <b>" + user.Replays + "</b>\n" +
+		"Уровень <b>" + user.Level + "</b>\n" +
 		"---------------------------\n" +
 		"Время в игре " + user.PlayTime + "\n" +
 		"Уровень подписки " + user.SupportLvl + "\n"
@@ -229,7 +229,6 @@ func SendOsuInfo(botUrl string, update Update, username string) {
 	// Отправка данных пользователю
 	SendPict(botUrl, update, SendPhoto{
 		PhotoUrl: user.AvatarUrl,
-		ChatId:   update.Message.Chat.ChatId,
 		Caption:  responseText,
 	})
 }
@@ -320,7 +319,6 @@ func SendGithubInfo(botUrl string, update Update, username string) {
 	// Отправка данных пользователю
 	SendPict(botUrl, update, SendPhoto{
 		PhotoUrl: user.Avatar,
-		ChatId:   update.Message.Chat.ChatId,
 		Caption: "Информация о " + user.Username + ":\n" +
 			"Имя " + user.Name + "\n" +
 			"Поставленных звезд " + user.Stars + " ⭐\n" +
@@ -443,18 +441,22 @@ func FlipCoin(botUrl string, update Update) {
 // Функция вывода списка всех команд
 func Help(botUrl string, update Update) {
 	SendMsg(botUrl, update, "Привет👋🏻, вот список команд:"+"\n\n"+
-		"/commits username date - коммиты пользователя за день"+"\n\n"+
-		"/github username - информация о пользователе GitHub"+"\n\n"+
-		"/osu username - информация о пользователе Osu"+"\n\n"+
-		"/ip 67.77.77.7 - узнать страну по ip"+"\n\n"+
+		"/commits <u>username</u> <u>date</u> - коммиты пользователя за день"+"\n\n"+
+		"/github <u>username</u> - информация о пользователе GitHub"+"\n\n"+
+		"/osu <u>username</u> - информация о пользователе Osu"+"\n\n"+
+		"/ip <u>ip_address</u> - узнать страну по ip"+"\n\n"+
 		"/crypto - узнать текущий курс криптовалюты SHIB"+"\n\n"+
-		"/d 20 - кинуть д20, вместо 20 можно поставить любое число"+"\n\n"+
-		"/coin - подбросить монетку"+"\n\n"+
+		"/d <b>n</b> - кинуть <b>n</b>-гранную кость"+"\n\n"+
+		"/coin - бросить монетку"+"\n\n"+
 		"Также можешь позадавать вопросы, я на них отвечу 🙃")
 }
 
 // Функция броска n-гранного кубика
 func Dice(parameter string) string {
+
+	if parameter == "" {
+		return "Пожалуйста укажи количество граней\nНапример /d <b>20</b>"
+	}
 
 	// Считывание числа граней
 	num, err := strconv.Atoi(parameter)
