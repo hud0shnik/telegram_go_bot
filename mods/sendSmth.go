@@ -22,9 +22,10 @@ type SendSticker struct {
 }
 
 type SendPhoto struct {
-	ChatId   int    `json:"chat_id"`
-	PhotoUrl string `json:"photo"`
-	Caption  string `json:"caption"`
+	ChatId    int    `json:"chat_id"`
+	PhotoUrl  string `json:"photo"`
+	Caption   string `json:"caption"`
+	ParseMode string `json:"parse_mode"`
 }
 
 // Функция отправки сообщения
@@ -75,6 +76,10 @@ func SendStck(botUrl string, update Update, url string) error {
 
 // Функция отправки картинки
 func SendPict(botUrl string, update Update, pic SendPhoto) error {
+
+	// Указание парсмода текста под картинкой и айди чата
+	pic.ParseMode = "HTML"
+	pic.ChatId = update.Message.Chat.ChatId
 
 	// Формирование картинки
 	buf, err := json.Marshal(pic)
