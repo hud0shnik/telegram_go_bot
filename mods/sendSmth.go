@@ -133,16 +133,22 @@ func SendRandomShibaSticker(botUrl string, update Update, sadFlag bool) {
 func SendRandomSticker(botUrl string, update Update) error {
 
 	// Открытие json файла со стикерами
-	fileU, err := os.Open("mods/stickers.json")
+	file, err := os.Open("mods/stickers.json")
 	if err != nil {
 		log.Fatalf("os.Open error: %s", err)
 	}
-	defer fileU.Close()
+	defer file.Close()
 
 	// Запись стикеров в массив
-	bodyU, _ := ioutil.ReadAll(fileU)
+	body, err := ioutil.ReadAll(file)
+	if err != nil {
+		log.Printf("ioutil.ReadAll error: %s", err)
+	}
 	stickers := [359]string{}
-	json.Unmarshal(bodyU, &stickers)
+	err = json.Unmarshal(body, &stickers)
+	if err != nil {
+		log.Printf("json.Unmarshal error: %s", err)
+	}
 
 	// Отправка случайного стикера
 	SendStck(botUrl, update, stickers[Random(len(stickers))])
