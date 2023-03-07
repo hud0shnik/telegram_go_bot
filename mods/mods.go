@@ -270,19 +270,19 @@ func SendCommits(botUrl string, update Update, username, date string) {
 	// Вывод данных пользователю
 	switch user.Color {
 	case 1:
-		SendMsg(botUrl, update, fmt.Sprintf("Коммитов за %s %d", date, user.Commits))
+		SendMsg(botUrl, update, fmt.Sprintf("Коммитов за <i>%s</i> <b>%d</b>", date, user.Commits))
 		SendStck(botUrl, update, "CAACAgIAAxkBAAIYwmG11bAfndI1wciswTEVJUEdgB2jAAI5AAOtZbwUdHz8lasybOojBA")
 	case 2:
-		SendMsg(botUrl, update, fmt.Sprintf("Коммитов за %s %d, неплохо!", date, user.Commits))
+		SendMsg(botUrl, update, fmt.Sprintf("Коммитов за <i>%s</i> <b>%d</b>, неплохо!", date, user.Commits))
 		SendStck(botUrl, update, "CAACAgIAAxkBAAIXWmGyDE1aVXGUY6lcjKxx9bOn0JA1AAJOAAOtZbwUIWzOXysr2zwjBA")
 	case 3:
-		SendMsg(botUrl, update, fmt.Sprintf("Коммитов за %s %d, отлично!!", date, user.Commits))
+		SendMsg(botUrl, update, fmt.Sprintf("Коммитов за <i>%s</i> <b>%d</b>, отлично!!", date, user.Commits))
 		SendStck(botUrl, update, "CAACAgIAAxkBAAIYymG11mMdODUQUZGsQO97V9O0ZLJCAAJeAAOtZbwUvL_TIkzK-MsjBA")
 	case 4:
-		SendMsg(botUrl, update, fmt.Sprintf("Коммитов за %s %d, прекрасно!!!", date, user.Commits))
+		SendMsg(botUrl, update, fmt.Sprintf("Коммитов за <i>%s</i> <b>%d</b>, прекрасно!!!", date, user.Commits))
 		SendStck(botUrl, update, "CAACAgIAAxkBAAIXXGGyDFClr69PKZXJo9dlYMbyilXLAAI1AAOtZbwU9aVxXMUw5eAjBA")
 	default:
-		SendMsg(botUrl, update, "Коммитов нет")
+		SendMsg(botUrl, update, "Коммитов нет...")
 		SendStck(botUrl, update, "CAACAgIAAxkBAAIYG2GzRVNm_d_mVDIOaiLXkGukArlTAAJDAAOtZbwU_-iXZG7hfLsjBA")
 	}
 }
