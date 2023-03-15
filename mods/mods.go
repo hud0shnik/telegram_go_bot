@@ -127,7 +127,7 @@ type OsuBadge struct {
 }
 
 // Функция вывода информации о пользователе Osu
-func SendOsuInfo(botUrl string, update Update, username string) {
+func SendOsuInfo(botUrl string, chatId int, username string) {
 
 	// Значение по дефолту
 	if username == "" {
@@ -151,7 +151,7 @@ func SendOsuInfo(botUrl string, update Update, username string) {
 
 	// Проверка респонса
 	if user.Username == "" {
-		SendMsg(botUrl, update, user.Error)
+		SendMsg(botUrl, chatId, user.Error)
 		return
 	}
 
@@ -227,14 +227,11 @@ func SendOsuInfo(botUrl string, update Update, username string) {
 	}
 
 	// Отправка данных пользователю
-	SendPict(botUrl, update, SendPhoto{
-		PhotoUrl: user.AvatarUrl,
-		Caption:  responseText,
-	})
+	SendPict(botUrl, chatId, user.AvatarUrl, responseText)
 }
 
 // Функция вывода количества коммитов пользователя GitHub
-func SendCommits(botUrl string, update Update, username, date string) {
+func SendCommits(botUrl string, chatId int, username, date string) {
 
 	// Значение по дефолту
 	if username == "" {
@@ -258,7 +255,7 @@ func SendCommits(botUrl string, update Update, username, date string) {
 
 	// Проверка на респонс
 	if user.Date == "" {
-		SendMsg(botUrl, update, user.Error)
+		SendMsg(botUrl, chatId, user.Error)
 		return
 	}
 
@@ -270,25 +267,25 @@ func SendCommits(botUrl string, update Update, username, date string) {
 	// Вывод данных пользователю
 	switch user.Color {
 	case 1:
-		SendMsg(botUrl, update, fmt.Sprintf("Коммитов за <i>%s</i> <b>%d</b>", date, user.Commits))
-		SendStck(botUrl, update, "CAACAgIAAxkBAAIYwmG11bAfndI1wciswTEVJUEdgB2jAAI5AAOtZbwUdHz8lasybOojBA")
+		SendMsg(botUrl, chatId, fmt.Sprintf("Коммитов за <i>%s</i> <b>%d</b>", date, user.Commits))
+		SendStck(botUrl, chatId, "CAACAgIAAxkBAAIYwmG11bAfndI1wciswTEVJUEdgB2jAAI5AAOtZbwUdHz8lasybOojBA")
 	case 2:
-		SendMsg(botUrl, update, fmt.Sprintf("Коммитов за <i>%s</i> <b>%d</b>, неплохо!", date, user.Commits))
-		SendStck(botUrl, update, "CAACAgIAAxkBAAIXWmGyDE1aVXGUY6lcjKxx9bOn0JA1AAJOAAOtZbwUIWzOXysr2zwjBA")
+		SendMsg(botUrl, chatId, fmt.Sprintf("Коммитов за <i>%s</i> <b>%d</b>, неплохо!", date, user.Commits))
+		SendStck(botUrl, chatId, "CAACAgIAAxkBAAIXWmGyDE1aVXGUY6lcjKxx9bOn0JA1AAJOAAOtZbwUIWzOXysr2zwjBA")
 	case 3:
-		SendMsg(botUrl, update, fmt.Sprintf("Коммитов за <i>%s</i> <b>%d</b>, отлично!!", date, user.Commits))
-		SendStck(botUrl, update, "CAACAgIAAxkBAAIYymG11mMdODUQUZGsQO97V9O0ZLJCAAJeAAOtZbwUvL_TIkzK-MsjBA")
+		SendMsg(botUrl, chatId, fmt.Sprintf("Коммитов за <i>%s</i> <b>%d</b>, отлично!!", date, user.Commits))
+		SendStck(botUrl, chatId, "CAACAgIAAxkBAAIYymG11mMdODUQUZGsQO97V9O0ZLJCAAJeAAOtZbwUvL_TIkzK-MsjBA")
 	case 4:
-		SendMsg(botUrl, update, fmt.Sprintf("Коммитов за <i>%s</i> <b>%d</b>, прекрасно!!!", date, user.Commits))
-		SendStck(botUrl, update, "CAACAgIAAxkBAAIXXGGyDFClr69PKZXJo9dlYMbyilXLAAI1AAOtZbwU9aVxXMUw5eAjBA")
+		SendMsg(botUrl, chatId, fmt.Sprintf("Коммитов за <i>%s</i> <b>%d</b>, прекрасно!!!", date, user.Commits))
+		SendStck(botUrl, chatId, "CAACAgIAAxkBAAIXXGGyDFClr69PKZXJo9dlYMbyilXLAAI1AAOtZbwU9aVxXMUw5eAjBA")
 	default:
-		SendMsg(botUrl, update, "Коммитов нет...")
-		SendStck(botUrl, update, "CAACAgIAAxkBAAIYG2GzRVNm_d_mVDIOaiLXkGukArlTAAJDAAOtZbwU_-iXZG7hfLsjBA")
+		SendMsg(botUrl, chatId, "Коммитов нет...")
+		SendStck(botUrl, chatId, "CAACAgIAAxkBAAIYG2GzRVNm_d_mVDIOaiLXkGukArlTAAJDAAOtZbwU_-iXZG7hfLsjBA")
 	}
 }
 
 // Функция вывода информации о пользователе GitHub
-func SendGithubInfo(botUrl string, update Update, username string) {
+func SendGithubInfo(botUrl string, chatId int, username string) {
 
 	// Значение по дефолту
 	if username == "" {
@@ -312,27 +309,25 @@ func SendGithubInfo(botUrl string, update Update, username string) {
 
 	// Проверка респонса
 	if user.Username == "" {
-		SendMsg(botUrl, update, user.Error)
+		SendMsg(botUrl, chatId, user.Error)
 		return
 	}
 
 	// Отправка данных пользователю
-	SendPict(botUrl, update, SendPhoto{
-		PhotoUrl: user.Avatar,
-		Caption: "Информация о " + user.Username + ":\n" +
-			"Имя " + user.Name + "\n" +
-			"Поставленных звезд " + user.Stars + " ⭐\n" +
-			"Подписчиков " + user.Followers + " 🤩\n" +
-			"Подписок " + user.Following + " 🕵️\n" +
-			"Репозиториев " + user.Repositories + " 📘\n" +
-			"Пакетов " + user.Packages + " 📦\n" +
-			"Контрибуций за год " + user.Contributions + " 🟩\n" +
-			"Ссылка на аватар:\n " + user.Avatar,
-	})
+	SendPict(botUrl, chatId, user.Avatar,
+		"Информация о "+user.Username+":\n"+
+			"Имя "+user.Name+"\n"+
+			"Поставленных звезд "+user.Stars+" ⭐\n"+
+			"Подписчиков "+user.Followers+" 🤩\n"+
+			"Подписок "+user.Following+" 🕵️\n"+
+			"Репозиториев "+user.Repositories+" 📘\n"+
+			"Пакетов "+user.Packages+" 📦\n"+
+			"Контрибуций за год "+user.Contributions+" 🟩\n"+
+			"Ссылка на аватар:\n "+user.Avatar)
 }
 
 // Функция вывода курса криптовалюты SHIB
-func SendCryptoInfo(botUrl string, update Update) {
+func SendCryptoInfo(botUrl string, chatId int) {
 
 	// Отправка запроса
 	resp, err := http.Get("https://api2.binance.com/api/v3/ticker/24hr?symbol=SHIBBUSD")
@@ -351,44 +346,44 @@ func SendCryptoInfo(botUrl string, update Update) {
 
 	// Формирование и отправка результата
 	if response.ChangePercent[0] == '-' {
-		SendMsg(botUrl, update, "За сегодняшний день "+response.Symbol+" упал на "+response.ChangePercent[1:]+"%\n"+
+		SendMsg(botUrl, chatId, "За сегодняшний день "+response.Symbol+" упал на "+response.ChangePercent[1:]+"%\n"+
 			"до отметки в "+response.LastPrice+"$\n\n")
-		SendRandomShibaSticker(botUrl, update, true)
+		SendRandomShibaSticker(botUrl, chatId, true)
 	} else {
-		SendMsg(botUrl, update, "За сегодняшний день "+response.Symbol+" вырос на "+response.ChangePercent+"%\n"+
+		SendMsg(botUrl, chatId, "За сегодняшний день "+response.Symbol+" вырос на "+response.ChangePercent+"%\n"+
 			"до отметки в "+response.LastPrice+"$\n\n")
-		SendRandomShibaSticker(botUrl, update, false)
+		SendRandomShibaSticker(botUrl, chatId, false)
 	}
 }
 
 // Функция нахождения местоположения по IP адресу
-func SendIPInfo(botUrl string, update Update, IP string) {
+func SendIPInfo(botUrl string, chatId int, IP string) {
 
 	// Проверка на пустой IP
 	if IP == "" {
-		SendMsg(botUrl, update, "Чтобы узнать страну по ip, отправьте:\n\n/ip 67.77.77.7")
+		SendMsg(botUrl, chatId, "Чтобы узнать страну по ip, отправьте:\n\n/ip 67.77.77.7")
 		return
 	}
 
 	// Проверка на localhost
 	if IP == "127.0.0.1" {
-		SendMsg(botUrl, update, "Айпишник локалхоста")
-		SendStck(botUrl, update, "CAACAgIAAxkBAAIYLGGzR7310Hqf8K2sljgcQF8kgOpYAAJTAAOtZbwUo9c59oswVBQjBA")
+		SendMsg(botUrl, chatId, "Айпишник локалхоста")
+		SendStck(botUrl, chatId, "CAACAgIAAxkBAAIYLGGzR7310Hqf8K2sljgcQF8kgOpYAAJTAAOtZbwUo9c59oswVBQjBA")
 		return
 	}
 
 	// Проверка корректности ввода
 	ipArray := strings.Split(IP, ".")
 	if len(ipArray) != 4 {
-		SendMsg(botUrl, update, "Не могу обработать этот IP")
-		SendStck(botUrl, update, "CAACAgIAAxkBAAIY4mG13Vr0CzGwyXA1eL3esZVCWYFhAAJIAAOtZbwUgHOKzxQtAAHcIwQ")
+		SendMsg(botUrl, chatId, "Не могу обработать этот IP")
+		SendStck(botUrl, chatId, "CAACAgIAAxkBAAIY4mG13Vr0CzGwyXA1eL3esZVCWYFhAAJIAAOtZbwUgHOKzxQtAAHcIwQ")
 		return
 	}
 	for _, ipPart := range ipArray {
 		num, err := strconv.Atoi(ipPart)
 		if err != nil || num < 0 || num > 255 || (ipPart != fmt.Sprint(num)) {
-			SendMsg(botUrl, update, "Неправильно набран IP")
-			SendStck(botUrl, update, "CAACAgIAAxkBAAIY4GG13SepKZJisWVrMrzQ9JyRpWFrAAJKAAOtZbwUiXsNXgiPepIjBA")
+			SendMsg(botUrl, chatId, "Неправильно набран IP")
+			SendStck(botUrl, chatId, "CAACAgIAAxkBAAIY4GG13SepKZJisWVrMrzQ9JyRpWFrAAJKAAOtZbwUiXsNXgiPepIjBA")
 			return
 		}
 	}
@@ -410,17 +405,17 @@ func SendIPInfo(botUrl string, update Update, IP string) {
 
 	// Вывод сообщения для респонса без страны
 	if response.Status != "success" {
-		SendMsg(botUrl, update, "Не могу найти этот IP")
-		SendStck(botUrl, update, "CAACAgIAAxkBAAIY4mG13Vr0CzGwyXA1eL3esZVCWYFhAAJIAAOtZbwUgHOKzxQtAAHcIwQ")
+		SendMsg(botUrl, chatId, "Не могу найти этот IP")
+		SendStck(botUrl, chatId, "CAACAgIAAxkBAAIY4mG13Vr0CzGwyXA1eL3esZVCWYFhAAJIAAOtZbwUgHOKzxQtAAHcIwQ")
 		return
 	}
 
 	// Вывод результатов поиска
-	SendMsg(botUrl, update, "Нашёл! Страна происхождения - "+response.CountryName+" "+"\n"+
+	SendMsg(botUrl, chatId, "Нашёл! Страна происхождения - "+response.CountryName+" "+"\n"+
 		"Регион - "+response.Region+"\n"+
 		"Индекс - "+response.Zip+"\n\n"+
 		"Мы не храним IP, которые просят проверить пользователи, весь код можно найти на гитхабе.")
-	SendStck(botUrl, update, "CAACAgIAAxkBAAIXqmGyGtvN_JHUQVDXspAX5jP3BvU9AAI5AAOtZbwUdHz8lasybOojBA")
+	SendStck(botUrl, chatId, "CAACAgIAAxkBAAIXqmGyGtvN_JHUQVDXspAX5jP3BvU9AAI5AAOtZbwUdHz8lasybOojBA")
 }
 
 // Функция генерации псевдослучайных чисел
@@ -430,17 +425,17 @@ func Random(n int) int {
 }
 
 // Функция броска монетки
-func FlipCoin(botUrl string, update Update) {
+func FlipCoin(botUrl string, chatId int) {
 	if Random(2) == 0 {
-		SendMsg(botUrl, update, "Орёл")
+		SendMsg(botUrl, chatId, "Орёл")
 	} else {
-		SendMsg(botUrl, update, "Решка")
+		SendMsg(botUrl, chatId, "Решка")
 	}
 }
 
 // Функция вывода списка всех команд
-func Help(botUrl string, update Update) {
-	SendMsg(botUrl, update, "Привет👋🏻, вот список команд:"+"\n\n"+
+func Help(botUrl string, chatId int) {
+	SendMsg(botUrl, chatId, "Привет👋🏻, вот список команд:"+"\n\n"+
 		"/commits <u>username</u> <u>date</u> - коммиты пользователя за день"+"\n\n"+
 		"/github <u>username</u> - информация о пользователе GitHub"+"\n\n"+
 		"/osu <u>username</u> - информация о пользователе Osu"+"\n\n"+
@@ -479,7 +474,7 @@ func Dice(parameter string) string {
 }
 
 // Функция генерации случайных ответов
-func Ball8(botUrl string, update Update) {
+func Ball8(botUrl string, chatId int) {
 
 	// Массив ответов
 	answers := [10]string{
@@ -496,27 +491,27 @@ func Ball8(botUrl string, update Update) {
 	}
 
 	// Выбор случайного ответа
-	SendMsg(botUrl, update, answers[Random(10)])
+	SendMsg(botUrl, chatId, answers[Random(10)])
 }
 
 // Функция проверки всех команд
-func Check(botUrl string, update Update) {
+func Check(botUrl string, chatId int) {
 
 	// Проверка на мой id
-	if update.Message.Chat.ChatId == viper.GetInt("DanyaChatId") {
+	if chatId == viper.GetInt("DanyaChatId") {
 
 		// Вызов функций для тестирования
-		SendOsuInfo(botUrl, update, "")
-		SendCommits(botUrl, update, "", "")
-		SendGithubInfo(botUrl, update, "")
-		SendCryptoInfo(botUrl, update)
-		SendIPInfo(botUrl, update, "67.77.77.7")
-		SendRandomSticker(botUrl, update)
+		SendOsuInfo(botUrl, chatId, "")
+		SendCommits(botUrl, chatId, "", "")
+		SendGithubInfo(botUrl, chatId, "")
+		SendCryptoInfo(botUrl, chatId)
+		SendIPInfo(botUrl, chatId, "67.77.77.7")
+		SendRandomSticker(botUrl, chatId)
 
 	} else {
 
 		// Вывод для других пользователей
-		SendMsg(botUrl, update, "Error 403! Beep Boop... Forbidden! Access denied 🤖")
+		SendMsg(botUrl, chatId, "Error 403! Beep Boop... Forbidden! Access denied 🤖")
 
 	}
 
