@@ -125,12 +125,13 @@ type OsuUserInfo struct {
 // Функция вывода информации о пользователе Osu
 func SendOsuInfo(botUrl string, chatId int, username string) {
 
-	// Значение по дефолту
+	// Проверка параметра
 	if username == "" {
-		username = "hud0shnik"
+		SendMsg(botUrl, chatId, "Синтаксис команды:\n\n/info <b>[id]</b>\n\nПример:\n/info <b>hud0shnik</b>")
+		return
 	}
 
-	// Отправка запроса моему API
+	// Отправка запроса OsuStatsApi
 	resp, err := http.Get("https://osustatsapi.vercel.app/api/user?type=string&id=" + username)
 
 	// Проверка на ошибку
@@ -166,10 +167,10 @@ func SendOsuInfo(botUrl string, chatId int, username string) {
 		"PP <b>" + user.PP + "</b>\n" +
 		"-------карты---------\n" +
 		"SSH: <b>" + user.SSH + "</b>\n" +
-		"SH:   <b>" + user.SH + "</b>\n" +
-		"SS:   <b>" + user.SS + "</b>\n" +
-		"S:     <b>" + user.S + "</b>\n" +
-		"A:     <b>" + user.A + "</b>\n" +
+		"SH: <b>" + user.SH + "</b>\n" +
+		"SS: <b>" + user.SS + "</b>\n" +
+		"S: <b>" + user.S + "</b>\n" +
+		"A: <b>" + user.A + "</b>\n" +
 		"---------------------------\n" +
 		"Рейтинговые очки <b>" + user.RankedScore + "</b>\n" +
 		"Количество игр <b>" + user.PlayCount + "</b>\n" +
@@ -179,8 +180,12 @@ func SendOsuInfo(botUrl string, chatId int, username string) {
 		"Реплеев просмотрено другими <b>" + user.Replays + "</b>\n" +
 		"Уровень <b>" + user.Level + "</b>\n" +
 		"---------------------------\n" +
-		"Время в игре " + user.PlayTime + "\n" +
-		"Уровень подписки " + user.SupportLvl + "\n"
+		"Время в игре <i>" + user.PlayTime + "</i>\n" +
+		"Достижений <i>" + user.Medals + "</i>\n"
+
+	if user.SupportLvl != "0" {
+		responseText += "Уровень подписки " + user.SupportLvl + "\n"
+	}
 
 	if user.PostCount != "0" {
 		responseText += "Постов на форуме " + user.PostCount + "\n"
@@ -219,7 +224,7 @@ func SendOsuInfo(botUrl string, chatId int, username string) {
 	}
 
 	if user.ProfileColor != "" {
-		responseText += "Цвет профиля" + user.ProfileColor + "\n"
+		responseText += "Цвет профиля <b>" + user.ProfileColor + "<b>\n"
 	}
 
 	// Отправка данных пользователю
