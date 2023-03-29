@@ -122,12 +122,6 @@ type OsuUserInfo struct {
 	Medals         string   `json:"medals"`
 }
 
-type OsuBadge struct {
-	AwardedAt   string `json:"awarded_at"`
-	Description string `json:"description"`
-	ImageUrl    string `json:"image_url"`
-}
-
 // Функция вывода информации о пользователе Osu
 func SendOsuInfo(botUrl string, chatId int, username string) {
 
@@ -230,6 +224,7 @@ func SendOsuInfo(botUrl string, chatId int, username string) {
 
 	// Отправка данных пользователю
 	SendPict(botUrl, chatId, user.AvatarUrl, responseText)
+
 }
 
 // Функция вывода количества коммитов пользователя GitHub
@@ -284,6 +279,7 @@ func SendCommits(botUrl string, chatId int, username, date string) {
 		SendMsg(botUrl, chatId, "Коммитов нет...")
 		SendStck(botUrl, chatId, "CAACAgIAAxkBAAIYG2GzRVNm_d_mVDIOaiLXkGukArlTAAJDAAOtZbwU_-iXZG7hfLsjBA")
 	}
+
 }
 
 // Функция вывода информации о пользователе GitHub
@@ -326,6 +322,7 @@ func SendGithubInfo(botUrl string, chatId int, username string) {
 			"Пакетов "+user.Packages+" 📦\n"+
 			"Контрибуций за год "+user.Contributions+" 🟩\n"+
 			"Ссылка на аватар:\n "+user.Avatar)
+
 }
 
 // Функция вывода курса криптовалюты SHIB
@@ -356,6 +353,7 @@ func SendCryptoInfo(botUrl string, chatId int) {
 			"до отметки в "+response.LastPrice+"$\n\n")
 		SendRandomShibaSticker(botUrl, chatId, false)
 	}
+
 }
 
 // Функция нахождения местоположения по IP адресу
@@ -418,12 +416,14 @@ func SendIPInfo(botUrl string, chatId int, IP string) {
 		"Индекс - "+response.Zip+"\n\n"+
 		"Мы не храним IP, которые просят проверить пользователи, весь код можно найти на гитхабе.")
 	SendStck(botUrl, chatId, "CAACAgIAAxkBAAIXqmGyGtvN_JHUQVDXspAX5jP3BvU9AAI5AAOtZbwUdHz8lasybOojBA")
+
 }
 
 // Функция генерации псевдослучайных чисел
 func Random(n int) int {
 	rand.Seed(time.Now().Unix())
 	return rand.Intn(n)
+
 }
 
 // Функция броска монетки
@@ -433,6 +433,7 @@ func FlipCoin(botUrl string, chatId int) {
 	} else {
 		SendMsg(botUrl, chatId, "Решка")
 	}
+
 }
 
 // Функция вывода списка всех команд
@@ -446,6 +447,7 @@ func Help(botUrl string, chatId int) {
 		"/d <b>n</b> - кинуть <b>n</b>-гранную кость"+"\n\n"+
 		"/coin - бросить монетку"+"\n\n"+
 		"Также можешь позадавать вопросы, я на них отвечу 🙃")
+
 }
 
 // Функция броска n-гранного кубика
@@ -473,6 +475,7 @@ func Dice(parameter string) string {
 
 	// Бросок
 	return strconv.Itoa(1 + Random(num))
+
 }
 
 // Функция генерации случайных ответов
@@ -494,6 +497,7 @@ func Ball8(botUrl string, chatId int) {
 
 	// Выбор случайного ответа
 	SendMsg(botUrl, chatId, answers[Random(10)])
+
 }
 
 // Функция проверки всех команд
@@ -525,4 +529,5 @@ func InitConfig() error {
 	viper.SetConfigName("config")
 
 	return viper.ReadInConfig()
+
 }
