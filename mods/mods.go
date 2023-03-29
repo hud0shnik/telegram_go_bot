@@ -80,6 +80,7 @@ type CommitsResponse struct {
 }
 
 type OsuUserInfo struct {
+	Success        bool     `json:"success"`
 	Error          string   `json:"error"`
 	Username       string   `json:"username"`
 	Names          []string `json:"previous_usernames"`
@@ -118,6 +119,7 @@ type OsuUserInfo struct {
 	PmFriendsOnly  string   `json:"pm_friends_only"`
 	PostCount      string   `json:"post_count"`
 	FollowersCount string   `json:"follower_count"`
+	Medals         string   `json:"medals"`
 }
 
 type OsuBadge struct {
@@ -150,7 +152,7 @@ func SendOsuInfo(botUrl string, chatId int, username string) {
 	json.Unmarshal(body, &user)
 
 	// Проверка респонса
-	if user.Username == "" {
+	if !user.Success {
 		SendMsg(botUrl, chatId, user.Error)
 		return
 	}
@@ -159,7 +161,7 @@ func SendOsuInfo(botUrl string, chatId int, username string) {
 
 	responseText := "Информация о <b>" + user.Username + "</b>\n"
 
-	if user.Names[0] != "" {
+	if user.Names != nil {
 		responseText += "Aka " + user.Names[0] + "\n"
 	}
 
