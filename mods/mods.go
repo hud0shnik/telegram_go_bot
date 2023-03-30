@@ -127,7 +127,7 @@ func SendOsuInfo(botUrl string, chatId int, username string) {
 
 	// Проверка параметра
 	if username == "" {
-		SendMsg(botUrl, chatId, "Синтаксис команды:\n\n/info <b>[id]</b>\n\nПример:\n/info <b>hud0shnik</b>")
+		SendMsg(botUrl, chatId, "Синтаксис команды:\n\n/osu <b>[id]</b>\n\nПример:\n/osu <b>hud0shnik</b>")
 		return
 	}
 
@@ -235,9 +235,10 @@ func SendOsuInfo(botUrl string, chatId int, username string) {
 // Функция вывода количества коммитов пользователя GitHub
 func SendCommits(botUrl string, chatId int, username, date string) {
 
-	// Значение по дефолту
+	// Проверка параметра
 	if username == "" {
-		username = "hud0shnik"
+		SendMsg(botUrl, chatId, "Синтаксис команды:\n\n/commits <b>[id]</b>\n\nПример:\n/commits <b>hud0shnik</b>")
+		return
 	}
 
 	// Отправка запроса моему API
@@ -290,11 +291,11 @@ func SendCommits(botUrl string, chatId int, username, date string) {
 // Функция вывода информации о пользователе GitHub
 func SendGithubInfo(botUrl string, chatId int, username string) {
 
-	// Значение по дефолту
+	// Проверка параметра
 	if username == "" {
-		username = "hud0shnik"
+		SendMsg(botUrl, chatId, "Синтаксис команды:\n\n/github <b>[id]</b>\n\nПример:\n/github <b>hud0shnik</b>")
+		return
 	}
-
 	// Отправка запроса
 	resp, err := http.Get("https://githubstatsapi.vercel.app/api/user?id=" + username)
 
