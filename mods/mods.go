@@ -59,6 +59,7 @@ type DogResponse struct {
 }
 
 type InfoResponse struct {
+	Success       bool   `json:"success"`
 	Error         string `json:"error"`
 	Username      string `json:"username"`
 	Name          string `json:"name"`
@@ -72,6 +73,7 @@ type InfoResponse struct {
 }
 
 type CommitsResponse struct {
+	Success  bool   `json:"success"`
 	Error    string `json:"error"`
 	Date     string `json:"date"`
 	Username string `json:"username"`
@@ -257,7 +259,7 @@ func SendCommits(botUrl string, chatId int, username, date string) {
 	json.Unmarshal(body, &user)
 
 	// Проверка на респонс
-	if user.Date == "" {
+	if !user.Success {
 		SendMsg(botUrl, chatId, user.Error)
 		return
 	}
@@ -312,7 +314,7 @@ func SendGithubInfo(botUrl string, chatId int, username string) {
 	json.Unmarshal(body, &user)
 
 	// Проверка респонса
-	if user.Username == "" {
+	if !user.Success {
 		SendMsg(botUrl, chatId, user.Error)
 		return
 	}
