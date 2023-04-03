@@ -134,10 +134,11 @@ func SendOsuInfo(botUrl string, chatId int, username string) {
 	}
 
 	// Отправка запроса OsuStatsApi
-	resp, err := http.Get("https://osustatsapi.vercel.app/api/user?type=string&id=" + username)
+	resp, err := http.Get("https://osustatsapi.vercel.app/api/V2/user?type=string&id=" + username)
 
 	// Проверка на ошибку
 	if err != nil {
+		SendMsg(botUrl, chatId, "Внутренняя ошибка")
 		log.Printf("http.Get error: %s", err)
 		return
 	}
@@ -149,8 +150,17 @@ func SendOsuInfo(botUrl string, chatId int, username string) {
 	json.Unmarshal(body, &user)
 
 	// Проверка респонса
-	if !user.Success {
-		SendMsg(botUrl, chatId, user.Error)
+	switch resp.StatusCode {
+	case 200:
+		// При хорошем статусе респонса, продолжение выполнения кода
+	case 404:
+		SendMsg(botUrl, chatId, "Пользователь не найден")
+		return
+	case 400:
+		SendMsg(botUrl, chatId, "Плохой реквест")
+		return
+	default:
+		SendMsg(botUrl, chatId, "Внутренняя ошибка")
 		return
 	}
 
@@ -158,7 +168,7 @@ func SendOsuInfo(botUrl string, chatId int, username string) {
 
 	responseText := "Информация о <b>" + user.Username + "</b>\n"
 
-	if user.Names != nil {
+	if len(user.Names) != 0 {
 		responseText += "Aka " + user.Names[0] + "\n"
 	}
 
