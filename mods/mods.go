@@ -254,10 +254,11 @@ func SendCommits(botUrl string, chatId int, username, date string) {
 	}
 
 	// Отправка запроса моему API
-	resp, err := http.Get("https://githubstatsapi.vercel.app/api/commits?id=" + username + "&date=" + date)
+	resp, err := http.Get("https://githubstatsapi.vercel.app/api/v2/commits?id=" + username + "&date=" + date)
 
 	// Проверка на ошибку
 	if err != nil {
+		SendMsg(botUrl, chatId, "Внутренняя ошибка")
 		log.Printf("http.Get error: %s", err)
 		return
 	}
@@ -268,9 +269,18 @@ func SendCommits(botUrl string, chatId int, username, date string) {
 	var user = new(CommitsResponse)
 	json.Unmarshal(body, &user)
 
-	// Проверка на респонс
-	if !user.Success {
-		SendMsg(botUrl, chatId, user.Error)
+	// Проверка респонса
+	switch resp.StatusCode {
+	case 200:
+		// При хорошем статусе респонса, продолжение выполнения кода
+	case 404:
+		SendMsg(botUrl, chatId, "Пользователь не найден")
+		return
+	case 400:
+		SendMsg(botUrl, chatId, "Плохой реквест")
+		return
+	default:
+		SendMsg(botUrl, chatId, "Внутренняя ошибка")
 		return
 	}
 
