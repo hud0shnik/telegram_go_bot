@@ -319,10 +319,11 @@ func SendGithubInfo(botUrl string, chatId int, username string) {
 		return
 	}
 	// Отправка запроса
-	resp, err := http.Get("https://githubstatsapi.vercel.app/api/user?id=" + username)
+	resp, err := http.Get("https://githubstatsapi.vercel.app/api/v2/user?id=" + username)
 
 	// Проверка на ошибку
 	if err != nil {
+		SendMsg(botUrl, chatId, "Внутренняя ошибка")
 		log.Printf("http.Get error: %s", err)
 		return
 	}
@@ -334,8 +335,17 @@ func SendGithubInfo(botUrl string, chatId int, username string) {
 	json.Unmarshal(body, &user)
 
 	// Проверка респонса
-	if !user.Success {
-		SendMsg(botUrl, chatId, user.Error)
+	switch resp.StatusCode {
+	case 200:
+		// При хорошем статусе респонса, продолжение выполнения кода
+	case 404:
+		SendMsg(botUrl, chatId, "Пользователь не найден")
+		return
+	case 400:
+		SendMsg(botUrl, chatId, "Плохой реквест")
+		return
+	default:
+		SendMsg(botUrl, chatId, "Внутренняя ошибка")
 		return
 	}
 
@@ -361,6 +371,7 @@ func SendCryptoInfo(botUrl string, chatId int) {
 
 	// Проверка на ошибку
 	if err != nil {
+		SendMsg(botUrl, chatId, "Внутренняя ошибка")
 		log.Printf("http.Get error: %s", err)
 		return
 	}
@@ -421,6 +432,7 @@ func SendIPInfo(botUrl string, chatId int, IP string) {
 
 	// Проверка на ошибку
 	if err != nil {
+		SendMsg(botUrl, chatId, "Внутренняя ошибка")
 		log.Printf("http.Get error: %s", err)
 		return
 	}
