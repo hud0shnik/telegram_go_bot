@@ -63,12 +63,14 @@ func SendStck(botUrl string, chatId int, url string) error {
 		log.Printf("json.Marshal error: %s", err)
 		return err
 	}
+
 	// Отправка стикера
 	_, err = http.Post(botUrl+"/sendSticker", "application/json", bytes.NewBuffer(buf))
 	if err != nil {
 		log.Printf("sendSticker error: %s", err)
 		return err
 	}
+
 	return nil
 }
 
@@ -86,6 +88,7 @@ func SendPict(botUrl string, chatId int, photoUrl, caption string) error {
 		log.Printf("json.Marshal error: %s", err)
 		return err
 	}
+
 	// Отправка картинки
 	_, err = http.Post(botUrl+"/sendPhoto", "application/json", bytes.NewBuffer(buf))
 	if err != nil {

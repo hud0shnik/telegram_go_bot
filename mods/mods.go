@@ -318,6 +318,7 @@ func SendGithubInfo(botUrl string, chatId int, username string) {
 		SendMsg(botUrl, chatId, "Синтаксис команды:\n\n/github <b>[id]</b>\n\nПример:\n/github <b>hud0shnik</b>")
 		return
 	}
+
 	// Отправка запроса
 	resp, err := http.Get("https://githubstatsapi.vercel.app/api/v2/user?id=" + username)
 
