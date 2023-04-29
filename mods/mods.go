@@ -110,19 +110,12 @@ func SendOsuInfo(botUrl string, chatId int, username string) {
 
 	// Отправка запроса OsuStatsApi
 	resp, err := http.Get("https://osustatsapi.vercel.app/api/V2/user?type=string&id=" + username)
-
-	// Проверка на ошибку
 	if err != nil {
 		SendMsg(botUrl, chatId, "Внутренняя ошибка")
 		log.Printf("http.Get error: %s", err)
 		return
 	}
-
-	// Запись респонса
 	defer resp.Body.Close()
-	body, _ := ioutil.ReadAll(resp.Body)
-	var user = new(osuUserInfo)
-	json.Unmarshal(body, &user)
 
 	// Проверка респонса
 	switch resp.StatusCode {
@@ -138,6 +131,11 @@ func SendOsuInfo(botUrl string, chatId int, username string) {
 		SendMsg(botUrl, chatId, "Внутренняя ошибка")
 		return
 	}
+
+	// Запись респонса
+	body, _ := ioutil.ReadAll(resp.Body)
+	var user = new(osuUserInfo)
+	json.Unmarshal(body, &user)
 
 	// Формирование текста респонса
 
@@ -237,12 +235,7 @@ func SendCommits(botUrl string, chatId int, username, date string) {
 		log.Printf("http.Get error: %s", err)
 		return
 	}
-
-	// Запись респонса
 	defer resp.Body.Close()
-	body, _ := ioutil.ReadAll(resp.Body)
-	var user = new(commitsResponse)
-	json.Unmarshal(body, &user)
 
 	// Проверка респонса
 	switch resp.StatusCode {
@@ -258,6 +251,11 @@ func SendCommits(botUrl string, chatId int, username, date string) {
 		SendMsg(botUrl, chatId, "Внутренняя ошибка")
 		return
 	}
+
+	// Запись респонса
+	body, _ := ioutil.ReadAll(resp.Body)
+	var user = new(commitsResponse)
+	json.Unmarshal(body, &user)
 
 	// Если поле пустое, меняет date на "сегодня"
 	if date == "" {
@@ -296,19 +294,12 @@ func SendGithubInfo(botUrl string, chatId int, username string) {
 
 	// Отправка запроса
 	resp, err := http.Get("https://githubstatsapi.vercel.app/api/v2/user?id=" + username)
-
-	// Проверка на ошибку
 	if err != nil {
 		SendMsg(botUrl, chatId, "Внутренняя ошибка")
 		log.Printf("http.Get error: %s", err)
 		return
 	}
-
-	// Запись респонса
 	defer resp.Body.Close()
-	body, _ := ioutil.ReadAll(resp.Body)
-	var user = new(infoResponse)
-	json.Unmarshal(body, &user)
 
 	// Проверка респонса
 	switch resp.StatusCode {
@@ -324,6 +315,11 @@ func SendGithubInfo(botUrl string, chatId int, username string) {
 		SendMsg(botUrl, chatId, "Внутренняя ошибка")
 		return
 	}
+
+	// Запись респонса
+	body, _ := ioutil.ReadAll(resp.Body)
+	var user = new(infoResponse)
+	json.Unmarshal(body, &user)
 
 	// Отправка данных пользователю
 	SendPict(botUrl, chatId, user.Avatar,
@@ -344,16 +340,14 @@ func SendCryptoInfo(botUrl string, chatId int) {
 
 	// Отправка запроса
 	resp, err := http.Get("https://api2.binance.com/api/v3/ticker/24hr?symbol=SHIBBUSD")
-
-	// Проверка на ошибку
 	if err != nil {
 		SendMsg(botUrl, chatId, "Внутренняя ошибка")
 		log.Printf("http.Get error: %s", err)
 		return
 	}
+	defer resp.Body.Close()
 
 	// Запись респонса
-	defer resp.Body.Close()
 	body, _ := ioutil.ReadAll(resp.Body)
 	var response = new(cryptoResponse)
 	json.Unmarshal(body, &response)
@@ -405,16 +399,14 @@ func SendIPInfo(botUrl string, chatId int, IP string) {
 
 	// Отправка запроса API
 	resp, err := http.Get("http://ip-api.com/json/" + IP)
-
-	// Проверка на ошибку
 	if err != nil {
 		SendMsg(botUrl, chatId, "Внутренняя ошибка")
 		log.Printf("http.Get error: %s", err)
 		return
 	}
+	defer resp.Body.Close()
 
 	// Запись респонса
-	defer resp.Body.Close()
 	body, _ := ioutil.ReadAll(resp.Body)
 	var response = new(ipApiResponse)
 	json.Unmarshal(body, &response)
@@ -446,10 +438,9 @@ func random(n int) int {
 func FlipCoin(botUrl string, chatId int) {
 	if random(2) == 0 {
 		SendMsg(botUrl, chatId, "Орёл")
-	} else {
-		SendMsg(botUrl, chatId, "Решка")
+		return
 	}
-
+	SendMsg(botUrl, chatId, "Решка")
 }
 
 // Функция вывода списка всех команд
