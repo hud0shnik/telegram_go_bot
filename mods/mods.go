@@ -135,7 +135,13 @@ func SendOsuInfo(botUrl string, chatId int, username string) {
 	// Запись респонса
 	body, _ := ioutil.ReadAll(resp.Body)
 	var user = new(osuUserInfo)
-	json.Unmarshal(body, &user)
+	err = json.Unmarshal(body, &user)
+	if err != nil {
+		log.Printf("json.Unmarshal err: %v", err)
+		SendMsg(botUrl, chatId, "Внутренняя ошибка")
+		SendStck(botUrl, chatId, "CAACAgIAAxkBAAIY4mG13Vr0CzGwyXA1eL3esZVCWYFhAAJIAAOtZbwUgHOKzxQtAAHcIwQ")
+		return
+	}
 
 	// Формирование текста респонса
 
@@ -255,7 +261,13 @@ func SendCommits(botUrl string, chatId int, username, date string) {
 	// Запись респонса
 	body, _ := ioutil.ReadAll(resp.Body)
 	var user = new(commitsResponse)
-	json.Unmarshal(body, &user)
+	err = json.Unmarshal(body, &user)
+	if err != nil {
+		log.Printf("in SendCommits: json.Unmarshal err: %v", err)
+		SendMsg(botUrl, chatId, "Внутренняя ошибка")
+		SendStck(botUrl, chatId, "CAACAgIAAxkBAAIY4mG13Vr0CzGwyXA1eL3esZVCWYFhAAJIAAOtZbwUgHOKzxQtAAHcIwQ")
+		return
+	}
 
 	// Если поле пустое, меняет date на "сегодня"
 	if date == "" {
@@ -319,7 +331,13 @@ func SendGithubInfo(botUrl string, chatId int, username string) {
 	// Запись респонса
 	body, _ := ioutil.ReadAll(resp.Body)
 	var user = new(infoResponse)
-	json.Unmarshal(body, &user)
+	err = json.Unmarshal(body, &user)
+	if err != nil {
+		log.Printf("in SendGithubInfo: json.Unmarshal err: %v", err)
+		SendMsg(botUrl, chatId, "Внутренняя ошибка")
+		SendStck(botUrl, chatId, "CAACAgIAAxkBAAIY4mG13Vr0CzGwyXA1eL3esZVCWYFhAAJIAAOtZbwUgHOKzxQtAAHcIwQ")
+		return
+	}
 
 	// Отправка данных пользователю
 	SendPict(botUrl, chatId, user.Avatar,
@@ -350,7 +368,13 @@ func SendCryptoInfo(botUrl string, chatId int) {
 	// Запись респонса
 	body, _ := ioutil.ReadAll(resp.Body)
 	var response = new(cryptoResponse)
-	json.Unmarshal(body, &response)
+	err = json.Unmarshal(body, &response)
+	if err != nil {
+		log.Printf("in SendCryptoInfo: json.Unmarshal err: %v", err)
+		SendMsg(botUrl, chatId, "Внутренняя ошибка")
+		SendStck(botUrl, chatId, "CAACAgIAAxkBAAIY4mG13Vr0CzGwyXA1eL3esZVCWYFhAAJIAAOtZbwUgHOKzxQtAAHcIwQ")
+		return
+	}
 
 	// Формирование и отправка результата
 	if response.ChangePercent[0] == '-' {
@@ -409,7 +433,13 @@ func SendIPInfo(botUrl string, chatId int, IP string) {
 	// Запись респонса
 	body, _ := ioutil.ReadAll(resp.Body)
 	var response = new(ipApiResponse)
-	json.Unmarshal(body, &response)
+	err = json.Unmarshal(body, &response)
+	if err != nil {
+		log.Printf("in SendIPInfo: json.Unmarshal err: %v", err)
+		SendMsg(botUrl, chatId, "Внутренняя ошибка")
+		SendStck(botUrl, chatId, "CAACAgIAAxkBAAIY4mG13Vr0CzGwyXA1eL3esZVCWYFhAAJIAAOtZbwUgHOKzxQtAAHcIwQ")
+		return
+	}
 
 	// Вывод сообщения для респонса без страны
 	if response.Status != "success" {
