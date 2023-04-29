@@ -436,7 +436,7 @@ func SendIPInfo(botUrl string, chatId int, IP string) {
 }
 
 // Функция генерации псевдослучайных чисел
-func Random(n int) int {
+func random(n int) int {
 	rand.Seed(time.Now().Unix())
 	return rand.Intn(n)
 
@@ -444,7 +444,7 @@ func Random(n int) int {
 
 // Функция броска монетки
 func FlipCoin(botUrl string, chatId int) {
-	if Random(2) == 0 {
+	if random(2) == 0 {
 		SendMsg(botUrl, chatId, "Орёл")
 	} else {
 		SendMsg(botUrl, chatId, "Решка")
@@ -486,11 +486,11 @@ func Dice(parameter string) string {
 
 	// Проверка на d10 (единственный кубик, который имеет грань со значением "0")
 	if num == 10 {
-		return strconv.Itoa(Random(10))
+		return strconv.Itoa(random(10))
 	}
 
 	// Бросок
-	return strconv.Itoa(1 + Random(num))
+	return strconv.Itoa(1 + random(num))
 
 }
 
@@ -512,7 +512,7 @@ func Ball8(botUrl string, chatId int) {
 	}
 
 	// Выбор случайного ответа
-	SendMsg(botUrl, chatId, answers[Random(10)])
+	SendMsg(botUrl, chatId, answers[random(10)])
 
 }
 

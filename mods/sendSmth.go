@@ -128,7 +128,7 @@ func SendRandomShibaSticker(botUrl string, chatId int, sadFlag bool) {
 	}
 
 	// Отправка случайного стикера
-	SendStck(botUrl, chatId, stickers[Random(len(stickers))])
+	SendStck(botUrl, chatId, stickers[random(len(stickers))])
 }
 
 // Отправка случайного стикера
@@ -153,6 +153,6 @@ func SendRandomSticker(botUrl string, chatId int) error {
 	}
 
 	// Отправка случайного стикера
-	SendStck(botUrl, chatId, stickers[Random(len(stickers))])
+	SendStck(botUrl, chatId, stickers[random(len(stickers))])
 	return nil
 }
