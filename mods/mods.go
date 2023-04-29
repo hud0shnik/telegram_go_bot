@@ -458,30 +458,29 @@ func Help(botUrl string, chatId int) {
 }
 
 // Функция броска n-гранного кубика
-func Dice(parameter string) string {
+func RollDice(botUrl string, chatId int, parameter string) {
 
+	// Проверка параметра
 	if parameter == "" {
-		return "Пожалуйста укажи количество граней\nНапример /d <b>20</b>"
+		SendMsg(botUrl, chatId, "Пожалуйста укажи количество граней\nНапример /d <b>20</b>")
+		return
 	}
 
 	// Считывание числа граней
 	num, err := strconv.Atoi(parameter)
-
-	// Проверки на невозможное количество граней
-	if err != nil {
-		return "Это вообще кубик?🤨"
-	}
-	if num < 1 {
-		return "как я по твоему кину такой кубик? Через четвёртое пространство?🤨"
+	if err != nil || num < 1 {
+		SendMsg(botUrl, chatId, "Это вообще кубик?🤨")
+		return
 	}
 
 	// Проверка на d10 (единственный кубик, который имеет грань со значением "0")
 	if num == 10 {
-		return strconv.Itoa(random(10))
+		SendMsg(botUrl, chatId, strconv.Itoa(random(10)))
+		return
 	}
 
 	// Бросок
-	return strconv.Itoa(1 + random(num))
+	SendMsg(botUrl, chatId, strconv.Itoa(1+random(num)))
 
 }
 

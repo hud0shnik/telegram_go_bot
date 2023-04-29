@@ -121,7 +121,7 @@ func respond(botUrl string, update update) {
 		case "/start", "/help":
 			mods.Help(botUrl, update.Message.Chat.ChatId)
 		case "/d":
-			mods.SendMsg(botUrl, update.Message.Chat.ChatId, mods.Dice(request[1]))
+			mods.RollDice(botUrl, update.Message.Chat.ChatId, request[1])
 		case "OwO":
 			mods.SendMsg(botUrl, update.Message.Chat.ChatId, "UwU")
 		case "Молодец", "молодец":
