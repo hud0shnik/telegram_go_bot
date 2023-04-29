@@ -48,6 +48,7 @@ func SendMsg(botUrl string, chatId int, msg string) error {
 		log.Printf("sendMessage error: %s", err)
 		return err
 	}
+
 	return nil
 }
 
@@ -95,6 +96,7 @@ func SendPict(botUrl string, chatId int, photoUrl, caption string) error {
 		log.Printf("sendPhoto error: %s", err)
 		return err
 	}
+
 	return nil
 }
 
@@ -115,6 +117,7 @@ func SendRandomShibaSticker(botUrl string, chatId int, sadFlag bool) {
 			"CAACAgIAAxkBAAIW1GGvezXS4RnzDeu0Lw_L2Sw4YA94AAKDAQACK15TCwzud-biO4E7IwQ",
 			"CAACAgIAAxkBAAIW1mGvezmO36icAAH_ayJKj0ybA-yDVgAChAEAAiteUwtgPKr0UyWrYyME",
 		}
+
 	} else {
 
 		// Запись стикеров в массив
@@ -125,6 +128,7 @@ func SendRandomShibaSticker(botUrl string, chatId int, sadFlag bool) {
 			"CAACAgIAAxkBAAITiGGOKl7peNxJRfBRLWvZDikLRMrxAAKMAQACK15TCzSpEXiTiKA5IgQ",
 			"CAACAgIAAxkBAAITimGOKmYIQWpBWdEvs-J-RS4RWJZwAAKBAQACK15TC14KbD5sAAF4tCIE",
 		}
+
 	}
 
 	// Отправка случайного стикера
@@ -142,11 +146,11 @@ func SendRandomSticker(botUrl string, chatId int) error {
 	defer file.Close()
 
 	// Запись стикеров в массив
+	stickers := [359]string{}
 	body, err := ioutil.ReadAll(file)
 	if err != nil {
 		log.Printf("ioutil.ReadAll error: %s", err)
 	}
-	stickers := [359]string{}
 	err = json.Unmarshal(body, &stickers)
 	if err != nil {
 		log.Printf("json.Unmarshal error: %s", err)
