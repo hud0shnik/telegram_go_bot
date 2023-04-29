@@ -14,32 +14,7 @@ import (
 	"github.com/spf13/viper"
 )
 
-// Структуры для работы с Telegram API
-
-type TelegramResponse struct {
-	Result []Update `json:"result"`
-}
-
-type Update struct {
-	UpdateId int     `json:"update_id"`
-	Message  Message `json:"message"`
-}
-
-type Message struct {
-	Chat    Chat    `json:"chat"`
-	Text    string  `json:"text"`
-	Sticker Sticker `json:"sticker"`
-}
-
-type Chat struct {
-	ChatId int `json:"id"`
-}
-
-type Sticker struct {
-	File_id string `json:"file_id"`
-}
-
-// Структуры для работы с другими API
+// Структуры для работы API
 
 type CryptoResponse struct {
 	Symbol        string `json:"symbol"`
