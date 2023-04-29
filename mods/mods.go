@@ -16,24 +16,24 @@ import (
 
 // Структуры для работы API
 
-type CryptoResponse struct {
+type cryptoResponse struct {
 	Symbol        string `json:"symbol"`
 	ChangePercent string `json:"priceChangePercent"`
 	LastPrice     string `json:"lastPrice"`
 }
 
-type IPApiResponse struct {
+type ipApiResponse struct {
 	Status      string `json:"status"`
 	CountryName string `json:"country"`
 	Region      string `json:"regionName"`
 	Zip         string `json:"zip"`
 }
 
-type DogResponse struct {
+type dogResponse struct {
 	DogUrl string `json:"message"`
 }
 
-type InfoResponse struct {
+type infoResponse struct {
 	Success       bool   `json:"success"`
 	Error         string `json:"error"`
 	Username      string `json:"username"`
@@ -47,7 +47,7 @@ type InfoResponse struct {
 	Avatar        string `json:"avatar"`
 }
 
-type CommitsResponse struct {
+type commitsResponse struct {
 	Success  bool   `json:"success"`
 	Error    string `json:"error"`
 	Date     string `json:"date"`
@@ -56,7 +56,7 @@ type CommitsResponse struct {
 	Color    int    `json:"color"`
 }
 
-type OsuUserInfo struct {
+type osuUserInfo struct {
 	Success        bool     `json:"success"`
 	Error          string   `json:"error"`
 	Username       string   `json:"username"`
@@ -121,7 +121,7 @@ func SendOsuInfo(botUrl string, chatId int, username string) {
 	// Запись респонса
 	defer resp.Body.Close()
 	body, _ := ioutil.ReadAll(resp.Body)
-	var user = new(OsuUserInfo)
+	var user = new(osuUserInfo)
 	json.Unmarshal(body, &user)
 
 	// Проверка респонса
@@ -241,7 +241,7 @@ func SendCommits(botUrl string, chatId int, username, date string) {
 	// Запись респонса
 	defer resp.Body.Close()
 	body, _ := ioutil.ReadAll(resp.Body)
-	var user = new(CommitsResponse)
+	var user = new(commitsResponse)
 	json.Unmarshal(body, &user)
 
 	// Проверка респонса
@@ -307,7 +307,7 @@ func SendGithubInfo(botUrl string, chatId int, username string) {
 	// Запись респонса
 	defer resp.Body.Close()
 	body, _ := ioutil.ReadAll(resp.Body)
-	var user = new(InfoResponse)
+	var user = new(infoResponse)
 	json.Unmarshal(body, &user)
 
 	// Проверка респонса
@@ -355,7 +355,7 @@ func SendCryptoInfo(botUrl string, chatId int) {
 	// Запись респонса
 	defer resp.Body.Close()
 	body, _ := ioutil.ReadAll(resp.Body)
-	var response = new(CryptoResponse)
+	var response = new(cryptoResponse)
 	json.Unmarshal(body, &response)
 
 	// Формирование и отправка результата
@@ -416,7 +416,7 @@ func SendIPInfo(botUrl string, chatId int, IP string) {
 	// Запись респонса
 	defer resp.Body.Close()
 	body, _ := ioutil.ReadAll(resp.Body)
-	var response = new(IPApiResponse)
+	var response = new(ipApiResponse)
 	json.Unmarshal(body, &response)
 
 	// Вывод сообщения для респонса без страны
