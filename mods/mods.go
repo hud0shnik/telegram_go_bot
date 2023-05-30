@@ -305,7 +305,7 @@ func SendGithubInfo(botUrl string, chatId int, username string) {
 	}
 
 	// Отправка запроса
-	resp, err := http.Get("https://githubstatsapi.vercel.app/api/v2/user?id=" + username)
+	resp, err := http.Get("https://githubstatsapi.vercel.app/api/v2/user?type=string&id=" + username)
 	if err != nil {
 		SendMsg(botUrl, chatId, "Внутренняя ошибка")
 		log.Printf("http.Get error: %s", err)
