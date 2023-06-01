@@ -34,8 +34,6 @@ type dogResponse struct {
 }
 
 type infoResponse struct {
-	Success       bool   `json:"success"`
-	Error         string `json:"error"`
 	Username      string `json:"username"`
 	Name          string `json:"name"`
 	Followers     string `json:"followers"`
@@ -57,8 +55,6 @@ type commitsResponse struct {
 }
 
 type osuUserInfo struct {
-	Success        bool     `json:"success"`
-	Error          string   `json:"error"`
 	Username       string   `json:"username"`
 	Names          []string `json:"previous_usernames"`
 	AvatarUrl      string   `json:"avatar_url"`

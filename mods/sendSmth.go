@@ -10,6 +10,7 @@ import (
 )
 
 // Структуры для отправки сообщений, стикеров и картинок
+
 type SendMessage struct {
 	ChatId    int    `json:"chat_id"`
 	Text      string `json:"text"`
