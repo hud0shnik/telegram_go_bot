@@ -23,10 +23,10 @@
 Сдавал на третьем курсе этот проект как курсовую, преподаватель оценил работу на "отлично".
 <h3 align="left">📷 Скриншот:</h3>
 
-<img src="https://github.com/hud0shnik/telegram_go_bot/blob/master/telegram.png"/>
+<img src="https://github.com/hud0shnik/telegram_go_bot/assets/42404892/f26e9392-4659-427f-9bbf-68befbb638ba"/>
 
 <h3 align="left">🔗 Ссылка на бота:</h3>
 <h1 align="center">
-   <a href="https://t.me/hud0shnik_bot" target="_blank"><img src="https://img.icons8.com/external-vitaliy-gorbachev-blue-vitaly-gorbachev/60/000000/external-robot-support-vitaliy-gorbachev-blue-vitaly-gorbachev.png" alt="telegram" width="60" height="60"/></a>
+   <a href="https://t.me/hud0shnik_bot" target="_blank"><img src="https://github.com/hud0shnik/telegram_go_bot/assets/42404892/dff5fa2c-8c8a-4b30-b831-259adc52f89f" alt="telegram" width="60" height="60"/></a>
 </h1>
 
