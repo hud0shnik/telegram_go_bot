@@ -12,18 +12,18 @@ import (
 
 // Структуры для отправки сообщений, стикеров и картинок
 
-type SendMessage struct {
+type sendMessage struct {
 	ChatId    int    `json:"chat_id"`
 	Text      string `json:"text"`
 	ParseMode string `json:"parse_mode"`
 }
 
-type SendSticker struct {
+type sendSticker struct {
 	ChatId     int    `json:"chat_id"`
 	StickerUrl string `json:"sticker"`
 }
 
-type SendPhoto struct {
+type sendPhoto struct {
 	ChatId    int    `json:"chat_id"`
 	PhotoUrl  string `json:"photo"`
 	Caption   string `json:"caption"`
@@ -34,7 +34,7 @@ type SendPhoto struct {
 func SendMsg(botUrl string, chatId int, msg string) error {
 
 	// Формирование сообщения
-	buf, err := json.Marshal(SendMessage{
+	buf, err := json.Marshal(sendMessage{
 		ChatId:    chatId,
 		Text:      msg,
 		ParseMode: "HTML",
@@ -58,7 +58,7 @@ func SendMsg(botUrl string, chatId int, msg string) error {
 func SendStck(botUrl string, chatId int, url string) error {
 
 	// Формирование стикера
-	buf, err := json.Marshal(SendSticker{
+	buf, err := json.Marshal(sendSticker{
 		ChatId:     chatId,
 		StickerUrl: url,
 	})
@@ -81,7 +81,7 @@ func SendStck(botUrl string, chatId int, url string) error {
 func SendPict(botUrl string, chatId int, photoUrl, caption string) error {
 
 	// Формирование картинки
-	buf, err := json.Marshal(SendPhoto{
+	buf, err := json.Marshal(sendPhoto{
 		ChatId:    chatId,
 		PhotoUrl:  photoUrl,
 		Caption:   caption,
@@ -160,5 +160,6 @@ func SendRandomSticker(botUrl string, chatId int) error {
 
 	// Отправка случайного стикера
 	SendStck(botUrl, chatId, stickers[utils.Random(len(stickers))])
+
 	return nil
 }
