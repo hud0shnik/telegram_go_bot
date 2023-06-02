@@ -8,6 +8,7 @@ import (
 	"strconv"
 	"strings"
 	"tgBot/internal/commands"
+	"tgBot/internal/config"
 	"tgBot/internal/send"
 
 	"github.com/spf13/viper"
@@ -41,7 +42,7 @@ type sticker struct {
 func main() {
 
 	// Инициализация конфига (токенов)
-	err := initConfig()
+	err := config.InitConfig()
 	if err != nil {
 		log.Fatalf("initConfig error: %s", err)
 		return
@@ -154,13 +155,4 @@ func respond(botUrl string, update update) {
 		}
 
 	}
-}
-
-// Функция инициализации конфига (всех токенов)
-func initConfig() error {
-	viper.AddConfigPath("configs")
-	viper.SetConfigName("config")
-
-	return viper.ReadInConfig()
-
 }
