@@ -1,43 +1,13 @@
 package main
 
 import (
-	"encoding/json"
-	"io/ioutil"
 	"log"
-	"net/http"
-	"strconv"
-	"strings"
-	"tgBot/internal/commands"
 	"tgBot/internal/config"
-	"tgBot/internal/send"
+	"tgBot/internal/respond"
+	"tgBot/internal/telegram"
 
 	"github.com/spf13/viper"
 )
-
-// Структуры для работы с Telegram API
-
-type telegramResponse struct {
-	Result []update `json:"result"`
-}
-
-type update struct {
-	UpdateId int     `json:"update_id"`
-	Message  message `json:"message"`
-}
-
-type message struct {
-	Chat    chat    `json:"chat"`
-	Text    string  `json:"text"`
-	Sticker sticker `json:"sticker"`
-}
-
-type chat struct {
-	ChatId int `json:"id"`
-}
-
-type sticker struct {
-	File_id string `json:"file_id"`
-}
 
 func main() {
 
@@ -56,7 +26,7 @@ func main() {
 	for {
 
 		// Получение апдейтов
-		updates, err := getUpdates(botUrl, offSet)
+		updates, err := telegram.GetUpdates(botUrl, offSet)
 		if err != nil {
 			log.Fatalf("getUpdates error: %s", err)
 		}
@@ -71,31 +41,6 @@ func main() {
 		// fmt.Println(updates)
 	}
 }
-
-// Функция получения апдейтов
-func getUpdates(botUrl string, offset int) ([]update, error) {
-
-	// Rest запрос для получения апдейтов
-	resp, err := http.Get(botUrl + "/getUpdates?offset=" + strconv.Itoa(offset))
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	// Запись и обработка полученных данных
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-	var restResponse telegramResponse
-	err = json.Unmarshal(body, &restResponse)
-	if err != nil {
-		return nil, err
-	}
-
-	return restResponse.Result, nil
-}
-
 // Функция генерации и отправки ответа
 func respond(botUrl string, update update) {
 
