@@ -7,7 +7,8 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
-	"tgBot/mods"
+	"tgBot/internal/commands"
+	"tgBot/internal/send"
 
 	"github.com/spf13/viper"
 )
@@ -107,37 +108,37 @@ func respond(botUrl string, update update) {
 
 		switch request[0] {
 		case "/osu":
-			mods.SendOsuInfo(botUrl, update.Message.Chat.ChatId, request[1])
+			commands.SendOsuInfo(botUrl, update.Message.Chat.ChatId, request[1])
 		case "/commits":
-			mods.SendCommits(botUrl, update.Message.Chat.ChatId, request[1], request[2])
+			commands.SendCommits(botUrl, update.Message.Chat.ChatId, request[1], request[2])
 		case "/github":
-			mods.SendGithubInfo(botUrl, update.Message.Chat.ChatId, request[1])
+			commands.SendGithubInfo(botUrl, update.Message.Chat.ChatId, request[1])
 		case "/crypto":
-			mods.SendCryptoInfo(botUrl, update.Message.Chat.ChatId)
+			commands.SendCryptoInfo(botUrl, update.Message.Chat.ChatId)
 		case "/ip":
-			mods.SendIPInfo(botUrl, update.Message.Chat.ChatId, request[1])
+			commands.SendIPInfo(botUrl, update.Message.Chat.ChatId, request[1])
 		case "/coin":
-			mods.FlipCoin(botUrl, update.Message.Chat.ChatId)
+			commands.FlipCoin(botUrl, update.Message.Chat.ChatId)
 		case "/start", "/help":
-			mods.Help(botUrl, update.Message.Chat.ChatId)
+			commands.Help(botUrl, update.Message.Chat.ChatId)
 		case "/d":
-			mods.RollDice(botUrl, update.Message.Chat.ChatId, request[1])
+			commands.RollDice(botUrl, update.Message.Chat.ChatId, request[1])
 		case "OwO":
-			mods.SendMsg(botUrl, update.Message.Chat.ChatId, "UwU")
+			send.SendMsg(botUrl, update.Message.Chat.ChatId, "UwU")
 		case "Молодец", "молодец":
-			mods.SendMsg(botUrl, update.Message.Chat.ChatId, "Стараюсь UwU")
+			send.SendMsg(botUrl, update.Message.Chat.ChatId, "Стараюсь UwU")
 		case "Живой?", "живой?":
-			mods.SendMsg(botUrl, update.Message.Chat.ChatId, "Живой")
-			mods.SendStck(botUrl, update.Message.Chat.ChatId, "CAACAgIAAxkBAAIdGWKu5rpWxb4gn4dmYi_rRJ9OHM9xAAJ-FgACsS8ISQjT6d1ChY7VJAQ")
+			send.SendMsg(botUrl, update.Message.Chat.ChatId, "Живой")
+			send.SendStck(botUrl, update.Message.Chat.ChatId, "CAACAgIAAxkBAAIdGWKu5rpWxb4gn4dmYi_rRJ9OHM9xAAJ-FgACsS8ISQjT6d1ChY7VJAQ")
 		case "/check":
-			mods.Check(botUrl, update.Message.Chat.ChatId)
+			commands.Check(botUrl, update.Message.Chat.ChatId)
 		default:
 			// Обработчик вопросов
 			if update.Message.Text[len(update.Message.Text)-1] == '?' {
-				mods.Ball8(botUrl, update.Message.Chat.ChatId)
+				commands.Ball8(botUrl, update.Message.Chat.ChatId)
 			} else {
 				// Дефолтный ответ
-				mods.SendMsg(botUrl, update.Message.Chat.ChatId, "OwO")
+				send.SendMsg(botUrl, update.Message.Chat.ChatId, "OwO")
 			}
 		}
 
@@ -145,11 +146,11 @@ func respond(botUrl string, update update) {
 
 		// Проверка на стикер
 		if update.Message.Sticker.File_id != "" {
-			mods.SendRandomSticker(botUrl, update.Message.Chat.ChatId)
+			send.SendRandomSticker(botUrl, update.Message.Chat.ChatId)
 		} else {
 			// Если пользователь отправил не сообщение и не стикер:
-			mods.SendMsg(botUrl, update.Message.Chat.ChatId, "Пока я воспринимаю только текст и стикеры")
-			mods.SendStck(botUrl, update.Message.Chat.ChatId, "CAACAgIAAxkBAAIaImHkPqF8-PQVOwh_Kv1qQxIFpPyfAAJXAAOtZbwUZ0fPMqXZ_GcjBA")
+			send.SendMsg(botUrl, update.Message.Chat.ChatId, "Пока я воспринимаю только текст и стикеры")
+			send.SendStck(botUrl, update.Message.Chat.ChatId, "CAACAgIAAxkBAAIaImHkPqF8-PQVOwh_Kv1qQxIFpPyfAAJXAAOtZbwUZ0fPMqXZ_GcjBA")
 		}
 
 	}
