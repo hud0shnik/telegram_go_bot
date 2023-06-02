@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 	"tgBot/internal/config"
-	"tgBot/internal/respond"
+	"tgBot/internal/handler"
 	"tgBot/internal/telegram"
 
 	"github.com/spf13/viper"
@@ -33,7 +33,7 @@ func main() {
 
 		// Обработка апдейтов
 		for _, update := range updates {
-			respond.SendRespond(botUrl, update)
+			handler.SendRespond(botUrl, update)
 			offSet = update.UpdateId + 1
 		}
 
