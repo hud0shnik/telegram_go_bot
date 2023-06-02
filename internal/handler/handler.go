@@ -2,12 +2,13 @@ package handler
 
 import (
 	"strings"
-	"tgBot/internal/commands"
-	"tgBot/internal/send"
-	"tgBot/internal/telegram"
+
+	"github.com/hud0shnik/telegram_go_bot/internal/commands"
+	"github.com/hud0shnik/telegram_go_bot/internal/send"
+	"github.com/hud0shnik/telegram_go_bot/internal/telegram"
 )
 
-// Функция генерации и отправки ответа
+// Функция отправки ответа
 func SendRespond(botUrl string, update telegram.Update) {
 
 	// Обработчик команд

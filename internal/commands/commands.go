@@ -2,8 +2,9 @@ package commands
 
 import (
 	"strconv"
-	"tgBot/internal/send"
-	"tgBot/internal/utils"
+
+	"github.com/hud0shnik/telegram_go_bot/internal/send"
+	"github.com/hud0shnik/telegram_go_bot/internal/utils"
 
 	"github.com/spf13/viper"
 )

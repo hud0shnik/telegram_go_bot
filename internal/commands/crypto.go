@@ -5,7 +5,8 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"tgBot/internal/send"
+
+	"github.com/hud0shnik/telegram_go_bot/internal/send"
 )
 
 type cryptoResponse struct {

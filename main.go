@@ -2,9 +2,10 @@ package main
 
 import (
 	"log"
-	"tgBot/internal/config"
-	"tgBot/internal/handler"
-	"tgBot/internal/telegram"
+
+	"github.com/hud0shnik/telegram_go_bot/internal/config"
+	"github.com/hud0shnik/telegram_go_bot/internal/handler"
+	"github.com/hud0shnik/telegram_go_bot/internal/telegram"
 
 	"github.com/spf13/viper"
 )

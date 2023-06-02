@@ -1,4 +1,4 @@
-module tgBot
+module github.com/hud0shnik/telegram_go_bot
 
 go 1.20
 

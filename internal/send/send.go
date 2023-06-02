@@ -7,22 +7,24 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"tgBot/internal/utils"
+
+	"github.com/hud0shnik/telegram_go_bot/internal/utils"
 )
 
-// Структуры для отправки сообщений, стикеров и картинок
-
+// Структура для отправки сообщения
 type sendMessage struct {
 	ChatId    int    `json:"chat_id"`
 	Text      string `json:"text"`
 	ParseMode string `json:"parse_mode"`
 }
 
+// Структура для отправки стикера
 type sendSticker struct {
 	ChatId     int    `json:"chat_id"`
 	StickerUrl string `json:"sticker"`
 }
 
+// Структура для отправки картинки
 type sendPhoto struct {
 	ChatId    int    `json:"chat_id"`
 	PhotoUrl  string `json:"photo"`
@@ -102,7 +104,7 @@ func SendPict(botUrl string, chatId int, photoUrl, caption string) error {
 	return nil
 }
 
-// Функция отправки случайного стикера с собакой
+// Функция отправки случайного стикера с собачкой
 func SendRandomShibaSticker(botUrl string, chatId int, sadFlag bool) {
 
 	// Массив стикеров
@@ -137,7 +139,7 @@ func SendRandomShibaSticker(botUrl string, chatId int, sadFlag bool) {
 	SendStck(botUrl, chatId, stickers[utils.Random(len(stickers))])
 }
 
-// Отправка случайного стикера
+// Функция отправки случайного стикера
 func SendRandomSticker(botUrl string, chatId int) error {
 
 	// Открытие json файла со стикерами

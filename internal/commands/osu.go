@@ -5,9 +5,11 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"tgBot/internal/send"
+
+	"github.com/hud0shnik/telegram_go_bot/internal/send"
 )
 
+// Структура респонса osustatsapi
 type osuUserInfo struct {
 	Username       string   `json:"username"`
 	Names          []string `json:"previous_usernames"`
@@ -70,7 +72,7 @@ func SendOsuInfo(botUrl string, chatId int, username string) {
 	// Проверка респонса
 	switch resp.StatusCode {
 	case 200:
-		// При хорошем статусе респонса, продолжение выполнения кода
+		// Продолжение выполнения кода
 	case 404:
 		send.SendMsg(botUrl, chatId, "Пользователь не найден")
 		return

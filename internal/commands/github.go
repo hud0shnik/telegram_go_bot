@@ -6,9 +6,11 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"tgBot/internal/send"
+
+	"github.com/hud0shnik/telegram_go_bot/internal/send"
 )
 
+// Структура статистики пользователя
 type infoResponse struct {
 	Username      string `json:"username"`
 	Name          string `json:"name"`
@@ -21,13 +23,70 @@ type infoResponse struct {
 	Avatar        string `json:"avatar"`
 }
 
+// Структура количества коммитов
 type commitsResponse struct {
-	Success  bool   `json:"success"`
-	Error    string `json:"error"`
 	Date     string `json:"date"`
 	Username string `json:"username"`
 	Commits  int    `json:"commits"`
 	Color    int    `json:"color"`
+}
+
+// Функция вывода информации о пользователе GitHub
+func SendGithubInfo(botUrl string, chatId int, username string) {
+
+	// Проверка параметра
+	if username == "" {
+		send.SendMsg(botUrl, chatId, "Синтаксис команды:\n\n/github <b>[id]</b>\n\nПример:\n/github <b>hud0shnik</b>")
+		return
+	}
+
+	// Отправка запроса
+	resp, err := http.Get("https://githubstatsapi.vercel.app/api/v2/user?type=string&id=" + username)
+	if err != nil {
+		send.SendMsg(botUrl, chatId, "Внутренняя ошибка")
+		log.Printf("http.Get error: %s", err)
+		return
+	}
+	defer resp.Body.Close()
+
+	// Проверка респонса
+	switch resp.StatusCode {
+	case 200:
+		// Продолжение выполнения кода
+	case 404:
+		send.SendMsg(botUrl, chatId, "Пользователь не найден")
+		return
+	case 400:
+		send.SendMsg(botUrl, chatId, "Плохой реквест")
+		return
+	default:
+		send.SendMsg(botUrl, chatId, "Внутренняя ошибка")
+		return
+	}
+
+	// Запись респонса
+	body, _ := ioutil.ReadAll(resp.Body)
+	var user = new(infoResponse)
+	err = json.Unmarshal(body, &user)
+	if err != nil {
+		log.Printf("in SendGithubInfo: json.Unmarshal err: %v", err)
+		send.SendMsg(botUrl, chatId, "Внутренняя ошибка")
+		send.SendStck(botUrl, chatId, "CAACAgIAAxkBAAIY4mG13Vr0CzGwyXA1eL3esZVCWYFhAAJIAAOtZbwUgHOKzxQtAAHcIwQ")
+		return
+	}
+
+	// Отправка данных пользователю
+	send.SendPict(botUrl, chatId, user.Avatar,
+		"Информация о "+user.Username+":\n"+
+			"Имя "+user.Name+"\n"+
+			"Поставленных звезд "+user.Stars+" ⭐\n"+
+			"Подписчиков "+user.Followers+" 🤩\n"+
+			"Подписок "+user.Following+" 🕵️\n"+
+			"Репозиториев "+user.Repositories+" 📘\n"+
+			"Пакетов "+user.Packages+" 📦\n"+
+			"Контрибуций за год "+user.Contributions+" 🟩\n"+
+			"Ссылка на аватар:\n "+user.Avatar)
+
 }
 
 // Функция вывода количества коммитов пользователя GitHub
@@ -53,7 +112,7 @@ func SendCommits(botUrl string, chatId int, username, date string) {
 	// Проверка респонса
 	switch resp.StatusCode {
 	case 200:
-		// При хорошем статусе респонса, продолжение выполнения кода
+		// Продолжение выполнения кода
 	case 404:
 		send.SendMsg(botUrl, chatId, "Пользователь не найден")
 		return
@@ -99,63 +158,5 @@ func SendCommits(botUrl string, chatId int, username, date string) {
 		send.SendMsg(botUrl, chatId, "Коммитов нет...")
 		send.SendStck(botUrl, chatId, "CAACAgIAAxkBAAIYG2GzRVNm_d_mVDIOaiLXkGukArlTAAJDAAOtZbwU_-iXZG7hfLsjBA")
 	}
-
-}
-
-// Функция вывода информации о пользователе GitHub
-func SendGithubInfo(botUrl string, chatId int, username string) {
-
-	// Проверка параметра
-	if username == "" {
-		send.SendMsg(botUrl, chatId, "Синтаксис команды:\n\n/github <b>[id]</b>\n\nПример:\n/github <b>hud0shnik</b>")
-		return
-	}
-
-	// Отправка запроса
-	resp, err := http.Get("https://githubstatsapi.vercel.app/api/v2/user?type=string&id=" + username)
-	if err != nil {
-		send.SendMsg(botUrl, chatId, "Внутренняя ошибка")
-		log.Printf("http.Get error: %s", err)
-		return
-	}
-	defer resp.Body.Close()
-
-	// Проверка респонса
-	switch resp.StatusCode {
-	case 200:
-		// При хорошем статусе респонса, продолжение выполнения кода
-	case 404:
-		send.SendMsg(botUrl, chatId, "Пользователь не найден")
-		return
-	case 400:
-		send.SendMsg(botUrl, chatId, "Плохой реквест")
-		return
-	default:
-		send.SendMsg(botUrl, chatId, "Внутренняя ошибка")
-		return
-	}
-
-	// Запись респонса
-	body, _ := ioutil.ReadAll(resp.Body)
-	var user = new(infoResponse)
-	err = json.Unmarshal(body, &user)
-	if err != nil {
-		log.Printf("in SendGithubInfo: json.Unmarshal err: %v", err)
-		send.SendMsg(botUrl, chatId, "Внутренняя ошибка")
-		send.SendStck(botUrl, chatId, "CAACAgIAAxkBAAIY4mG13Vr0CzGwyXA1eL3esZVCWYFhAAJIAAOtZbwUgHOKzxQtAAHcIwQ")
-		return
-	}
-
-	// Отправка данных пользователю
-	send.SendPict(botUrl, chatId, user.Avatar,
-		"Информация о "+user.Username+":\n"+
-			"Имя "+user.Name+"\n"+
-			"Поставленных звезд "+user.Stars+" ⭐\n"+
-			"Подписчиков "+user.Followers+" 🤩\n"+
-			"Подписок "+user.Following+" 🕵️\n"+
-			"Репозиториев "+user.Repositories+" 📘\n"+
-			"Пакетов "+user.Packages+" 📦\n"+
-			"Контрибуций за год "+user.Contributions+" 🟩\n"+
-			"Ссылка на аватар:\n "+user.Avatar)
 
 }

@@ -8,9 +8,11 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
-	"tgBot/internal/send"
+
+	"github.com/hud0shnik/telegram_go_bot/internal/send"
 )
 
+// Структура респонса ip-api
 type ipApiResponse struct {
 	Status      string `json:"status"`
 	CountryName string `json:"country"`
