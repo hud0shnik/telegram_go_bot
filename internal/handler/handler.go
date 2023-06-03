@@ -11,6 +11,9 @@ import (
 // Функция отправки ответа
 func SendRespond(botUrl string, update telegram.Update) {
 
+	// Запись айди чата
+	chatId := update.Message.Chat.ChatId
+
 	// Обработчик команд
 	if update.Message.Text != "" {
 
@@ -21,37 +24,37 @@ func SendRespond(botUrl string, update telegram.Update) {
 
 		switch request[0] {
 		case "/osu":
-			commands.SendOsuInfo(botUrl, update.Message.Chat.ChatId, request[1])
+			commands.SendOsuInfo(botUrl, chatId, request[1])
 		case "/commits":
-			commands.SendCommits(botUrl, update.Message.Chat.ChatId, request[1], request[2])
+			commands.SendCommits(botUrl, chatId, request[1], request[2])
 		case "/github":
-			commands.SendGithubInfo(botUrl, update.Message.Chat.ChatId, request[1])
+			commands.SendGithubInfo(botUrl, chatId, request[1])
 		case "/crypto":
-			commands.SendCryptoInfo(botUrl, update.Message.Chat.ChatId)
+			commands.SendCryptoInfo(botUrl, chatId)
 		case "/ip":
-			commands.SendIPInfo(botUrl, update.Message.Chat.ChatId, request[1])
+			commands.SendIPInfo(botUrl, chatId, request[1])
 		case "/coin":
-			commands.FlipCoin(botUrl, update.Message.Chat.ChatId)
+			commands.FlipCoin(botUrl, chatId)
 		case "/start", "/help":
-			commands.Help(botUrl, update.Message.Chat.ChatId)
+			commands.Help(botUrl, chatId)
 		case "/d":
-			commands.RollDice(botUrl, update.Message.Chat.ChatId, request[1])
+			commands.RollDice(botUrl, chatId, request[1])
 		case "OwO":
-			send.SendMsg(botUrl, update.Message.Chat.ChatId, "UwU")
+			send.SendMsg(botUrl, chatId, "UwU")
 		case "Молодец", "молодец":
-			send.SendMsg(botUrl, update.Message.Chat.ChatId, "Стараюсь UwU")
+			send.SendMsg(botUrl, chatId, "Стараюсь UwU")
 		case "Живой?", "живой?":
-			send.SendMsg(botUrl, update.Message.Chat.ChatId, "Живой")
-			send.SendStck(botUrl, update.Message.Chat.ChatId, "CAACAgIAAxkBAAIdGWKu5rpWxb4gn4dmYi_rRJ9OHM9xAAJ-FgACsS8ISQjT6d1ChY7VJAQ")
+			send.SendMsg(botUrl, chatId, "Живой")
+			send.SendStck(botUrl, chatId, "CAACAgIAAxkBAAIdGWKu5rpWxb4gn4dmYi_rRJ9OHM9xAAJ-FgACsS8ISQjT6d1ChY7VJAQ")
 		case "/check":
-			commands.Check(botUrl, update.Message.Chat.ChatId)
+			commands.Check(botUrl, chatId)
 		default:
 			// Обработчик вопросов
 			if update.Message.Text[len(update.Message.Text)-1] == '?' {
-				commands.Ball8(botUrl, update.Message.Chat.ChatId)
+				commands.Ball8(botUrl, chatId)
 			} else {
 				// Дефолтный ответ
-				send.SendMsg(botUrl, update.Message.Chat.ChatId, "OwO")
+				send.SendMsg(botUrl, chatId, "OwO")
 			}
 		}
 
@@ -59,11 +62,11 @@ func SendRespond(botUrl string, update telegram.Update) {
 
 		// Проверка на стикер
 		if update.Message.Sticker.File_id != "" {
-			send.SendRandomSticker(botUrl, update.Message.Chat.ChatId)
+			send.SendRandomSticker(botUrl, chatId)
 		} else {
 			// Если пользователь отправил не сообщение и не стикер:
-			send.SendMsg(botUrl, update.Message.Chat.ChatId, "Пока я воспринимаю только текст и стикеры")
-			send.SendStck(botUrl, update.Message.Chat.ChatId, "CAACAgIAAxkBAAIaImHkPqF8-PQVOwh_Kv1qQxIFpPyfAAJXAAOtZbwUZ0fPMqXZ_GcjBA")
+			send.SendMsg(botUrl, chatId, "Пока я воспринимаю только текст и стикеры")
+			send.SendStck(botUrl, chatId, "CAACAgIAAxkBAAIaImHkPqF8-PQVOwh_Kv1qQxIFpPyfAAJXAAOtZbwUZ0fPMqXZ_GcjBA")
 		}
 
 	}
