@@ -20,7 +20,7 @@ type ipApiResponse struct {
 	Zip         string `json:"zip"`
 }
 
-// Функция нахождения местоположения по IP адресу
+// Функция поиска местоположения по IP
 func SendIPInfo(botUrl string, chatId int, IP string) {
 
 	// Проверка на пустой IP

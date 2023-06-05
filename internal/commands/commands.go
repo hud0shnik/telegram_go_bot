@@ -90,9 +90,9 @@ func Check(botUrl string, chatId int) {
 	if chatId == viper.GetInt("AdminChatId") {
 
 		// Вызов функций для тестирования
-		SendOsuInfo(botUrl, chatId, "")
-		SendCommits(botUrl, chatId, "", "")
-		SendGithubInfo(botUrl, chatId, "")
+		SendOsuInfo(botUrl, chatId, "hud0shnik")
+		SendCommits(botUrl, chatId, "hud0shnik", "")
+		SendGithubInfo(botUrl, chatId, "hud0shnik")
 		SendCryptoInfo(botUrl, chatId)
 		SendIPInfo(botUrl, chatId, "67.77.77.7")
 		send.SendRandomSticker(botUrl, chatId)
