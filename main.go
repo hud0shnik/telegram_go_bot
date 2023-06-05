@@ -2,12 +2,12 @@ package main
 
 import (
 	"log"
+	"os"
 
 	"github.com/hud0shnik/telegram_go_bot/internal/config"
 	"github.com/hud0shnik/telegram_go_bot/internal/handler"
 	"github.com/hud0shnik/telegram_go_bot/internal/telegram"
-
-	"github.com/spf13/viper"
+	"github.com/joho/godotenv"
 )
 
 func main() {
@@ -19,8 +19,11 @@ func main() {
 		return
 	}
 
+	// Загрузка переменных окружения
+	godotenv.Load()
+
 	// Url бота для отправки и приёма сообщений
-	botUrl := "https://api.telegram.org/bot" + viper.GetString("token")
+	botUrl := "https://api.telegram.org/bot" + os.Getenv("TOKEN")
 	offSet := 0
 
 	// Цикл работы бота

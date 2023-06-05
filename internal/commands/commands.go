@@ -87,7 +87,7 @@ func Ball8(botUrl string, chatId int) {
 func Check(botUrl string, chatId int) {
 
 	// Проверка на мой id
-	if chatId == viper.GetInt("DanyaChatId") {
+	if chatId == viper.GetInt("AdminChatId") {
 
 		// Вызов функций для тестирования
 		SendOsuInfo(botUrl, chatId, "")
