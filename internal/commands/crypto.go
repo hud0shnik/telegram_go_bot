@@ -3,10 +3,10 @@ package commands
 import (
 	"encoding/json"
 	"io/ioutil"
-	"log"
 	"net/http"
 
 	"github.com/hud0shnik/telegram_go_bot/internal/send"
+	"github.com/sirupsen/logrus"
 )
 
 type cryptoResponse struct {
@@ -22,7 +22,7 @@ func SendCryptoInfo(botUrl string, chatId int) {
 	resp, err := http.Get("https://api2.binance.com/api/v3/ticker/24hr?symbol=SHIBBUSD")
 	if err != nil {
 		send.SendMsg(botUrl, chatId, "Внутренняя ошибка")
-		log.Printf("http.Get error: %s", err)
+		logrus.Printf("http.Get error: %s", err)
 		return
 	}
 	defer resp.Body.Close()
@@ -32,7 +32,7 @@ func SendCryptoInfo(botUrl string, chatId int) {
 	var response = new(cryptoResponse)
 	err = json.Unmarshal(body, &response)
 	if err != nil {
-		log.Printf("in SendCryptoInfo: json.Unmarshal err: %v", err)
+		logrus.Printf("in SendCryptoInfo: json.Unmarshal err: %v", err)
 		send.SendMsg(botUrl, chatId, "Внутренняя ошибка")
 		send.SendStck(botUrl, chatId, "CAACAgIAAxkBAAIY4mG13Vr0CzGwyXA1eL3esZVCWYFhAAJIAAOtZbwUgHOKzxQtAAHcIwQ")
 		return

@@ -4,11 +4,11 @@ import (
 	"bytes"
 	"encoding/json"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"os"
 
 	"github.com/hud0shnik/telegram_go_bot/internal/utils"
+	"github.com/sirupsen/logrus"
 )
 
 // Структура для отправки сообщения
@@ -42,14 +42,14 @@ func SendMsg(botUrl string, chatId int, msg string) error {
 		ParseMode: "HTML",
 	})
 	if err != nil {
-		log.Printf("json.Marshal error: %s", err)
+		logrus.Printf("json.Marshal error: %s", err)
 		return err
 	}
 
 	// Отправка сообщения
 	_, err = http.Post(botUrl+"/sendMessage", "application/json", bytes.NewBuffer(buf))
 	if err != nil {
-		log.Printf("sendMessage error: %s", err)
+		logrus.Printf("sendMessage error: %s", err)
 		return err
 	}
 
@@ -65,14 +65,14 @@ func SendStck(botUrl string, chatId int, url string) error {
 		StickerUrl: url,
 	})
 	if err != nil {
-		log.Printf("json.Marshal error: %s", err)
+		logrus.Printf("json.Marshal error: %s", err)
 		return err
 	}
 
 	// Отправка стикера
 	_, err = http.Post(botUrl+"/sendSticker", "application/json", bytes.NewBuffer(buf))
 	if err != nil {
-		log.Printf("sendSticker error: %s", err)
+		logrus.Printf("sendSticker error: %s", err)
 		return err
 	}
 
@@ -90,14 +90,14 @@ func SendPict(botUrl string, chatId int, photoUrl, caption string) error {
 		ParseMode: "HTML",
 	})
 	if err != nil {
-		log.Printf("json.Marshal error: %s", err)
+		logrus.Printf("json.Marshal error: %s", err)
 		return err
 	}
 
 	// Отправка картинки
 	_, err = http.Post(botUrl+"/sendPhoto", "application/json", bytes.NewBuffer(buf))
 	if err != nil {
-		log.Printf("sendPhoto error: %s", err)
+		logrus.Printf("sendPhoto error: %s", err)
 		return err
 	}
 
@@ -145,7 +145,7 @@ func SendRandomSticker(botUrl string, chatId int) error {
 	// Открытие json файла со стикерами
 	file, err := os.Open("internal/send/stickers.json")
 	if err != nil {
-		log.Fatalf("os.Open error: %s", err)
+		logrus.Fatalf("os.Open error: %s", err)
 	}
 	defer file.Close()
 
@@ -153,11 +153,11 @@ func SendRandomSticker(botUrl string, chatId int) error {
 	stickers := [359]string{}
 	body, err := ioutil.ReadAll(file)
 	if err != nil {
-		log.Printf("ioutil.ReadAll error: %s", err)
+		logrus.Printf("ioutil.ReadAll error: %s", err)
 	}
 	err = json.Unmarshal(body, &stickers)
 	if err != nil {
-		log.Printf("json.Unmarshal error: %s", err)
+		logrus.Printf("json.Unmarshal error: %s", err)
 	}
 
 	// Отправка случайного стикера

@@ -4,10 +4,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 
 	"github.com/hud0shnik/telegram_go_bot/internal/send"
+	"github.com/sirupsen/logrus"
 )
 
 // Структура статистики пользователя
@@ -44,7 +44,7 @@ func SendGithubInfo(botUrl string, chatId int, username string) {
 	resp, err := http.Get("https://githubstatsapi.vercel.app/api/v2/user?type=string&id=" + username)
 	if err != nil {
 		send.SendMsg(botUrl, chatId, "Внутренняя ошибка")
-		log.Printf("http.Get error: %s", err)
+		logrus.Printf("http.Get error: %s", err)
 		return
 	}
 	defer resp.Body.Close()
@@ -69,7 +69,7 @@ func SendGithubInfo(botUrl string, chatId int, username string) {
 	var user = new(infoResponse)
 	err = json.Unmarshal(body, &user)
 	if err != nil {
-		log.Printf("in SendGithubInfo: json.Unmarshal err: %v", err)
+		logrus.Printf("in SendGithubInfo: json.Unmarshal err: %v", err)
 		send.SendMsg(botUrl, chatId, "Внутренняя ошибка")
 		send.SendStck(botUrl, chatId, "CAACAgIAAxkBAAIY4mG13Vr0CzGwyXA1eL3esZVCWYFhAAJIAAOtZbwUgHOKzxQtAAHcIwQ")
 		return
@@ -104,7 +104,7 @@ func SendCommits(botUrl string, chatId int, username, date string) {
 	// Проверка на ошибку
 	if err != nil {
 		send.SendMsg(botUrl, chatId, "Внутренняя ошибка")
-		log.Printf("http.Get error: %s", err)
+		logrus.Printf("http.Get error: %s", err)
 		return
 	}
 	defer resp.Body.Close()
@@ -129,7 +129,7 @@ func SendCommits(botUrl string, chatId int, username, date string) {
 	var user = new(commitsResponse)
 	err = json.Unmarshal(body, &user)
 	if err != nil {
-		log.Printf("in SendCommits: json.Unmarshal err: %v", err)
+		logrus.Printf("in SendCommits: json.Unmarshal err: %v", err)
 		send.SendMsg(botUrl, chatId, "Внутренняя ошибка")
 		send.SendStck(botUrl, chatId, "CAACAgIAAxkBAAIY4mG13Vr0CzGwyXA1eL3esZVCWYFhAAJIAAOtZbwUgHOKzxQtAAHcIwQ")
 		return

@@ -3,10 +3,10 @@ package commands
 import (
 	"encoding/json"
 	"io/ioutil"
-	"log"
 	"net/http"
 
 	"github.com/hud0shnik/telegram_go_bot/internal/send"
+	"github.com/sirupsen/logrus"
 )
 
 // Структура респонса osustatsapi
@@ -64,7 +64,7 @@ func SendOsuInfo(botUrl string, chatId int, username string) {
 	resp, err := http.Get("https://osustatsapi.vercel.app/api/v2/user?type=string&id=" + username)
 	if err != nil {
 		send.SendMsg(botUrl, chatId, "Внутренняя ошибка")
-		log.Printf("http.Get error: %s", err)
+		logrus.Printf("http.Get error: %s", err)
 		return
 	}
 	defer resp.Body.Close()
@@ -89,7 +89,7 @@ func SendOsuInfo(botUrl string, chatId int, username string) {
 	var user = new(osuUserInfo)
 	err = json.Unmarshal(body, &user)
 	if err != nil {
-		log.Printf("json.Unmarshal err: %v", err)
+		logrus.Printf("json.Unmarshal err: %v", err)
 		send.SendMsg(botUrl, chatId, "Внутренняя ошибка")
 		send.SendStck(botUrl, chatId, "CAACAgIAAxkBAAIY4mG13Vr0CzGwyXA1eL3esZVCWYFhAAJIAAOtZbwUgHOKzxQtAAHcIwQ")
 		return

@@ -1,21 +1,27 @@
 package main
 
 import (
-	"log"
 	"os"
+	"time"
 
 	"github.com/hud0shnik/telegram_go_bot/internal/config"
 	"github.com/hud0shnik/telegram_go_bot/internal/handler"
 	"github.com/hud0shnik/telegram_go_bot/internal/telegram"
 	"github.com/joho/godotenv"
+	"github.com/sirupsen/logrus"
 )
 
 func main() {
 
+	// Настройка логгера
+	logrus.SetFormatter(&logrus.JSONFormatter{
+		TimestampFormat: time.DateTime,
+	})
+
 	// Инициализация конфига (токенов)
 	err := config.InitConfig()
 	if err != nil {
-		log.Fatalf("initConfig error: %s", err)
+		logrus.Fatalf("initConfig error: %s", err)
 		return
 	}
 
@@ -32,7 +38,7 @@ func main() {
 		// Получение апдейтов
 		updates, err := telegram.GetUpdates(botUrl, offSet)
 		if err != nil {
-			log.Fatalf("getUpdates error: %s", err)
+			logrus.Fatalf("getUpdates error: %s", err)
 		}
 
 		// Обработка апдейтов

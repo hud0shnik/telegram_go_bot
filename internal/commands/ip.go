@@ -4,12 +4,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"strconv"
 	"strings"
 
 	"github.com/hud0shnik/telegram_go_bot/internal/send"
+	"github.com/sirupsen/logrus"
 )
 
 // Структура респонса ip-api
@@ -56,7 +56,7 @@ func SendIPInfo(botUrl string, chatId int, IP string) {
 	resp, err := http.Get("http://ip-api.com/json/" + IP)
 	if err != nil {
 		send.SendMsg(botUrl, chatId, "Внутренняя ошибка")
-		log.Printf("http.Get error: %s", err)
+		logrus.Printf("http.Get error: %s", err)
 		return
 	}
 	defer resp.Body.Close()
@@ -66,7 +66,7 @@ func SendIPInfo(botUrl string, chatId int, IP string) {
 	var response = new(ipApiResponse)
 	err = json.Unmarshal(body, &response)
 	if err != nil {
-		log.Printf("in SendIPInfo: json.Unmarshal err: %v", err)
+		logrus.Printf("in SendIPInfo: json.Unmarshal err: %v", err)
 		send.SendMsg(botUrl, chatId, "Внутренняя ошибка")
 		send.SendStck(botUrl, chatId, "CAACAgIAAxkBAAIY4mG13Vr0CzGwyXA1eL3esZVCWYFhAAJIAAOtZbwUgHOKzxQtAAHcIwQ")
 		return
