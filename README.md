@@ -15,6 +15,8 @@
 <!-- Ubuntu -->
 <a href="https://ubuntu.com/" >
 <img src="https://raw.githubusercontent.com/github/explore/80688e429a7d4ef2fca1e82350fe8e3517d3494d/topics/ubuntu/ubuntu.png" alt="Ubuntu" width="40" height="40"/></a>
+<!-- Docker -->
+   <a href="https://github.com/hud0shnik/golang-to-do" >
 
 <h3 align="left">📄 О самом проекте:</h3>
 
