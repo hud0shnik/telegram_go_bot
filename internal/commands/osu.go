@@ -61,7 +61,7 @@ func SendOsuInfo(botUrl string, chatId int, username string) {
 	}
 
 	// Отправка запроса OsuStatsApi
-	resp, err := http.Get("https://osustatsapi.vercel.app/api/v2/user?type=string&id=" + username)
+	resp, err := http.Get("https://osustatsapi.vercel.app/api/user?type=string&id=" + username)
 	if err != nil {
 		send.SendMsg(botUrl, chatId, "Внутренняя ошибка")
 		logrus.Printf("http.Get error: %s", err)

@@ -9,7 +9,7 @@ import (
 )
 
 // Функция отправки ответа
-func SendRespond(botUrl string, update telegram.Update) {
+func Respond(botUrl string, update telegram.Update) {
 
 	// Запись айди чата
 	chatId := update.Message.Chat.ChatId

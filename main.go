@@ -43,7 +43,7 @@ func main() {
 
 		// Обработка апдейтов
 		for _, update := range updates {
-			handler.SendRespond(botUrl, update)
+			handler.Respond(botUrl, update)
 			offSet = update.UpdateId + 1
 		}
 
