@@ -1,9 +1,9 @@
-package send
+package telegram
 
 import (
 	"bytes"
 	"encoding/json"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"os"
 
@@ -143,7 +143,7 @@ func SendRandomShibaSticker(botUrl string, chatId int, sadFlag bool) {
 func SendRandomSticker(botUrl string, chatId int) error {
 
 	// Открытие json файла со стикерами
-	file, err := os.Open("internal/send/stickers.json")
+	file, err := os.Open("internal/telegram/stickers.json")
 	if err != nil {
 		logrus.Fatalf("os.Open error: %s", err)
 	}
@@ -151,9 +151,9 @@ func SendRandomSticker(botUrl string, chatId int) error {
 
 	// Запись стикеров в массив
 	stickers := [359]string{}
-	body, err := ioutil.ReadAll(file)
+	body, err := io.ReadAll(file)
 	if err != nil {
-		logrus.Printf("ioutil.ReadAll error: %s", err)
+		logrus.Printf("io.ReadAll error: %s", err)
 	}
 	err = json.Unmarshal(body, &stickers)
 	if err != nil {

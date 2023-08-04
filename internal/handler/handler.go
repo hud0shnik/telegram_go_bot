@@ -4,7 +4,6 @@ import (
 	"strings"
 
 	"github.com/hud0shnik/telegram_go_bot/internal/commands"
-	"github.com/hud0shnik/telegram_go_bot/internal/send"
 	"github.com/hud0shnik/telegram_go_bot/internal/telegram"
 )
 
@@ -40,12 +39,12 @@ func Respond(botUrl string, update telegram.Update) {
 		case "/d":
 			commands.RollDice(botUrl, chatId, request[1])
 		case "OwO":
-			send.SendMsg(botUrl, chatId, "UwU")
+			telegram.SendMsg(botUrl, chatId, "UwU")
 		case "Молодец", "молодец":
-			send.SendMsg(botUrl, chatId, "Стараюсь UwU")
+			telegram.SendMsg(botUrl, chatId, "Стараюсь UwU")
 		case "Живой?", "живой?":
-			send.SendMsg(botUrl, chatId, "Живой")
-			send.SendStck(botUrl, chatId, "CAACAgIAAxkBAAIdGWKu5rpWxb4gn4dmYi_rRJ9OHM9xAAJ-FgACsS8ISQjT6d1ChY7VJAQ")
+			telegram.SendMsg(botUrl, chatId, "Живой")
+			telegram.SendStck(botUrl, chatId, "CAACAgIAAxkBAAIdGWKu5rpWxb4gn4dmYi_rRJ9OHM9xAAJ-FgACsS8ISQjT6d1ChY7VJAQ")
 		case "/check":
 			commands.Check(botUrl, chatId)
 		default:
@@ -54,7 +53,7 @@ func Respond(botUrl string, update telegram.Update) {
 				commands.Ball8(botUrl, chatId)
 			} else {
 				// Дефолтный ответ
-				send.SendMsg(botUrl, chatId, "OwO")
+				telegram.SendMsg(botUrl, chatId, "OwO")
 			}
 		}
 
@@ -62,11 +61,11 @@ func Respond(botUrl string, update telegram.Update) {
 
 		// Проверка на стикер
 		if update.Message.Sticker.File_id != "" {
-			send.SendRandomSticker(botUrl, chatId)
+			telegram.SendRandomSticker(botUrl, chatId)
 		} else {
 			// Если пользователь отправил не сообщение и не стикер:
-			send.SendMsg(botUrl, chatId, "Пока я воспринимаю только текст и стикеры")
-			send.SendStck(botUrl, chatId, "CAACAgIAAxkBAAIaImHkPqF8-PQVOwh_Kv1qQxIFpPyfAAJXAAOtZbwUZ0fPMqXZ_GcjBA")
+			telegram.SendMsg(botUrl, chatId, "Пока я воспринимаю только текст и стикеры")
+			telegram.SendStck(botUrl, chatId, "CAACAgIAAxkBAAIaImHkPqF8-PQVOwh_Kv1qQxIFpPyfAAJXAAOtZbwUZ0fPMqXZ_GcjBA")
 		}
 
 	}

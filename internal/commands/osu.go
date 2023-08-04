@@ -2,10 +2,10 @@ package commands
 
 import (
 	"encoding/json"
-	"io/ioutil"
+	"io"
 	"net/http"
 
-	"github.com/hud0shnik/telegram_go_bot/internal/send"
+	"github.com/hud0shnik/telegram_go_bot/internal/telegram"
 	"github.com/sirupsen/logrus"
 )
 
@@ -56,14 +56,14 @@ func SendOsuInfo(botUrl string, chatId int, username string) {
 
 	// Проверка параметра
 	if username == "" {
-		send.SendMsg(botUrl, chatId, "Синтаксис команды:\n\n/osu <b>[id]</b>\n\nПример:\n/osu <b>hud0shnik</b>")
+		telegram.SendMsg(botUrl, chatId, "Синтаксис команды:\n\n/osu <b>[id]</b>\n\nПример:\n/osu <b>hud0shnik</b>")
 		return
 	}
 
 	// Отправка запроса OsuStatsApi
 	resp, err := http.Get("https://osustatsapi.vercel.app/api/user?type=string&id=" + username)
 	if err != nil {
-		send.SendMsg(botUrl, chatId, "Внутренняя ошибка")
+		telegram.SendMsg(botUrl, chatId, "Внутренняя ошибка")
 		logrus.Printf("http.Get error: %s", err)
 		return
 	}
@@ -74,24 +74,24 @@ func SendOsuInfo(botUrl string, chatId int, username string) {
 	case 200:
 		// Продолжение выполнения кода
 	case 404:
-		send.SendMsg(botUrl, chatId, "Пользователь не найден")
+		telegram.SendMsg(botUrl, chatId, "Пользователь не найден")
 		return
 	case 400:
-		send.SendMsg(botUrl, chatId, "Плохой реквест")
+		telegram.SendMsg(botUrl, chatId, "Плохой реквест")
 		return
 	default:
-		send.SendMsg(botUrl, chatId, "Внутренняя ошибка")
+		telegram.SendMsg(botUrl, chatId, "Внутренняя ошибка")
 		return
 	}
 
 	// Запись респонса
-	body, _ := ioutil.ReadAll(resp.Body)
+	body, _ := io.ReadAll(resp.Body)
 	var user = new(osuUserInfo)
 	err = json.Unmarshal(body, &user)
 	if err != nil {
 		logrus.Printf("json.Unmarshal err: %v", err)
-		send.SendMsg(botUrl, chatId, "Внутренняя ошибка")
-		send.SendStck(botUrl, chatId, "CAACAgIAAxkBAAIY4mG13Vr0CzGwyXA1eL3esZVCWYFhAAJIAAOtZbwUgHOKzxQtAAHcIwQ")
+		telegram.SendMsg(botUrl, chatId, "Внутренняя ошибка")
+		telegram.SendStck(botUrl, chatId, "CAACAgIAAxkBAAIY4mG13Vr0CzGwyXA1eL3esZVCWYFhAAJIAAOtZbwUgHOKzxQtAAHcIwQ")
 		return
 	}
 
@@ -171,6 +171,6 @@ func SendOsuInfo(botUrl string, chatId int, username string) {
 	}
 
 	// Отправка данных пользователю
-	send.SendPict(botUrl, chatId, user.AvatarUrl, responseText)
+	telegram.SendPict(botUrl, chatId, user.AvatarUrl, responseText)
 
 }

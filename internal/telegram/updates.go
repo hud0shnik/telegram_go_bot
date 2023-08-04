@@ -2,7 +2,7 @@ package telegram
 
 import (
 	"encoding/json"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"strconv"
 )
@@ -43,7 +43,7 @@ func GetUpdates(botUrl string, offset int) ([]Update, error) {
 	defer resp.Body.Close()
 
 	// Запись и обработка полученных данных
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
 	}
