@@ -32,6 +32,9 @@ func main() {
 	botUrl := "https://api.telegram.org/bot" + os.Getenv("TOKEN")
 	offSet := 0
 
+	// Уведомление о старте
+	logrus.Info("Bot is running")
+
 	// Цикл работы бота
 	for {
 
