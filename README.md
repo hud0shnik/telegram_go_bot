@@ -37,7 +37,7 @@ sudo docker build -t tg_bot .
 
 Запуск
 ```
-docker run -e TOKEN="<token_value>" tg_bot
+docker run --name=telegram_bot -e TOKEN="<token_value>" tg_bot
 ```
 
 <h3 align="left">📷 Скриншот:</h3>
