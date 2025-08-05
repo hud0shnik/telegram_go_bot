@@ -1,57 +1,54 @@
 package main
 
 import (
+	"log/slog"
 	"os"
-	"time"
+	"strconv"
 
-	"github.com/hud0shnik/telegram_go_bot/internal/config"
-	"github.com/hud0shnik/telegram_go_bot/internal/handler"
-	"github.com/hud0shnik/telegram_go_bot/internal/telegram"
+	"github.com/hud0shnik/telegram_go_bot/internal/service"
 	"github.com/joho/godotenv"
-	"github.com/sirupsen/logrus"
 )
+
+// Путь до файла со стикерами по умолчанию
+const STICKERS_DEFAULT = "./assets/stickers.json"
 
 func main() {
 
-	// Настройка логгера
-	logrus.SetFormatter(&logrus.JSONFormatter{
-		TimestampFormat: time.DateTime,
-	})
-
-	// Инициализация конфига (токенов)
-	err := config.InitConfig()
-	if err != nil {
-		logrus.Fatalf("initConfig error: %s", err)
-		return
-	}
+	// Инициализация логгера
+	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
+	slog.SetDefault(logger)
 
 	// Загрузка переменных окружения
 	godotenv.Load()
 
-	// Url бота для отправки и приёма сообщений
-	botUrl := "https://api.telegram.org/bot" + os.Getenv("TOKEN")
-	offSet := 0
+	// Получение переменных окружения
 
-	// Уведомление о старте
-	logrus.Info("Bot is running")
-
-	// Цикл работы бота
-	for {
-
-		// Получение апдейтов
-		updates, err := telegram.GetUpdates(botUrl, offSet)
-		if err != nil {
-			logrus.Warnf("getUpdates error: %s", err)
-			continue
-		}
-
-		// Обработка апдейтов
-		for _, update := range updates {
-			handler.Respond(botUrl, update)
-			offSet = update.UpdateId + 1
-		}
-
-		// Вывод в консоль для тестов
-		// fmt.Println(updates)
+	token := os.Getenv("TOKEN")
+	if token == "" {
+		slog.Error("TOKEN not found")
+		return
 	}
+
+	debug := false
+	if os.Getenv("DEBUG") == "1" {
+		debug = true
+	}
+
+	stickers := os.Getenv("STICKERS")
+	if stickers == "" {
+		slog.Info("STICKERS not found, using default", "default", STICKERS_DEFAULT)
+		stickers = STICKERS_DEFAULT
+	}
+
+	adminChatId, err := strconv.ParseInt(os.Getenv("ADMIN_CHAT_ID"), 10, 64)
+	if err != nil {
+		slog.Error("ADMIN_CHAT_ID not found", "error", err)
+		return
+	}
+
+	// Инициализация бота
+	bot := service.NewBotService(token, debug, stickers, adminChatId)
+
+	// Запуск бота
+	bot.Run()
 }
