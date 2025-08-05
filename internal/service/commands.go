@@ -1,28 +1,22 @@
-package commands
+package service
 
 import (
+	"math/rand"
 	"strconv"
-
-	"github.com/hud0shnik/telegram_go_bot/internal/telegram"
-	"github.com/hud0shnik/telegram_go_bot/internal/utils"
-
-	"github.com/spf13/viper"
 )
 
-// Структуры для работы API
-
 // Функция броска монетки
-func FlipCoin(botUrl string, chatId int) {
-	if utils.Random(2) == 0 {
-		telegram.SendMsg(botUrl, chatId, "Орёл")
+func (s *BotService) SendCoin(chatId int64) {
+	if rand.Intn(2) == 0 {
+		s.SendMessage(chatId, "Орёл")
 		return
 	}
-	telegram.SendMsg(botUrl, chatId, "Решка")
+	s.SendMessage(chatId, "Решка")
 }
 
 // Функция вывода списка всех команд
-func Help(botUrl string, chatId int) {
-	telegram.SendMsg(botUrl, chatId, "Привет👋🏻, вот список команд:\n\n"+
+func (s *BotService) SendHelp(chatId int64) {
+	s.SendMessage(chatId, "Привет👋🏻, вот список команд:\n\n"+
 		"/commits <u>username</u> <u>date</u> - коммиты пользователя за день\n\n"+
 		"/github <u>username</u> - информация о пользователе GitHub\n\n"+
 		"/osu <u>username</u> - информация о пользователе Osu\n\n"+
@@ -35,34 +29,34 @@ func Help(botUrl string, chatId int) {
 }
 
 // Функция броска n-гранного кубика
-func RollDice(botUrl string, chatId int, parameter string) {
+func (s *BotService) SendDice(chatId int64, parameter string) {
 
 	// Проверка параметра
 	if parameter == "" {
-		telegram.SendMsg(botUrl, chatId, "Пожалуйста укажи количество граней\nНапример /d <b>20</b>")
+		s.SendMessage(chatId, "Пожалуйста укажи количество граней\nНапример /d <b>20</b>")
 		return
 	}
 
 	// Считывание числа граней
 	num, err := strconv.Atoi(parameter)
 	if err != nil || num < 1 {
-		telegram.SendMsg(botUrl, chatId, "Это вообще кубик?🤨")
+		s.SendMessage(chatId, "Это вообще кубик?🤨")
 		return
 	}
 
 	// Проверка на d10 (единственный кубик, который имеет грань со значением "0")
 	if num == 10 {
-		telegram.SendMsg(botUrl, chatId, strconv.Itoa(utils.Random(10)))
+		s.SendMessage(chatId, strconv.Itoa(rand.Intn(10)))
 		return
 	}
 
 	// Бросок
-	telegram.SendMsg(botUrl, chatId, strconv.Itoa(1+utils.Random(num)))
+	s.SendMessage(chatId, strconv.Itoa(1+rand.Intn(num)))
 
 }
 
 // Функция генерации случайных ответов
-func Ball8(botUrl string, chatId int) {
+func (s *BotService) SendBall8(chatId int64) {
 
 	// Массив ответов
 	answers := [10]string{
@@ -79,28 +73,28 @@ func Ball8(botUrl string, chatId int) {
 	}
 
 	// Выбор случайного ответа
-	telegram.SendMsg(botUrl, chatId, answers[utils.Random(10)])
+	s.SendMessage(chatId, answers[rand.Intn(10)])
 
 }
 
 // Функция проверки всех команд
-func Check(botUrl string, chatId int) {
+func (s *BotService) SendCheck(chatId int64) {
 
 	// Проверка на мой id
-	if chatId == viper.GetInt("AdminChatId") {
+	if chatId == s.adminChatId {
 
 		// Вызов функций для тестирования
-		SendOsuInfo(botUrl, chatId, "hud0shnik")
-		SendCommits(botUrl, chatId, "hud0shnik", "")
-		SendGithubInfo(botUrl, chatId, "hud0shnik")
-		SendCryptoInfo(botUrl, chatId)
-		SendIPInfo(botUrl, chatId, "67.77.77.7")
-		telegram.SendRandomSticker(botUrl, chatId)
+		s.SendOsuInfo(chatId, "hud0shnik")
+		s.SendCommits(chatId, "hud0shnik")
+		s.SendGithubInfo(chatId, "hud0shnik")
+		s.SendCryptoInfo(chatId)
+		s.SendIPInfo(chatId, "67.77.77.7")
+		s.SendRandomSticker(chatId, s.randomStickersFilePath)
 
 	} else {
 
 		// Вывод для других пользователей
-		telegram.SendMsg(botUrl, chatId, "Error 403! Beep Boop... Forbidden! Access denied 🤖")
+		s.SendMessage(chatId, "Error 403! Beep Boop... Forbidden! Access denied 🤖")
 
 	}
 

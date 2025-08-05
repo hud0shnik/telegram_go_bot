@@ -1,12 +1,12 @@
-package commands
+package service
 
 import (
 	"encoding/json"
 	"io"
+	"log/slog"
 	"net/http"
 
-	"github.com/hud0shnik/telegram_go_bot/internal/telegram"
-	"github.com/sirupsen/logrus"
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
 // Структура респонса osustatsapi
@@ -52,19 +52,22 @@ type osuUserInfo struct {
 }
 
 // Функция вывода информации о пользователе Osu
-func SendOsuInfo(botUrl string, chatId int, username string) {
+func (s *BotService) SendOsuInfo(chatId int64, username string) {
 
 	// Проверка параметра
 	if username == "" {
-		telegram.SendMsg(botUrl, chatId, "Синтаксис команды:\n\n/osu <b>[id]</b>\n\nПример:\n/osu <b>hud0shnik</b>")
+		s.api.Send(tgbotapi.NewMessage(chatId, "Синтаксис команды:\n\n/osu <b>[id]</b>\n\nПример:\n/osu <b>hud0shnik</b>"))
 		return
 	}
 
+	// Формирование url
+	apiUrl := "https://osustatsapi.vercel.app/api/user?type=string&id=" + username
+
 	// Отправка запроса OsuStatsApi
-	resp, err := http.Get("https://osustatsapi.vercel.app/api/user?type=string&id=" + username)
+	resp, err := http.Get(apiUrl)
 	if err != nil {
-		telegram.SendMsg(botUrl, chatId, "Внутренняя ошибка")
-		logrus.Printf("http.Get error: %s", err)
+		s.api.Send(tgbotapi.NewMessage(chatId, "Внутренняя ошибка"))
+		slog.Error("http.Get error", "error", err, "request", apiUrl)
 		return
 	}
 	defer resp.Body.Close()
@@ -74,13 +77,13 @@ func SendOsuInfo(botUrl string, chatId int, username string) {
 	case 200:
 		// Продолжение выполнения кода
 	case 404:
-		telegram.SendMsg(botUrl, chatId, "Пользователь не найден")
+		s.api.Send(tgbotapi.NewMessage(chatId, "Пользователь не найден"))
 		return
 	case 400:
-		telegram.SendMsg(botUrl, chatId, "Плохой реквест")
+		s.api.Send(tgbotapi.NewMessage(chatId, "Плохой реквест"))
 		return
 	default:
-		telegram.SendMsg(botUrl, chatId, "Внутренняя ошибка")
+		s.api.Send(tgbotapi.NewMessage(chatId, "Внутренняя ошибка"))
 		return
 	}
 
@@ -89,9 +92,9 @@ func SendOsuInfo(botUrl string, chatId int, username string) {
 	var user = new(osuUserInfo)
 	err = json.Unmarshal(body, &user)
 	if err != nil {
-		logrus.Printf("json.Unmarshal err: %v", err)
-		telegram.SendMsg(botUrl, chatId, "Внутренняя ошибка")
-		telegram.SendStck(botUrl, chatId, "CAACAgIAAxkBAAIY4mG13Vr0CzGwyXA1eL3esZVCWYFhAAJIAAOtZbwUgHOKzxQtAAHcIwQ")
+		slog.Error("json.Unmarshal err", "error", err, "request", apiUrl)
+		s.api.Send(tgbotapi.NewMessage(chatId, "Внутренняя ошибка"))
+		s.api.Send(tgbotapi.NewSticker(chatId, tgbotapi.FileID("CAACAgIAAxkBAAIY4mG13Vr0CzGwyXA1eL3esZVCWYFhAAJIAAOtZbwUgHOKzxQtAAHcIwQ")))
 		return
 	}
 
@@ -171,6 +174,11 @@ func SendOsuInfo(botUrl string, chatId int, username string) {
 	}
 
 	// Отправка данных пользователю
-	telegram.SendPict(botUrl, chatId, user.AvatarUrl, responseText)
+	photo := tgbotapi.NewPhoto(chatId, tgbotapi.FileURL(user.AvatarUrl))
+	photo.Caption = responseText
+	photo.ParseMode = "HTML"
+
+	// Отправка фото
+	s.SendPhoto(chatId, user.AvatarUrl, responseText)
 
 }
