@@ -38,13 +38,13 @@ func (s *BotService) SendCryptoInfo(chatId int64) {
 
 	// Формирование и отправка результата
 	if response.ChangePercent[0] == '-' {
-		s.SendMessage(chatId, "За сегодняшний день "+response.Symbol+" упал на "+response.ChangePercent[1:]+"%\n"+
+		s.SendMessage(chatId, "За сегодняшний день SHIB упал на "+response.ChangePercent[1:]+"%\n"+
 			"до отметки в "+response.LastPrice+"USDT\n\n")
 		s.SendSticker(chatId, "CAACAgIAAxkBAAIY4mG13Vr0CzGwyXA1eL3esZVCWYFhAAJIAAOtZbwUgHOKzxQtAAHcIwQ")
 	} else {
-		s.SendMessage(chatId, "За сегодняшний день "+response.Symbol+" вырос на "+response.ChangePercent+"%\n"+
+		s.SendMessage(chatId, "За сегодняшний день SHIB вырос на "+response.ChangePercent+"%\n"+
 			"до отметки в "+response.LastPrice+"USDT\n\n")
-		s.SendSticker(chatId, "CAACAgIAAxkBAAIY4mG13Vr0CzGwyXA1eL3esZVCWYFhAAJIAAOtZbwUgHOKzxQtAAHcIwQ")
+		s.SendSticker(chatId, "CAACAgIAAxkBAAICd2iVNDnS_14zSxDh_l9Wf6Vb2vGkAAJeAAOtZbwUvL_TIkzK-Ms2BA")
 	}
 
 }
