@@ -17,6 +17,16 @@ type BotService struct {
 	adminChatId            int64
 }
 
+// Структура для хранения состояния пользователя
+type UserState struct {
+	WaitingForOsuNickname    bool
+	WaitingForGithubNickname bool
+	WaitingForCommitNickname bool
+	WaitingForIP             bool
+	WaitingForDice           bool
+	WaitingForCurrency       bool
+}
+
 func NewBotService(token string, debug bool, randomStickersFilePath string, adminChatId int64) *BotService {
 
 	// Инициализация бота

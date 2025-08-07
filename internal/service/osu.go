@@ -173,11 +173,6 @@ func (s *BotService) SendOsuInfo(chatId int64, username string) {
 		responseText += "Цвет профиля <b>" + user.ProfileColor + "<b>\n"
 	}
 
-	// Отправка данных пользователю
-	photo := tgbotapi.NewPhoto(chatId, tgbotapi.FileURL(user.AvatarUrl))
-	photo.Caption = responseText
-	photo.ParseMode = "HTML"
-
 	// Отправка фото
 	s.SendPhoto(chatId, user.AvatarUrl, responseText)
 
