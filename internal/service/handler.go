@@ -6,13 +6,14 @@ import (
 
 // Константы для кнопок
 const (
-	OSU_BUTTON           = "Osu"
-	GITHUB_BUTTON        = "Github"
-	CRYPTO_BUTTON        = "Курс SHIB"
-	COMMITS_BUTTON       = "Коммиты"
-	IP_BUTTON            = "IP"
-	COIN_BUTTON          = "Монетка"
-	DICE_BUTTON          = "Кубик"
+	OSU_BUTTON           = "🎵 Osu! 🎮"
+	GITHUB_BUTTON        = "💻 Github 🐙"
+	CRYPTO_BUTTON        = "📈 Курс SHIB 🐕"
+	COMMITS_BUTTON       = "🔄 Коммиты 💾"
+	IP_BUTTON            = "🌐 IP 📡"
+	COIN_BUTTON          = "🪙 Монетка ✨"
+	DICE_BUTTON          = "🎲 Кубик 🎲"
+	CURRENCY_BUTTON      = "💰 Курс JPY 📊"
 	NEXT_PAGE_BUTTON     = ">>>"
 	PREVIOUS_PAGE_BUTTON = "<<<"
 )
@@ -24,6 +25,7 @@ type UserState struct {
 	WaitingForCommitNickname bool
 	WaitingForIP             bool
 	WaitingForDice           bool
+	WaitingForCurrency       bool
 }
 
 func (s *BotService) handleMessage(update tgbotapi.Update) {
@@ -52,6 +54,10 @@ func (s *BotService) handleMessage(update tgbotapi.Update) {
 		case state.WaitingForDice:
 			s.SendDice(chatID, update.Message.Text)
 			delete(s.userStates, chatID)
+
+		case state.WaitingForCurrency:
+			s.ConvertJpyToRub(chatID, update.Message.Text)
+			delete(s.userStates, chatID)
 		}
 	}
 
@@ -79,7 +85,10 @@ func (s *BotService) handleMessage(update tgbotapi.Update) {
 	case NEXT_PAGE_BUTTON:
 		s.nextButtonPressed(chatID)
 	case PREVIOUS_PAGE_BUTTON:
-		s.sendKeyboard(chatID)
+		s.previousButtonPressed(chatID)
+	case CURRENCY_BUTTON:
+		s.userStates[chatID] = UserState{WaitingForCurrency: true}
+		s.currencyButtonPressed(chatID)
 	case "OwO", "UwU", "owo", "uwu":
 		s.SendMessage(chatID, "UwU")
 	case "Молодец", "молодец", "Молодец!", "молодец!":
@@ -130,7 +139,7 @@ func (s *BotService) sendKeyboard(chatID int64) {
 
 func (s *BotService) diceButtonPressed(chatID int64) {
 	s.userStates[chatID] = UserState{WaitingForDice: true}
-	msg := tgbotapi.NewMessage(chatID, "Пожалуйста, введи граней")
+	msg := tgbotapi.NewMessage(chatID, "Пожалуйста, введи количество граней")
 	msg.ReplyMarkup = tgbotapi.NewRemoveKeyboard(true)
 	s.api.Send(msg)
 }
@@ -139,23 +148,33 @@ func (s *BotService) nextButtonPressed(chatID int64) {
 	msg := tgbotapi.NewMessage(chatID, "Да, тут ещё есть кнопки)")
 	msg.ReplyMarkup = s.createPersistentKeyboardSecondPage()
 	s.api.Send(msg)
+}
 
+func (s *BotService) previousButtonPressed(chatID int64) {
+	msg := tgbotapi.NewMessage(chatID, "Возвращаю")
+	msg.ReplyMarkup = s.createPersistentKeyboardFirstPage()
+	s.api.Send(msg)
+}
+
+func (s *BotService) currencyButtonPressed(chatID int64) {
+	s.userStates[chatID] = UserState{WaitingForCurrency: true}
+	msg := tgbotapi.NewMessage(chatID, "Пожалуйста, введи сумму в JPY")
+	msg.ReplyMarkup = tgbotapi.NewRemoveKeyboard(true)
+	s.api.Send(msg)
 }
 
 func (s *BotService) createPersistentKeyboardFirstPage() tgbotapi.ReplyKeyboardMarkup {
 	return tgbotapi.NewReplyKeyboard(
 		tgbotapi.NewKeyboardButtonRow(
 			tgbotapi.NewKeyboardButton(OSU_BUTTON),
-			tgbotapi.NewKeyboardButton(GITHUB_BUTTON),
+			tgbotapi.NewKeyboardButton(CURRENCY_BUTTON),
+		),
+		tgbotapi.NewKeyboardButtonRow(
+			tgbotapi.NewKeyboardButton(IP_BUTTON),
 			tgbotapi.NewKeyboardButton(CRYPTO_BUTTON),
 		),
 		tgbotapi.NewKeyboardButtonRow(
-			tgbotapi.NewKeyboardButton(COMMITS_BUTTON),
-			tgbotapi.NewKeyboardButton(IP_BUTTON),
 			tgbotapi.NewKeyboardButton(COIN_BUTTON),
-		),
-		tgbotapi.NewKeyboardButtonRow(
-			tgbotapi.NewKeyboardButton(DICE_BUTTON),
 			tgbotapi.NewKeyboardButton(NEXT_PAGE_BUTTON),
 		),
 	)
@@ -163,6 +182,11 @@ func (s *BotService) createPersistentKeyboardFirstPage() tgbotapi.ReplyKeyboardM
 func (s *BotService) createPersistentKeyboardSecondPage() tgbotapi.ReplyKeyboardMarkup {
 	return tgbotapi.NewReplyKeyboard(
 		tgbotapi.NewKeyboardButtonRow(
+			tgbotapi.NewKeyboardButton(DICE_BUTTON),
+			tgbotapi.NewKeyboardButton(COMMITS_BUTTON),
+		),
+		tgbotapi.NewKeyboardButtonRow(
+			tgbotapi.NewKeyboardButton(GITHUB_BUTTON),
 			tgbotapi.NewKeyboardButton(PREVIOUS_PAGE_BUTTON),
 		),
 	)
