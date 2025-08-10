@@ -39,7 +39,7 @@ func (s *BotService) ConvertJpyToRub(chatId int64, jpyString string) {
 
 	cbrCurrency, err := getCbrCurrency()
 	if err == nil {
-		s.SendMessage(chatId, fmt.Sprintf("%.2f ₽", float32(jpy)*cbrCurrency))
+		s.SendMessage(chatId, fmt.Sprintf("%.2f ₽", float32(jpy)/cbrCurrency))
 		return
 	}
 
@@ -51,7 +51,7 @@ func (s *BotService) ConvertJpyToRub(chatId int64, jpyString string) {
 		return
 	}
 
-	s.SendMessage(chatId, fmt.Sprintf("%.2f ₽", float32(jpy)*erCurrency))
+	s.SendMessage(chatId, fmt.Sprintf("%.2f ₽", erCurrency/float32(jpy)))
 }
 
 // getCbrCurrency получает курс валюты JPY у ЦБ через прокси-апи
